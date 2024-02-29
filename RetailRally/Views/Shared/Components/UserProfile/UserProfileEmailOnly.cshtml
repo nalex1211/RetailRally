@@ -1,0 +1,14 @@
+﻿@using RetailRally.ViewModels
+@model UserProfileViewModel
+
+@if (Model != null)
+{
+    <a asp-controller="User" asp-action="MyProfile" style="text-decoration: none;">
+        <div class="user-profile-header">
+            <div class="user-info-header">
+                <div class="user-email">@Model.Email</div>
+            </div>
+            <img src="@Model.PictureUrl" alt="Profile Image" class="profile-picture">
+        </div>
+    </a>
+}

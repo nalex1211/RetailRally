@@ -1,0 +1,94 @@
+﻿<div id="messageContainer">
+    @foreach (var message in Model.Messages)
+    {
+        <div class="message">
+            <strong>@message.SenderUsername:</strong> @message.Text
+            <div class="timestamp">@message.Timestamp.ToString("g")</div>
+        </div>
+    }
+</div>
+
+<input type="text" id="messageInput" />
+<button onclick="sendMessage()">Send</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/3.1.9/signalr.min.js"></script>
+
+<script>
+    var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+
+    connection.on("ReceiveMessage", function (user, message) {
+        var msg = document.createElement("div");
+        msg.textContent = user + ": " + message;
+        document.getElementById("messageContainer").appendChild(msg);
+    });
+
+    connection.start().catch(function (err) {
+        return console.error(err.toString());
+    });
+    
+    function sendMessage() {
+        var message = document.getElementById("messageInput").value;
+        if (!message) return;
+
+        connection.invoke("SendMessageToUser", "@Model.CurrentUserName", "@Model.OtherUserId", "@Model.OtherUsername", message)
+            .then(function () {
+                document.getElementById("messageInput").value = '';
+                scrollToBottom();
+            })
+            .catch(function (err) {
+                return console.error(err.toString());
+            });
+    }
+    function scrollToBottom() {
+        var messageContainer = document.getElementById("messageContainer");
+        messageContainer.scrollTop = messageContainer.scrollHeight;
+    }
+</script>
+
+@* 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body >
+    <div class="font-sans antialiased h-screen flex flex-col">
+        <div class="bg-white shadow overflow-hidden sm:rounded-lg w-full m-auto flex flex-col justify-between" style="height: 90%;">
+            <div class="border-t border-gray-200 flex-grow overflow-auto">
+                <div class="bg-white px-4 py-5 grid grid-cols-3 gap-4 sm:grid-cols-1">
+                    <dt class="text-sm font-medium text-gray-500">
+                        Maya - 12:03PM
+                    </dt>
+                    <dd class="mt-1 text-sm text-gray-900 sm:col-span-2">
+                        I just received an email from the CFO regarding some additional financial data. Here's the report she shared: <br>
+                        <a href="#" class="text-blue-500 hover:underline">Q2_Earnings.numbers</a>
+                    </dd>
+                </div>
+                <div class="bg-gray-50 px-4 py-5 grid grid-cols-3 gap-4 sm:grid-cols-1 text-right">
+                    <dd class="mt-1 text-sm text-gray-900 sm:col-span-2">
+                        Thanks for letting me know. I'll take a look right now.
+                    </dd>
+                    <dt class="text-sm font-medium text-gray-500">
+                        Leon - 12:13PM
+                    </dt>
+                </div>
+            </div>
+            <div class="border-t border-gray-200">
+                <div class="flex items-center justify-between p-3 bg-gray-100">
+                    <div class="flex-grow flex items-center bg-white rounded-full shadow-inner px-4">
+                        <input type="text" placeholder="Message Leon" class="flex-grow px-4 py-2 text-sm focus:outline-none">
+                        <button class="text-gray-500 focus:outline-none">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+ *@

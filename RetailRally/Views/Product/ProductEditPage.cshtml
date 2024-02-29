@@ -1,0 +1,139 @@
+﻿@using RetailRally.Helpers
+@model Product
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@picocss/pico@1/css/pico.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>Edit Product</title>
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .product-edit {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            width: 150%;
+            background-color: #383838;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .product-image {
+            flex: 1;
+            text-align: center;
+        }
+
+            .product-image img {
+                width: 300px;
+                height: 300px;
+                object-fit: cover;
+                border-radius: 8px;
+            }
+
+        .product-details {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        input, textarea, select {
+            padding: 10px;
+            font-size: 1rem;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            transition: border-color 0.3s;
+        }
+
+            input:focus, textarea:focus, select:focus {
+                border-color: #007bff;
+            }
+
+        .edit-button, .change-picture-button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px
+        }
+
+            .edit-button:hover, .change-picture-button:hover {
+                background-color: #0056b3;
+            }
+    </style>
+    <script>
+        $(document).ready(function () {
+            $('#profilePicture').change(function (e) {
+                var validTypes = ['image/jpeg', 'image/png'];
+                if (this.files && this.files[0]) {
+                    var fileType = this.files[0].type;
+                    if (!validTypes.includes(fileType)) {
+                        alert('Only image files are allowed!');
+                        this.value = '';
+                        return;
+                    }
+
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        $('.product-image img').attr('src', e.target.result);
+                    }
+
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+        });
+    </script>
+
+</head>
+<body>
+    <nav class="container-fluid">
+        <ul>
+            <li><strong>Marketplace</strong></li>
+        </ul>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Products</a></li>
+            <li><a href="#" role="button">Contact</a></li>
+        </ul>
+    </nav>
+    <form asp-action="EditProduct" enctype="multipart/form-data" method="post">
+        <input type="hidden" asp-for="UserId" value=@User.GetUserId() />
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="PictureUrl" />
+        <main class="container">
+            <div class="product-edit">
+                <div class="product-image">
+                    <img src="@Model.PictureUrl" alt="Product Image">
+                    <input type="file" id="profilePicture" name="profilePicture" accept="image/jpeg, image/png" />
+                </div>
+                <div class="product-details">
+                    <input asp-for=Name type="text" placeholder="Name of product" aria-label="Name of product" value="@Model.Name" required>
+                    <textarea asp-for=Description placeholder="Description" aria-label="Description" value="@Model.Description"></textarea>
+                    <input class="no-spin-buttons" asp-for=Price type="number" placeholder="Price" aria-label="Price" value="@Model.Price" required>
+                    <select asp-for="CategoryId" asp-items="ViewBag.Categories">
+                        <option value="" disabled selected>Select a category</option>
+                    </select><br>
+                    <button class="edit-button">Edit Product</button>
+                </div>
+            </div>
+        </main>
+    </form>
+    <footer class="container">
+        <small><a href="#">Privacy Policy</a> • <a href="#">Terms of Service</a></small>
+    </footer>
+</body>
+</html>

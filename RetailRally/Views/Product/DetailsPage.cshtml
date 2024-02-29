@@ -1,0 +1,218 @@
+﻿@using RetailRally.Helpers
+@using RetailRally.Interfaces
+@using RetailRally.ViewModels
+@model ProductVm
+@inject IUserProfileService UserProfileService
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <title>Marketplace Product</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .product-container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .product-image {
+            flex: 1 1 500px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 500px;
+        }
+
+            .product-image img {
+                width: 500px;
+                height: 500px;
+                object-fit: cover;
+                border-radius: 8px;
+            }
+
+        .product-details {
+            flex: 1 1 300px;
+            background-color: slategray;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+            .product-details h2, .product-details h3, .product-details p {
+                margin-top: 0;
+                color: #333;
+            }
+
+        .buy-button {
+            background-color: #6200ea;
+            color: white;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+            .buy-button:hover {
+                background-color: #7f22ff;
+            }
+
+        .comment-section {
+            border-radius: 5px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .comment {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding: 0.5rem 0;
+        }
+
+        .left-content {
+            display: flex;
+            align-items: center;
+        }
+
+        .trash-icon {
+            cursor: pointer;
+            color: #666;
+        }
+
+            .trash-icon:hover {
+                color: #333;
+            }
+
+        .text-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .comment:last-child {
+            border-bottom: none;
+        }
+
+        .user {
+            font-weight: bold;
+        }
+
+        .metadata {
+            font-size: 0.875em;
+            color: #666;
+        }
+
+        .comment-text {
+            margin-top: 0.25rem;
+        }
+
+
+        .placeholder-gray-400::placeholder {
+            color: #aaa;
+        }
+    </style>
+
+</head>
+<body>
+    <nav class="px-4 py-2">
+        <div class="flex justify-between items-center">
+            <h1 class="text-xl font-bold">Products</h1>
+            <a href="#" class="text-blue-500">All Products</a>
+        </div>
+    </nav>
+    <main class="container mx-auto px-4 py-6">
+        <div class="flex items-start gap-8">
+            <div class="flex-none">
+                <img src="@Model.Product.PictureUrl" alt="Product Image" class="rounded-lg shadow-lg" style="width: 300px; height: 300px; object-fit: cover;">
+            </div>
+            <div class="flex-grow bg-gray-800 p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold">@Model.Product.Name</h2>
+                <h3 class="text-xl">Category:</h3>
+                <p>@Model.Product.Category.Name</p>
+                <h3 class="text-xl">Description:</h3>
+                <p>@Model.Product.Description</p>
+                <p>Manufacturer: @Model.User.UserName</p>
+                <h3 class="text-xl">Price</h3>
+                <p style="margin-bottom:20px">$ @Model.Product.Price</p>
+                <a asp-action="GoToBuyPage" asp-route-selectedItems="@Model.Product.Id" class="mt-4 bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded" role="button">Buy Now</a>
+            </div>
+        </div>
+    </main>
+    <section>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <form asp-controller="Comment" asp-action="AddComment" method="post">
+                <div class="flex items-center space-x-4 py-2">
+                    <img src="@await UserProfileService.GetUserPictureAsync(User.GetUserId())" alt="User profile picture" class="rounded-full" style="width:40px;height:40px">
+                    <input id="commentInput" asp-for="NewComment.Content" type="text" placeholder="Add a public comment..." class="bg-transparent border-none placeholder-gray-400 flex-1 text-sm focus:outline-none" onkeyup="checkCommentLength()" />
+                    <button id="commentButton" class="btn btn-primary" disabled>Comment</button>
+                </div>
+                <input asp-for="NewComment.ProductId" type="hidden" value="@Model.Product.Id" />
+                <input asp-for="NewComment.UserId" type="hidden" value="@User.GetUserId()" />
+                <input asp-for="Product.Id" type="hidden" />
+            </form>
+        }
+        <div class="comment-section">
+            @foreach (var comment in Model.Comments)
+            {
+                <div class="comment">
+                    <div class="left-content flex items-center">
+                        <img src="@comment.User.PictureUrl" alt="User profile picture" class="rounded-full" style="width:40px;height:40px; margin-right:10px">
+                        <div class="text-content">
+                            <span class="user">@comment.User.UserName</span>
+                            <span class="metadata">@comment.CreatedDate.ToString("dd-MM-yyyy")</span>
+                            <p class="comment-text">@comment.Content</p>
+                        </div>
+                    </div>
+                    @if (User.GetUserId() == comment.UserId)
+                    {
+                        <form asp-controller="Comment" asp-action="DeleteComment">
+                            <input name="productId" value="@Model.Product.Id" type="hidden" />
+                            <input name="commentId" value="@comment.Id" type="hidden" />
+                            <div class="trash-icon">
+                                <button>
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </form>
+                    }
+                </div>
+            }
+        </div>
+
+
+
+    </section>
+    <footer class="container">
+        <small><a href="#">Terms & Conditions</a> • <a href="#">Privacy Policy</a></small>
+    </footer>
+</body>
+</html>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    function checkCommentLength() {
+        var input = document.getElementById('commentInput');
+        var button = document.getElementById('commentButton');
+        button.disabled = input.value.length < 3;
+    }
+</script>
+

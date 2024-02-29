@@ -1,0 +1,175 @@
+﻿@using RetailRally.ViewModels
+@model RegisterVm
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="~/css/styles.css">
+    <style>
+        input {
+            color: #374151;
+        }
+
+        #register-button:enabled {
+            background-color: #22c55e;
+            color: white;
+        }
+
+            #register-button:enabled:hover {
+                background-color: #16a34a;
+            }
+
+        #register-button:disabled {
+            background-color: #d1d5db;
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        #google-button:hover {
+            background-color: #8f1810;
+        }
+
+        #facebook-button:hover {
+            background-color: #2a33db;
+        }
+
+        .password-icon {
+            background-repeat: no-repeat;
+            background-position: right 0.5rem center;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+
+        .eye-icon.show-password {
+            background-image: url('/icons/eye-icon-show.svg');
+        }
+
+        .eye-icon.hide-password {
+            background-image: url('/icons/eye-icon-hide.svg');
+        }
+
+    </style>
+    <script>
+        function toggleRegisterPasswordVisibility() {
+            var passwordField = $('#register-password');
+            var eyeIcon = $('.eye-icon');
+
+            if (passwordField.attr('type') === 'password') {
+                passwordField.attr('type', 'text');
+                eyeIcon.removeClass('show-password').addClass('hide-password');
+            } else {
+                passwordField.attr('type', 'password');
+                eyeIcon.removeClass('hide-password').addClass('show-password');
+            }
+        }
+
+        $(document).ready(function () {
+            $('input').on('input', function () {
+                $('.text-danger').text('');
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+            <span class="text-danger">@Html.Raw(ViewData["PasswordCheckError"])</span>
+            <h2 class="text-2xl font-bold mb-10 text-gray-700">Registration</h2>
+            <form asp-controller="Account" asp-action="Register" method="post" enctype="multipart/form-data" id="registerForm">
+                <div class="space-y-4">
+                    <input asp-for="FirstName" type="text" placeholder="Name" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                    <span asp-validation-for="FirstName" class="text-danger block mt-2 text-sm"></span>
+                    <input asp-for="LastName" type="text" placeholder="Surname" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                    <span asp-validation-for="LastName" class="text-danger block mt-2 text-sm"></span>
+                    <div class="flex">
+                        <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md">
+                            +38
+                        </span>
+                        <input asp-for="PhoneNumber" type="number" placeholder="Phone number" class="w-full px-4 py-2 border border-gray-300 rounded-r-md focus:outline-none focus:ring-1 focus:ring-blue-500 no-spin-buttons" />
+                    </div>
+                    <span asp-validation-for="PhoneNumber" class="text-danger block mt-2 text-sm"></span>
+                    <input asp-for="Email" type="email" placeholder="Email" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                    <span asp-validation-for="Email" class="text-danger block mt-2 text-sm"></span>
+                    <input asp-for="Username" type="text" placeholder="Username" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                    <span asp-validation-for="Username" class="text-danger block mt-2 text-sm"></span>
+                    <div class="relative">
+                        <input asp-for="Password" id="register-password" type="password" placeholder="Password" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 password-icon" />
+                        <div id="register-eye-icon" class="eye-icon show-password absolute inset-y-0 right-0 pr-3 flex items-center" onclick="toggleRegisterPasswordVisibility()"></div>
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger block mt-2 text-sm"></span>
+                    <input asp-for="ConfirmPassword" type="password" placeholder="Confirm password" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger block mt-2 text-sm"></span>
+                    <div class="mt-4">
+                        <label for="birthdate" class="block text-sm font-medium text-gray-700">Birthdate</label>
+                        <div class="mt-1">
+                            <input asp-for="BirthDate" type="date" id="birthdate" name="birthdate"
+                                   class="py-2 px-3 border border-gray-300 bg-white text-gray-700 sm:text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full pl-7 pr-12"
+                                   placeholder="Select date">
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <div class="flex items-center">
+                            <label style="background-color:#374151" class="w-full flex flex-col items-center px-4 py-2 text-blue rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue-500 hover:text-white">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span class="mt-2 text-base leading-normal">Select a picture file</span>
+                                <input id="file-upload" name="userImage" accept="image/jpeg, image/png" type='file' class="hidden" onchange="updateFileName()" />
+                            </label>
+                        </div>
+                        <div style="color:#374151" id="file-name" class="text-sm mt-2"></div>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between my-4">
+                    <div class="flex items-center">
+                        <input id="terms" type="checkbox" class="w-4 h-4 text-blue-600 rounded" onchange="document.getElementById('register-button').disabled = !this.checked;" />
+                        <label for="terms" class="ml-2 text-sm text-gray-600">By registering, you agree to the terms of the regulation on collection and protection of personal data and the user agreement</label>
+                    </div>
+                </div>
+                <button id="register-button" class="w-full py-3 mt-3 text-white bg-green-600 rounded-md focus:outline-none" disabled>Register</button>
+            </form>
+            <div class="mt-8">
+                <div class="flex flex-col space-y-4">
+                    <button id="facebook-button" class="w-full py-2 text-white bg-blue-600 rounded-md flex items-center justify-center">
+                        <i class="fab fa-facebook-f mr-2"></i> Sign in with Facebook
+                    </button>
+                    <form asp-controller="Account" asp-action="ExternalLogin" method="post">
+                        <input type="hidden" name="provider" value="Google" />
+                        <button asp-co id="google-button" class="w-full py-2 text-white bg-red-600 rounded-md flex items-center justify-center">
+                            <i class="fab fa-google mr-2"></i> Sign in with Google
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+    function updateFileName() {
+        var input = document.getElementById('file-upload');
+        var fileName = document.getElementById('file-name');
+        if (input.files.length > 0) {
+            var name = input.files[0].name;
+            fileName.textContent = 'Selected file: ' + name;
+        } else {
+            fileName.textContent = '';
+        }
+    }
+    document.getElementById('file-upload').addEventListener('change', function (e) {
+        var validTypes = ['image/jpeg', 'image/png'];
+        var fileName = document.getElementById('file-name');
+        if (this.files.length > 0) {
+            var fileType = this.files[0].type;
+            if (!validTypes.includes(fileType)) {
+                alert('Only image files are allowed!');
+                this.value = '';
+                fileName.textContent = '';
+            }
+        }
+    });
+</script>

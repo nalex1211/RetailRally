@@ -1,0 +1,136 @@
+﻿@using RetailRally.ViewModels
+@model BuyProductVm
+@{
+    var totalPrice = Model.Products.Sum(product => product.Price);
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@picocss/pico@1/css/pico.min.css">
+    <title>Product Purchase Page</title>
+    <style>
+        .product-purchase-container {
+            display: grid;
+            grid-template-columns: 3fr 2fr;
+            padding: 2rem;
+            gap: 2rem;
+        }
+
+        .products-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .product-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+            .product-info img {
+                width: 300px;
+                height: 300px;
+                object-fit: cover;
+                margin-bottom: 1rem;
+                border-radius: 8px;
+            }
+
+        .purchase-form {
+            display: flex;
+            flex-direction: column;
+        }
+
+            .purchase-form input,
+            .purchase-form select,
+            .purchase-form button {
+                margin-bottom: 1rem;
+            }
+    </style>
+</head>
+<body>
+    <nav class="container-fluid">
+        <ul>
+            <li><strong>RetailRally</strong></li>
+        </ul>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Back to Product</a></li>
+            <li><a href="#" role="button">Contact</a></li>
+        </ul>
+    </nav>
+    <main class="container">
+        <div class="product-purchase-container">
+            <div class="products-container">
+                @foreach (var product in Model.Products)
+                {
+                    <div class="product-info card">
+                        <img src="@product.PictureUrl" alt="Product Image">
+                        <h3>@product.Name</h3>
+                        <p>Price: $@product.Price</p>
+                    </div>
+                }
+            </div>
+            <form asp-action="PlaceOrder" method="post" class="purchase-form">
+                <h2>Complete your purchase</h2>
+                @foreach (var product in Model.Products)
+                {
+                    <input type="hidden" name="productIds[]" value="@product.Id" />
+                }
+                <input asp-for="Order.FirstName" value="@Model.User.FirstName" type="text" id="firstname" placeholder="First Name" aria-label="First Name" required>
+                <input asp-for="Order.LastName" value="@Model.User.LastName" type="text" id="surname" placeholder="Surname" aria-label="Surname" required>
+                <input asp-for="Order.Email" value="@Model.User.Email" type="email" id="email" placeholder="Email" aria-label="Email" required>
+                <select asp-for="Order.ShippingTypeId" id="shippingTypeSelect">
+                    <option value="" disabled selected>Select a Shipping Type</option>
+                    @foreach (var shippingType in ViewBag.ShippingTypes)
+                    {
+                        <option value="@shippingType.Value">@shippingType.Text</option>
+                    }
+                </select>
+
+                <div id="addressFields" style="display: none;">
+                    <input asp-for=DeliveryAddress.Country type="text" placeholder="Country" aria-label="Country" required>
+                    <input asp-for=DeliveryAddress.City type="text" placeholder="City" aria-label="City" required>
+                    <input asp-for=DeliveryAddress.Street type="text" placeholder="Street" aria-label="Street" required>
+                    <input asp-for=DeliveryAddress.PostalCode type="text" placeholder="Postal Code" aria-label="Postal Code" required>
+                </div>
+                <select asp-for="Order.PaymentTypeId" asp-items="ViewBag.PaymentTypes">
+                    <option value="" disabled selected>Select a Payment Type</option>
+                </select>
+                <h2>Total Price: $@totalPrice</h2>
+                <button asp-action="PlaceOrder" class="btn btn-primary">Submit Purchase</button>
+            </form>
+        </div>
+    </main>
+    <footer class="container">
+        <small>
+            <a href="#">Privacy Policy</a> • <a href="#">Terms of Service</a>
+        </small>
+    </footer>
+</body>
+</html>
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var shippingTypeSelect = document.getElementById('shippingTypeSelect');
+        var addressFields = document.getElementById('addressFields');
+        var addressInputs = addressFields.querySelectorAll('input');
+
+        var shippingTypesRequiringAddress = ['1', '2'];
+
+        shippingTypeSelect.addEventListener('change', function () {
+            var selectedShippingTypeId = this.value;
+            var requiresAddress = shippingTypesRequiringAddress.includes(selectedShippingTypeId);
+
+            addressFields.style.display = requiresAddress ? "block" : "none";
+
+            addressInputs.forEach(input => {
+                input.disabled = !requiresAddress;
+            });
+        });
+    });
+
+</script>

@@ -1,0 +1,180 @@
+﻿@model List<CartItem>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@picocss/pico@1/css/pico.min.css">
+    <title>Marketplace Cart Page</title>
+    <style>
+        .grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .card {
+            flex: 1 1 calc(50% - 20px); 
+            position: relative;
+            transition: transform 0.3s ease, border 0.3s ease;
+            border: 2px solid transparent;
+            border-radius: 5px;
+        }
+
+        .card-checkbox {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 2;
+        }
+
+        .product-checkbox {
+            cursor: pointer;
+        }
+
+        .card-checkbox input[type="checkbox"]:checked + label {
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        .card:hover {
+            border: 2px solid #007bff;
+        }
+
+        .no-outline {
+            border: 2px solid transparent !important;
+        }
+
+            .no-outline:hover {
+                border: 2px solid transparent !important;
+            }
+
+        figure img {
+            width: 400px; 
+            height: 400px; 
+            object-fit: cover; 
+            border-radius: 8px;
+        }
+
+        figure {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .product-description {
+            text-align: center; 
+        }
+    </style>
+</head>
+<body>
+    <nav class="container-fluid">
+        <ul>
+            <li><strong>RetailRally</strong></li>
+        </ul>
+        <ul>
+            <li><a asp-action="AllProducts">Products</a></li>
+        </ul>
+    </nav>
+    <main class="container">
+        <div class="grid">
+            <section>
+                <hgroup>
+                    <h2>Your Cart</h2>
+                    <h3>Review & Purchase</h3>
+                </hgroup>
+                <form asp-action="RemoveSelectedFromCart" method="post">
+                    <button asp-action="GoToBuyPage" id="buySelectedButton" class="btn btn-primary" disabled>Buy selected</button>
+                    <button id="removeSelectedButton" class="btn btn-danger" disabled>Remove selected</button>
+
+                    <div class="grid">
+                        @foreach (var product in Model)
+                        {
+                            <article class="card" onclick="location.href='@Url.Action("GoToDetailsPage", new { productId = product.ProductId })';" style="cursor:pointer;">
+                                <div class="card-checkbox">
+                                    <input type="checkbox" name="selectedItems" value="@product.ProductId" class="product-checkbox" />
+                                    <label for="checkbox-@product.ProductId"></label>
+                                </div>
+                                <h3>Product Name: @product.Product.Name</h3>
+                                <p>Price: $@product.Product.Price</p>
+                                <figure>
+                                    <img src="@product.Product.PictureUrl" alt="Product Image" />
+                                    <figcaption>Product Description: @product.Product.Description</figcaption>
+                                </figure>
+                                <a asp-route-selectedItems="@product.ProductId" asp-action="GoToBuyPage" class="btn btn-primary btn-sm">Purchase</a>
+                            </article>
+                        }
+                    </div>
+                </form>
+            </section>
+        </div>
+    </main>
+    <footer class="container">
+        <small><a href="#">Privacy Policy</a> • <a href="#">Terms of Service</a></small>
+    </footer>
+</body>
+</html>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var cards = document.querySelectorAll('.card');
+        var buyButton = document.getElementById('buySelectedButton');
+        var removeButton = document.getElementById('removeSelectedButton');
+        var checkboxes = document.querySelectorAll('.product-checkbox');
+
+        function updateButtonStates() {
+            var isAnyCheckboxChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+            buyButton.disabled = !isAnyCheckboxChecked;
+            removeButton.disabled = !isAnyCheckboxChecked;
+        }
+
+        checkboxes.forEach(function (checkbox) {
+            checkbox.addEventListener('change', updateButtonStates);
+        });
+
+        updateButtonStates();
+        cards.forEach(function (card) {
+            var purchaseButton = card.querySelector('.btn-primary');
+            var cardCheckbox = card.querySelector('.card-checkbox');
+
+            card.addEventListener('click', function (e) {
+                if (!e.target.classList.contains('product-checkbox')) {
+                    var url = card.getAttribute('data-url');
+                    if (url) {
+                        window.location.href = url;
+                    } else {
+                        console.error('data-url attribute is missing on this card');
+                    }
+                }
+            });
+            if (cardCheckbox) {
+                cardCheckbox.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                });
+            }
+            if (purchaseButton) {
+                purchaseButton.addEventListener('mouseenter', function () {
+                    card.classList.add('no-outline');
+                });
+
+                purchaseButton.addEventListener('mouseleave', function () {
+                    card.classList.remove('no-outline');
+                });
+            }
+
+            if (cardCheckbox) {
+                cardCheckbox.addEventListener('mouseenter', function () {
+                    card.classList.add('no-outline');
+                });
+
+                cardCheckbox.addEventListener('mouseleave', function () {
+                    card.classList.remove('no-outline');
+                });
+            }
+        });
+    });
+
+
+</script>

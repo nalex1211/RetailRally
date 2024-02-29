@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Email Change</title>
+</head>
+<body>
+    @{
+        var messageSent = TempData["MessageSent"] as bool?;
+    }
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h3  class="text-center">Request Email Change</h3>
+                    </div>
+                    <div class="card-body">
+                        @if (messageSent == true)
+                        {
+                            <p class="alert alert-success">Please check your email to confirm the email change.</p>
+                        }
+                        else
+                        {
+                            <p class="card-text">Please enter your current email address to receive a link to change your email address.</p>
+                            <form asp-action="SendEmailChangeLink" method="post">
+                                <div class="form-group">
+                                    <label for="emailInput">Email address</label>
+                                    <input type="email" class="form-control" id="emailInput" aria-describedby="emailHelp" placeholder="Enter your email" name="email" required>
+                                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                                    <span class="text-danger">@TempData["WrongEmail"]</span>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Send Request</button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var inputs = document.querySelectorAll('input, textarea');
+            var validationSpans = document.querySelectorAll('.text-danger');
+
+            inputs.forEach(function (input) {
+                input.addEventListener('input', function () {
+                    validationSpans.forEach(function (span) {
+                        span.textContent = '';
+                    });
+                    var validationSummary = document.querySelector('.validation-summary-errors');
+                    if (validationSummary) {
+                        validationSummary.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+﻿@model Order
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@picocss/pico@1/css/pico.min.css">
+    <title>Order Summary</title>
+    <style>
+        .product-card {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            width:50%
+        }
+
+            .product-card img {
+                width: 100%;
+                height: 300px;
+                object-fit: cover;
+            }
+
+        .product-card-details {
+            padding: 15px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="container-fluid">
+        
+        <ul>
+            <li><a asp-action="AllProducts">Products</a></li>
+            <li><a asp-action="MyOrders" role="button">My orders</a></li>
+        </ul>
+    </nav>
+    <main class="container">
+        <div class="grid">
+            <section>
+                <hgroup>
+                    <h2>Order Summary</h2>
+                    <h3>Your Order Details</h3>
+                </hgroup>
+                <p>Order ID: @Model.Id</p>
+                <p>Name: @Model.FirstName @Model.LastName</p>
+                <p>Email: @Model.Email</p>
+                <p>Total Price: $@Model.TotalPrice</p>
+                <p>Shipping: @Model.ShippingType?.Name</p>
+                <p>Payment: @Model.PaymentType?.Name</p>
+                <h3>Products</h3>
+                @foreach (var op in Model.OrderProducts)
+                {
+                    <div class="product-card">
+                        <img src="@op.Product.PictureUrl" alt="Product 1 Image">
+                        <div class="product-card-details">
+                            <p>Name: @op.Product.Name - Quantity: @op.Quantity</p>
+                        </div>
+                    </div>
+                }
+            </section>
+        </div>
+    </main>
+    
+    <footer class="container">
+        <small>
+            <a href="#">Privacy Policy</a> • <a href="#">Terms of Service</a>
+        </small>
+    </footer>
+</body>
+</html>

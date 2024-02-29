@@ -1,0 +1,261 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using RetailRally.ViewModels
+@using static RetailRally.Helpers.Roles
+@inject UserManager<User> UserManager
+@model UserVm
+@{
+    var user = await UserManager.GetUserAsync(User);
+    bool emailConfirmed = user?.EmailConfirmed ?? false;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <link rel="stylesheet" href="~/css/styles.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (@Html.Raw(Json.Serialize(TempData["Message"])) === true) {
+                Swal.fire({
+                    title: 'Email change successful!',
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 1000
+                });
+            }
+
+            if (@Html.Raw(Json.Serialize(TempData["PasswordMessage"])) === true) {
+                Swal.fire({
+                    title: 'Password change successful!',
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 1000
+                });
+            }
+
+            if (@Html.Raw(Json.Serialize(TempData["VendorChange"])) === true) {
+                Swal.fire({
+                    title: 'You have became a vendor!',
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 1000
+                });
+            }
+
+            if (@Html.Raw(Json.Serialize(TempData["Success"])) === true) {
+                Swal.fire({
+                    title: 'You have confirmed your account!',
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 1000
+                });
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="profile-page" style="margin-top:30px">
+        <div class="profile-sidebar">
+            <div class="profile-picture">
+                <img src="@Model.PictureUrl" alt="Profile Picture">
+            </div>
+            <div class="user-name">
+                <h2>@Model?.FirstName @Model?.LastName</h2>
+            </div>
+            <div class="user-details">
+                <p>Username: @Model?.UserName</p>
+            </div>
+            <div class="user-details">
+                <p>Role: @Model?.Role</p>
+            </div>
+            <button class="btn btn-primary" id="changePicButton">Change Profile Picture</button>
+            <form asp-action="ChangeProfilePicture" asp-controller="User" method="post" enctype="multipart/form-data" id="picForm" style="display:none;">
+                <input class="form-control" type="file" id="profilePicture" name="profilePicture" accept="image/jpeg, image/png" />
+                <button style="margin-left:16px" type="submit">Submit</button>
+                <button style="margin-left:16px" type="button" id="cancelPicChange">Back to Profile Page</button>
+            </form>
+        </div>
+
+        <div class="profile-content">
+            <form asp-action="EditProfile" asp-controller="User" method="post" id="editForm">
+                <input type="hidden" asp-for="PictureUrl" />
+                <input type="hidden" asp-for="BirthDate" />
+                <input type="hidden" asp-for="Email" />
+                <span aclass="text-danger">@TempData["ErrorMessage"]</span>
+                <div class="info">
+                    <label>First Name:</label>
+                    <span>@Model?.FirstName</span>
+                    <input class="form-control" asp-for=FirstName type="text" name="FirstName" value="@Model.FirstName" style="display:none;" />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+                <div class="info">
+                    <label>Last Name:</label>
+                    <span>@Model?.LastName</span>
+                    <input class="form-control" asp-for=LastName type="text" name="LastName" value="@Model.LastName" style="display:none;" />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+                <div class="info">
+                    <label>Username:</label>
+                    <span>@Model?.UserName</span>
+                    <input class="form-control" asp-for=UserName type="text" name="UserName" value="@Model.UserName" style="display:none;" />
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+                @if (emailConfirmed)
+                {
+                    <div class="info">
+                        <label>Email:</label>
+                        <span id="emailSpan">@Model.Email</span>
+                        <a asp-controller="Account" asp-action="ShowEmailChangePage" style="display:none;width:30%" id="changeEmailButton" class="btn btn-primary">Change Email Address</a>
+                    </div>
+                    <a asp-controller="Account" asp-action="ShowPasswordChangePage" style="display:none;width:30%;margin-top:10px; margin-bottom:10px;margin-left:5px;" id="changePasswordButton" class="btn btn-primary">Change Password</a>
+                    @if (!User.IsInRole(Role.Vendor) && !User.IsInRole(Role.Admin))
+                    {
+                        <button asp-action="BecomeVendor" style="display:none;width:30%;margin-left:5px" id="becomeVendorButton" class="btn btn-primary">Become Vendor</button>
+                    }
+                }
+                else
+                {
+                    <div class="info">
+                        <label>Email:</label>
+                        <span id="emailSpan">@Model.Email</span>
+                        <button asp-route-email="@Model.Email" asp-controller="Account" asp-action="SendEmailConfirmationLink" style="display:none;width:30%" id="changeEmailButton" class="btn btn-primary">Confirm Email Address</button>
+                    </div>
+                }
+                <div class="info">
+                    <label>Phone Number:</label>
+                    <span>@Model?.PhoneNumber</span>
+                    <input class="form-control no-spin-buttons" asp-for=PhoneNumber type="number" name="PhoneNumber" value="@Model.PhoneNumber" style="display:none;" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="info">
+                    <label>Birthdate:</label>
+                    <span>@Model?.BirthDate.Value.ToString("dd-MM-yyyy")</span>
+                    <span asp-validation-for="BirthDate" class="text-danger"></span>
+                </div>
+                <button style="display:none;margin-top:5px" class="btn btn-primary" id="saveButton">Save Changes</button>
+                <button class="btn btn-secondary" id="backButton" style="display:none;margin-top:10px">Back to Profile</button>
+            </form>
+            @if (User.IsInRole(Role.Vendor) || User.IsInRole(Role.Admin))
+            {
+                <div class="mt-2" style="float:right" id="productControls">
+                    <button class="btn btn-primary dropdown-toggle"  id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="display:block">
+                        Product controls
+                    </button>
+                    <div class="dropdown-menu">
+                        <a asp-controller="Product" asp-action="ViewPostProductPage" class="dropdown-item">Add product</a>
+                        <a asp-controller="Product" asp-action="GoToMyProductsPage" class="dropdown-item">My products</a>
+                    </div>
+                </div>
+            }
+
+            <button style="margin-top:5px" class="btn btn-primary" id="editButton">Edit Profile</button>
+        </div>
+    </div>
+    <style>
+
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var shouldOpenEditForm = @Html.Raw(Json.Serialize(Model.IsEditFormOpen));
+            var editButton = document.getElementById('editButton');
+            var saveButton = document.getElementById('saveButton');
+            var backButton = document.getElementById('backButton');
+            var changeEmailButton = document.getElementById('changeEmailButton');
+            var changePasswordButton = document.getElementById('changePasswordButton');
+            var becomeVendorButton = document.getElementById('becomeVendorButton');
+            var emailSpan = document.getElementById('emailSpan');
+            if (shouldOpenEditForm) {
+                openEditForm();
+            }
+
+            editButton.addEventListener('click', function () {
+                openEditForm();
+            });
+
+            backButton.addEventListener('click', function () {
+                closeEditForm();
+            });
+
+            function openEditForm() {
+                toggleForm(true);
+            }
+
+            function closeEditForm() {
+                toggleForm(false);
+            }
+
+            function toggleForm(isEditMode) {
+                var infoElements = document.querySelectorAll('.info');
+                var productControlsDiv = document.getElementById('productControls');
+
+                infoElements.forEach(function (info) {
+                    var span = info.querySelector('span');
+                    var input = info.querySelector('input');
+                    if (span && input) {
+                        span.style.display = isEditMode ? 'none' : 'inline';
+                        input.style.display = isEditMode ? 'inline' : 'none';
+                    }
+                });
+
+                if (productControlsDiv) {
+                    productControlsDiv.style.display = isEditMode ? 'none' : 'block';
+                }
+
+                if (emailSpan) {
+                    emailSpan.style.display = isEditMode ? 'none' : 'inline';
+                }
+                editButton.style.display = isEditMode ? 'none' : 'block';
+                saveButton.style.display = isEditMode ? 'block' : 'none';
+                backButton.style.display = isEditMode ? 'block' : 'none';
+                changeEmailButton.style.display = isEditMode ? 'block' : 'none';
+                changePasswordButton.style.display = isEditMode ? 'block' : 'none';
+                becomeVendorButton.style.display = isEditMode ? 'block' : 'none';
+            }
+
+        });
+
+        document.getElementById('changePicButton').addEventListener('click', function () {
+            document.getElementById('picForm').style.display = 'block';
+            this.style.display = 'none';
+        });
+
+        document.getElementById('cancelPicChange').addEventListener('click', function () {
+            document.getElementById('picForm').style.display = 'none';
+            document.getElementById('changePicButton').style.display = 'inline-block';
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var inputs = document.querySelectorAll('input, textarea');
+            var validationSpans = document.querySelectorAll('.text-danger');
+
+            inputs.forEach(function (input) {
+                input.addEventListener('input', function () {
+                    validationSpans.forEach(function (span) {
+                        span.textContent = '';
+                    });
+                    var validationSummary = document.querySelector('.validation-summary-errors');
+                    if (validationSummary) {
+                        validationSummary.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        document.getElementById('profilePicture').addEventListener('change', function (e) {
+            var validTypes = ['image/jpeg', 'image/png'];
+            if (this.files.length > 0) {
+                var fileType = this.files[0].type;
+                if (!validTypes.includes(fileType)) {
+                    alert('Only image files are allowed!');
+                    this.value = '';
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>

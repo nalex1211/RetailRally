@@ -1,0 +1,203 @@
+﻿@using RetailRally.ViewModels
+@model MainPageVm
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+@{
+    var cartItems = ViewBag.CartItems as List<CartItem>;
+}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        if (@Html.Raw(Json.Serialize(TempData["ShowRegisterSuccess"])) === true) {
+            Swal.fire({
+                title: 'Registration successful!',
+                icon: 'success',
+                showConfirmButton: false,
+                timer: 1000
+            });
+        }
+
+        if (@Html.Raw(Json.Serialize(TempData["ShowLoginSuccess"])) === true) {
+            Swal.fire({
+                title: 'Login successful!',
+                icon: 'success',
+                showConfirmButton: false,
+                timer: 1000
+            });
+        }
+
+        if (@Html.Raw(Json.Serialize(TempData["ShowLogoutSuccess"])) === true) {
+            Swal.fire({
+                title: 'You have logged out!',
+                icon: 'success',
+                showConfirmButton: false,
+                timer: 1000
+            });
+        }
+    });
+</script>
+
+<div class="container mt-4">
+    <a asp-controller="Chat" asp-action="Index">Chat</a>
+    <strong><h3 style="margin-bottom:10px">Categories</h3></strong>
+    <div class="d-flex flex-column flex-md-row">
+        <div class="categories flex-shrink-0">
+            <ul>
+                <li>
+                    <b><a asp-action="AllProducts">All products</a></b>
+                </li>
+                @foreach (var category in Model.Categories)
+                {
+                    <li>
+                        <a asp-route-categoryId="@category.Id" asp-action="DisplayCategoryProducts">
+                            @category.Name
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+        <div class="products-flex-grow-1 w-100">
+            <div class="row">
+                @foreach (var product in Model.Products)
+                {
+                    var isInCart = cartItems?.Any(ci => ci.ProductId == product.Id) == true;
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 clickable-card" data-url="@Url.Action("GoToDetailsPage", new { productId = product.Id })">
+                            <div class="card-img-container d-flex justify-content-center">
+                                <img class="card-img-top my-image" src="@product.PictureUrl" alt="Product Image">
+                            </div>
+
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">@product.Name</h5>
+                                <h5 class="card-title">@product.Category.Name</h5>
+                                <p class="card-text">$@product.Price.ToString("0.00")</p>
+                                <div class="mt-auto d-flex justify-content-between">
+                                    <a asp-route-selectedItems="@product.Id" asp-action="GoToBuyPage" class="btn btn-primary btn-sm">Purchase</a>
+                                    <form asp-action="AddToCart" method="post">
+                                        <input type="hidden" name="productId" value="@product.Id" />
+                                        <button class="btn btn-success btn-sm btn-add-to-cart" @(isInCart ? "disabled" : "")>
+                                            <i class="fas fa-shopping-cart"></i> Add to Cart
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var cards = document.querySelectorAll('.clickable-card');
+
+        cards.forEach(function (card) {
+            card.addEventListener('click', function () {
+                window.location.href = this.getAttribute('data-url');
+            });
+
+            var purchaseButton = card.querySelector('.btn-primary');
+            var cartButton = card.querySelector('.btn-success')
+
+            cartButton.addEventListener('mouseenter', function () {
+                card.classList.add('no-outline');
+            });
+
+            cartButton.addEventListener('mouseleave', function () {
+                card.classList.remove('no-outline');
+            });
+
+            purchaseButton.addEventListener('mouseenter', function () {
+                card.classList.add('no-outline');
+            });
+
+            purchaseButton.addEventListener('mouseleave', function () {
+                card.classList.remove('no-outline');
+            });
+        });
+    });
+</script>
+
+<style>
+    .my-image {
+        width: 300px;
+        height: 300px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin: auto;
+    }
+
+    .clickable-card {
+        cursor: pointer;
+        transition: transform 0.3s ease, border 0.3s ease;
+        border: 2px solid transparent;
+        border-radius: 5px;
+    }
+
+        .clickable-card:hover {
+            border: 2px solid #007bff;
+        }
+
+    .no-outline:hover {
+        border: 2px solid transparent;
+        transform: none;
+    }
+
+    .btn-add-to-cart {
+        margin-right: 10px;
+    }
+
+    .card-img-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        width: 100%;
+        height: 300px;
+    }
+
+    .d-flex {
+        display: flex;
+    }
+
+    .flex-column {
+        flex-direction: column;
+    }
+
+    .flex-md-row {
+        flex-direction: row;
+    }
+
+
+    .categories {
+        background-color: #2E2E2E;
+        padding: 20px;
+        margin-right: 20px;
+        box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);
+        height: auto;
+        min-height: 100%;
+    }
+
+
+    .products-flex-grow-1 {
+        flex-grow: 1;
+    }
+
+
+    .categories h3 {
+        color: #fff;
+    }
+
+    .categories ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow-y: auto;
+    }
+</style>
+

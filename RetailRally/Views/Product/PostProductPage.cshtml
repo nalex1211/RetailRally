@@ -1,0 +1,144 @@
+﻿@model Product
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@picocss/pico@1/css/pico.min.css">
+    <title>Product Post Page</title>
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .product-edit {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            width: 150%;
+            background-color: #383838;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .product-image {
+            width: 300px;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            display: block;
+            margin: auto;
+        }
+
+        .product-details {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        input, textarea, select, button {
+            margin-bottom: 1rem;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .grid {
+            display: grid;
+            width: 150%;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .preview {
+            border: 1px solid #ccc;
+            padding: 1rem;
+        }
+
+    </style>
+</head>
+<body>
+    <nav class="container-fluid">
+        <ul>
+            <li><strong>Product Dashboard</strong></li>
+        </ul>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Products</a></li>
+            <li><a href="#" role="button">Logout</a></li>
+        </ul>
+    </nav>
+    <main class="container">
+        <div class="grid">
+            <section>
+                <h2>Post Your Product</h2>
+                <form asp-action="PostProduct" method="post" id="productForm" enctype="multipart/form-data">
+                    <label for="productName">Product Name:</label>
+                    <input asp-for="Name" type="text" id="productName" oninput="updatePreview()">
+
+                    <label for="description">Description:</label>
+                    <textarea asp-for="Description" id="description" oninput="updatePreview()"></textarea>
+
+                    <label for="price">Price:</label>
+                    <input asp-for="Price" class="no-spin-buttons" type="number" id="price" oninput="updatePreview()">
+
+                    <label for="category">Category:</label>
+                    <select id="category" onchange="updatePreview()" asp-for="CategoryId" asp-items="ViewBag.Categories">
+                        <option value="" disabled selected>Select a category</option>
+                    </select>
+                    <label for="imageInput">Product Image:</label>
+                    <input type="file" id="imageInput" name="imageFile" oninput="updatePreview()" accept="image/jpeg, image/png">
+
+                    <button>Post a Product</button>
+                </form>
+            </section>
+            <section class="preview" id="preview">
+                <h2>Product Preview</h2>
+                <img class="product-image" id="previewImage" src="" alt="Product Image" style="display: none;">
+                <p><strong>Name:</strong> <span id="previewName">Product Name</span></p>
+                <p><strong>Description:</strong> <span id="previewDescription">Description</span></p>
+                <p><strong>Price:</strong> $<span id="previewPrice">0</span></p>
+                <p><strong>Category:</strong> <span id="previewCategory">Category</span></p>
+            </section>
+        </div>
+    </main>
+    <script>
+        function updatePreview() {
+            document.getElementById('previewName').textContent = document.getElementById('productName').value;
+            document.getElementById('previewDescription').textContent = document.getElementById('description').value;
+            document.getElementById('previewPrice').textContent = document.getElementById('price').value;
+            var categorySelect = document.getElementById('category');
+            var selectedCategoryText = categorySelect.options[categorySelect.selectedIndex].text;
+            document.getElementById('previewCategory').textContent = selectedCategoryText;
+            document.getElementById('imageInput').addEventListener('change', function (e) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('previewImage').src = e.target.result;
+                    document.getElementById('previewImage').style.display = 'block';
+                };
+                reader.readAsDataURL(this.files[0]);
+            });
+
+        }
+
+
+        document.getElementById('imageInput').addEventListener('change', function (e) {
+            var validTypes = ['image/jpeg', 'image/png'];
+            if (this.files.length > 0) {
+                var fileType = this.files[0].type;
+                if (!validTypes.includes(fileType)) {
+                    alert('Only image files are allowed!');
+                    this.value = '';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
