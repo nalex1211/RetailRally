@@ -76,7 +76,8 @@ public class AccountRepository(HubContextClass _db,
         {
             return false;
         }
-
+        user.EmailConfirmed = false;
+        await _userManager.UpdateAsync(user);
         await _signInManager.RefreshSignInAsync(user);
         return true;
     }

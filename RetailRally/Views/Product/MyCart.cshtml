@@ -1,129 +1,120 @@
 ﻿@model List<CartItem>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@picocss/pico@1/css/pico.min.css">
-    <title>Marketplace Cart Page</title>
-    <style>
-        .grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .card {
-            flex: 1 1 calc(50% - 20px); 
-            position: relative;
-            transition: transform 0.3s ease, border 0.3s ease;
-            border: 2px solid transparent;
-            border-radius: 5px;
-        }
-
-        .card-checkbox {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 2;
-        }
-
-        .product-checkbox {
-            cursor: pointer;
-        }
-
-        .card-checkbox input[type="checkbox"]:checked + label {
-            background-size: contain;
-            background-repeat: no-repeat;
-        }
-
-        .card:hover {
-            border: 2px solid #007bff;
-        }
-
-        .no-outline {
-            border: 2px solid transparent !important;
-        }
-
-            .no-outline:hover {
-                border: 2px solid transparent !important;
-            }
-
-        figure img {
-            width: 400px; 
-            height: 400px; 
-            object-fit: cover; 
-            border-radius: 8px;
-        }
-
-        figure {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-
-        .product-description {
-            text-align: center; 
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Cart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
-<body>
-    <nav class="container-fluid">
-        <ul>
-            <li><strong>RetailRally</strong></li>
-        </ul>
-        <ul>
-            <li><a asp-action="AllProducts">Products</a></li>
-        </ul>
-    </nav>
-    <main class="container">
-        <div class="grid">
-            <section>
-                <hgroup>
-                    <h2>Your Cart</h2>
-                    <h3>Review & Purchase</h3>
-                </hgroup>
-                <form asp-action="RemoveSelectedFromCart" method="post">
-                    <button asp-action="GoToBuyPage" id="buySelectedButton" class="btn btn-primary" disabled>Buy selected</button>
-                    <button id="removeSelectedButton" class="btn btn-danger" disabled>Remove selected</button>
 
-                    <div class="grid">
-                        @foreach (var product in Model)
-                        {
-                            <article class="card" onclick="location.href='@Url.Action("GoToDetailsPage", new { productId = product.ProductId })';" style="cursor:pointer;">
-                                <div class="card-checkbox">
-                                    <input type="checkbox" name="selectedItems" value="@product.ProductId" class="product-checkbox" />
-                                    <label for="checkbox-@product.ProductId"></label>
-                                </div>
-                                <h3>Product Name: @product.Product.Name</h3>
-                                <p>Price: $@product.Product.Price</p>
-                                <figure>
-                                    <img src="@product.Product.PictureUrl" alt="Product Image" />
-                                    <figcaption>Product Description: @product.Product.Description</figcaption>
-                                </figure>
-                                <a asp-route-selectedItems="@product.ProductId" asp-action="GoToBuyPage" class="btn btn-primary btn-sm">Purchase</a>
-                            </article>
-                        }
+<body class="bg-gray-900 text-white">
+    <form asp-action="RemoveSelectedFromCart" method="post">
+        <div class="container mx-auto mt-10">
+            <div class="flex flex-col md:flex-row md:items-start shadow-md my-10">
+                <div class="w-full md:w-3/4 bg-gray-800 md:mr-2">
+                    <div class="flex justify-between items-center border-b border-gray-600 p-4">
+                        <p class="text-xl font-semibold">Shopping Cart</p>
+                        <p class="text-xl">3 Items</p>
                     </div>
-                </form>
-            </section>
+                    <div class="flex mt-6 pb-5 border-b border-gray-600">
+                        <p class="text-xs font-semibold uppercase w-2/5 pl-4">Product Details</p>
+                        <p class="text-xs font-semibold uppercase w-1/5 text-center">Price</p>
+                    </div>
+                    @foreach (var product in Model)
+                    {
+                        <article onclick="location.href='@Url.Action("GoToDetailsPage", new { productId = product.ProductId })';" style="cursor:pointer;">
+                            <div class="flex items-center hover:bg-gray-700 px-4 py-4">
+                                <div class="w-2/5 flex items-center">
+                                    <img class="h-24" src="@product.Product.PictureUrl" alt="@product.Product.Name">
+                                    <div class="flex flex-col ml-4">
+                                        <span class="text-sm font-bold">@product.Product.Name</span>
+                                        <span class="text-xs text-gray-400">@product.Product.User.UserName</span>
+                                        <button asp-route-productId="@product.Product.Id" asp-action="RemoveProductFromCart" class="text-xs text-blue-500 mt-2">Remove</button>
+                                    </div>
+                                </div>
+                                <div class="w-1/5 text-center">
+                                    <span>€@product.Product.Price</span>
+                                </div>
+                                <div class="w-1/5 text-center">
+                                    <input type="checkbox" name="selectedItems" value="@product.ProductId" class="product-checkbox"
+                                           data-product-name="@product.Product.Name"
+                                           data-product-price="@product.Product.Price"
+                                           data-product-image="@product.Product.PictureUrl">
+                                </div>
+                            </div>
+                        </article>
+                    }
+                    <div class="flex justify-between items-center border-t border-gray-600 p-4">
+                        <a asp-action="AllProduct" class="text-blue-500 text-sm">Continue Shopping</a>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/4 bg-gray-800 mt-6 md:mt-0 p-4">
+                    <h2 class="text-xl font-semibold mb-2">Order Summary</h2>
+                    <div id="orderSummaryItems" class="order-summary-items">
+                    </div>
+                    <div class="flex justify-between mb-4">
+                        <span class="text-sm font-semibold uppercase">Total</span>
+                        <span class="text-sm font-semibold" id="orderSummaryTotal">€0</span>
+                    </div>
+                    <button asp-action="GoToBuyPage" id="buySelectedButton" class="bg-blue-500 text-white py-2 px-4 rounded disabled:opacity-50" disabled>Checkout</button>
+                    <button id="removeSelectedButton" class="bg-red-500 text-white py-2 px-4 rounded disabled:opacity-50" disabled>Remove selected</button>
+                </div>
+            </div>
         </div>
-    </main>
-    <footer class="container">
-        <small><a href="#">Privacy Policy</a> • <a href="#">Terms of Service</a></small>
-    </footer>
+    </form>
 </body>
-</html>
 
+
+</html>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        var cards = document.querySelectorAll('.card');
         var buyButton = document.getElementById('buySelectedButton');
         var removeButton = document.getElementById('removeSelectedButton');
         var checkboxes = document.querySelectorAll('.product-checkbox');
+        var orderSummaryItems = document.getElementById('orderSummaryItems');
+        var orderSummaryTotal = document.getElementById('orderSummaryTotal');
 
+        function updateOrderSummary() {
+            orderSummaryItems.innerHTML = '';
+            var totalCost = 0;
+
+            checkboxes.forEach(function (checkbox) {
+                if (checkbox.checked) {
+                    var productName = checkbox.dataset.productName;
+                    var productPrice = parseFloat(checkbox.dataset.productPrice);
+                    var productImage = checkbox.dataset.productImage;
+                    totalCost += productPrice;
+
+                    var itemElement = document.createElement('div');
+                    itemElement.className = 'order-summary-item flex items-center mb-2';
+
+                    var imageElement = document.createElement('img');
+                    imageElement.src = productImage;
+                    imageElement.alt = productName;
+                    imageElement.className = 'h-8 w-8 mr-2';
+
+                    var nameElement = document.createElement('span');
+                    nameElement.textContent = productName;
+                    nameElement.className = 'text-sm font-bold';
+
+                    var priceElement = document.createElement('span');
+                    priceElement.textContent = '€' + productPrice.toFixed(2);
+                    priceElement.className = 'text-sm ml-2';
+
+                    itemElement.appendChild(imageElement);
+                    itemElement.appendChild(nameElement);
+                    itemElement.appendChild(priceElement);
+
+                    orderSummaryItems.appendChild(itemElement);
+                }
+            });
+
+            orderSummaryTotal.textContent = '€' + totalCost.toFixed(2);
+        }
         function updateButtonStates() {
             var isAnyCheckboxChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
             buyButton.disabled = !isAnyCheckboxChecked;
@@ -131,50 +122,17 @@
         }
 
         checkboxes.forEach(function (checkbox) {
-            checkbox.addEventListener('change', updateButtonStates);
+            checkbox.addEventListener('change', function () {
+                updateButtonStates();
+                updateOrderSummary();
+            });
+
+            checkbox.addEventListener('click', function (e) {
+                e.stopPropagation();
+            });
         });
 
         updateButtonStates();
-        cards.forEach(function (card) {
-            var purchaseButton = card.querySelector('.btn-primary');
-            var cardCheckbox = card.querySelector('.card-checkbox');
-
-            card.addEventListener('click', function (e) {
-                if (!e.target.classList.contains('product-checkbox')) {
-                    var url = card.getAttribute('data-url');
-                    if (url) {
-                        window.location.href = url;
-                    } else {
-                        console.error('data-url attribute is missing on this card');
-                    }
-                }
-            });
-            if (cardCheckbox) {
-                cardCheckbox.addEventListener('click', function (e) {
-                    e.stopPropagation();
-                });
-            }
-            if (purchaseButton) {
-                purchaseButton.addEventListener('mouseenter', function () {
-                    card.classList.add('no-outline');
-                });
-
-                purchaseButton.addEventListener('mouseleave', function () {
-                    card.classList.remove('no-outline');
-                });
-            }
-
-            if (cardCheckbox) {
-                cardCheckbox.addEventListener('mouseenter', function () {
-                    card.classList.add('no-outline');
-                });
-
-                cardCheckbox.addEventListener('mouseleave', function () {
-                    card.classList.remove('no-outline');
-                });
-            }
-        });
+        updateOrderSummary();
     });
-
-
 </script>

@@ -98,19 +98,16 @@ public class AccountController(IAccountRepository _repository, SignInManager<Use
 
         if (userResponse.Succeeded)
         {
-            // If the registration is successful, you might want to log the user in directly
-            // and return a success status or redirect to a confirmation page.
             return Json(new { success = true });
         }
         else
         {
-            // If there's an error during user creation that's not related to model validation,
-            // you should handle it here. For example:
             return Json(new { success = false, message = "An error occurred while creating your account." });
         }
     }
 
     
+
     [HttpPost]
     [AllowAnonymous]
     public IActionResult ExternalLogin(string provider, string returnUrl = null)
@@ -119,7 +116,6 @@ public class AccountController(IAccountRepository _repository, SignInManager<Use
         var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
         return Challenge(properties, provider);
     }
-
 
     public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
     {
@@ -223,7 +219,15 @@ public class AccountController(IAccountRepository _repository, SignInManager<Use
         TempData["MessageSent"] = true;
         return View("EmailUpdatePage");
     }
-
+    public async Task<IActionResult> ConfirmEmail(string userId)
+    {
+        if (await _repository.ConfirmEmailAsync(userId))
+        {
+            TempData["Success"] = true;
+            return RedirectToAction("MyProfile", "User");
+        }
+        return NotFound();
+    }
     [HttpPost]
     public async Task<IActionResult> ConfirmNewEmail(NewEmailVm model)
     {
@@ -313,7 +317,7 @@ public class AccountController(IAccountRepository _repository, SignInManager<Use
         if (await _repository.ConfirmNewPasswordAsync(model))
         {
             TempData["PasswordMessage"] = true;
-            return RedirectToAction("Login");
+            return RedirectToAction("AllProducts", "Product");
         }
         return View("NewPasswordPage", model);
     }
@@ -321,16 +325,9 @@ public class AccountController(IAccountRepository _repository, SignInManager<Use
     public async Task<IActionResult> SendEmailConfirmationLink(string email)
     {
         await _repository.SendEmailConfirmationLinkAsync(email);
+        TempData["MessageSent"] = true;
         return RedirectToAction("MyProfile", "User");
     }
 
-    public async Task<IActionResult> ConfirmEmail(string userId)
-    {
-        if (await _repository.ConfirmEmailAsync(userId))
-        {
-            TempData["Success"] = true;
-            return RedirectToAction("MyProfile", "User");
-        }
-        return NotFound();
-    }
+   
 }

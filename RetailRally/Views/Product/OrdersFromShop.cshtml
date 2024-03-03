@@ -1,0 +1,191 @@
+﻿@model List<Order>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pico.css/dist/pico.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@picocss/pico@1/css/pico.min.css">
+    <title>Orders from my shop</title>
+    <style>
+        .order-summary {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            font-size: 20px;
+        }
+
+            .order-summary.no-outline {
+                box-shadow: none !important;
+            }
+
+            .order-summary:hover {
+                box-shadow: 0 0 10px #007bff;
+                cursor: pointer
+            }
+
+        .details {
+            display: none;
+            padding-top: 10px;
+        }
+
+        nav.container-fluid {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: #222222;
+        }
+
+            nav.container-fluid ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                display: flex;
+                gap: 1rem;
+            }
+
+        .link-style {
+            color: lawngreen;
+            text-decoration: none;
+            border-bottom: 1px solid lawngreen;
+        }
+
+            .link-style:hover {
+                color: green;
+                border-color: green;
+            }
+
+        nav.container-fluid ul li a {
+            text-decoration: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+            nav.container-fluid ul li a:hover,
+            nav.container-fluid ul li a:focus {
+                background-color: #007bff;
+                color: white;
+                border-radius: 0.25rem;
+            }
+
+            nav.container-fluid ul li a[role="button"] {
+                background-color: #007bff;
+                border-radius: 0.25rem;
+            }
+
+       
+
+    </style>
+</head>
+<body>
+    <nav class="container-fluid">
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#" role="button">Contact</a></li>
+        </ul>
+    </nav>
+    <main class="container" >
+        <h1>Orders from my shop</h1>
+        @foreach (var order in Model)
+        {
+            <form asp-action="EditOrderStatus" method="post">
+                <div class="order-summary" id="order-summary-@order.Id">
+                    <p>Order ID: @order.Id</p>
+                    <p>Total Price: $@order.TotalPrice</p>
+                    <div id="details-@order.Id" class="details">
+                        <p>Shipping: @order.ShippingType.Name</p>
+                        <p>Payment: @order.PaymentType.Name</p>
+                        <p>Customer info: @order.User.FirstName @order.User.LastName</p>
+                        <p>Status:</p>
+                        <select name="newStatus">
+                            <option value="" disabled selected>@order.Status.ToString()</option>
+                            @foreach (var status in ViewBag.OrderStatuses)
+                            {
+                                <option value="@status.Value">@status.Text</option>
+                            }
+                        </select>
+                        <p>Products:</p>
+                        @if (order.Products.Count == 0)
+                        {
+                            <p>Sorry, but youre products have been deleted(((</p>
+                        }
+                        <ul style="margin-bottom:15px">
+                            @foreach (var op in order.OrderProducts)
+                            {
+                                <li>
+                                    <a class="link-style" asp-controller="Product" asp-action="GoToDetailsPage" asp-route-productId="@op.Product.Id">
+                                        @op.Product.Name
+                                    </a> - @op.Product.Category.Name - Quantity: @op.Quantity
+                                </li>
+                            }
+                        </ul>
+                        @if (order.DeliveryAddress != null)
+                        {
+                            <p>Delivery Address</p>
+                            <ul>
+                                <li>@order.DeliveryAddress.Country</li>
+                                <li>@order.DeliveryAddress.City</li>
+                                <li>@order.DeliveryAddress.Street</li>
+                            </ul>
+                        }
+                        <input type="hidden" name="orderId" value="@order.Id" />
+                        <button class="btn btn-primary">Edit</button>
+                    </div>
+                </div>
+            </form>
+        }
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.order-summary').forEach(function (summary) {
+                summary.addEventListener('click', function () {
+                    const detailsId = this.getAttribute('id').replace('order-summary-', 'details-');
+                    const details = document.getElementById(detailsId);
+                    details.style.display = details.style.display === 'block' ? 'none' : 'block';
+                });
+
+                summary.querySelectorAll('a').forEach(function (link) {
+                    link.addEventListener('mouseenter', function (e) {
+                        summary.classList.add('no-outline');
+                    });
+                    link.addEventListener('mouseleave', function (e) {
+                        summary.classList.remove('no-outline');
+                    });
+                    link.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                    });
+                });
+                summary.querySelectorAll('select').forEach(function (link) {
+                    link.addEventListener('mouseenter', function (e) {
+                        summary.classList.add('no-outline');
+                    });
+                    link.addEventListener('mouseleave', function (e) {
+                        summary.classList.remove('no-outline');
+                    });
+                    link.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                    });
+                });
+                summary.querySelectorAll('button').forEach(function (link) {
+                    link.addEventListener('mouseenter', function (e) {
+                        summary.classList.add('no-outline');
+                    });
+                    link.addEventListener('mouseleave', function (e) {
+                        summary.classList.remove('no-outline');
+                    });
+                    link.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

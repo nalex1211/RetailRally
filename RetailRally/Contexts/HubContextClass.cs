@@ -31,6 +31,12 @@ public class HubContextClass : IdentityDbContext<User>
             .WithMany(c => c.Items)
             .HasForeignKey(ci => ci.CartId);
 
+        modelBuilder.Entity<Product>()
+            .HasMany(p => p.Comments)
+            .WithOne(c => c.Product)
+            .HasForeignKey(c => c.ProductId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         modelBuilder.Entity<CartItem>()
             .HasOne(ci => ci.Product)
             .WithMany()

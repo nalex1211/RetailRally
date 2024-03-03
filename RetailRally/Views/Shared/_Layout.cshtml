@@ -360,18 +360,16 @@
                     url: form.attr('action'),
                     data: form.serialize(),
                     success: function (response) {
+                        form.find('.text-danger').empty(); 
+
                         if (response.success) {
                             $('#registerModal').modal('hide');
                             location.reload();
                         } else {
-                            $('.text-danger').empty();
-
                             if (response.errors) {
                                 Object.keys(response.errors).forEach(function (key) {
                                     var errorMessage = response.errors[key].join(', ');
-                                    console.log(errorMessage)
-                                    console.log(key)
-                                    $('span[data-valmsg-for="' + key + '"]').text(errorMessage);
+                                    form.find('span[data-valmsg-for="' + key + '"]').text(errorMessage);
                                 });
                             }
                         }
@@ -382,6 +380,7 @@
                 });
             });
         });
+
 
 
         $(document).ready(function () {
@@ -393,21 +392,19 @@
                     url: form.attr('action'),
                     data: form.serialize(),
                     success: function (response) {
+                        form.find('.text-danger').empty(); 
+
                         if (response.success) {
                             $('#loginModal').modal('hide');
                             location.reload();
                         } else {
-                            $('.text-danger').empty();
-
                             if (response.errors) {
                                 Object.keys(response.errors).forEach(function (key) {
                                     var errorMessage = response.errors[key].join(', ');
-                                    console.log(errorMessage)
-                                    console.log(key)
-                                    $('span[data-valmsg-for="' + key + '"]').text(errorMessage);
+                                    form.find('span[data-valmsg-for="' + key + '"]').text(errorMessage); 
                                 });
                             } else if (response.message) {
-                                $('#generalLoginError').text(response.message);
+                                form.find('#generalLoginError').text(response.message);
                             }
                         }
                     },
@@ -417,6 +414,7 @@
                 });
             });
         });
+
         function openNav() {
             document.getElementById("sidebar").style.width = "250px";
             document.getElementById("overlay").style.display = "block";

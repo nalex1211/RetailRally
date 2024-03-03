@@ -1,4 +1,6 @@
-﻿namespace RetailRally.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace RetailRally.Models;
 
 public class Comment
 {

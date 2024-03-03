@@ -82,19 +82,21 @@
                 <form asp-action="PostProduct" method="post" id="productForm" enctype="multipart/form-data">
                     <label for="productName">Product Name:</label>
                     <input asp-for="Name" type="text" id="productName" oninput="updatePreview()">
-
+                    <span asp-validation-for="Name" class="text-danger"></span>
                     <label for="description">Description:</label>
                     <textarea asp-for="Description" id="description" oninput="updatePreview()"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
 
                     <label for="price">Price:</label>
-                    <input asp-for="Price" class="no-spin-buttons" type="number" id="price" oninput="updatePreview()">
+                    <input asp-for="Price" class="no-spin-buttons" type="number" step="0.01" id="price" oninput="updatePreview()">
+                    <span asp-validation-for="Price" class="text-danger"></span>
 
                     <label for="category">Category:</label>
-                    <select id="category" onchange="updatePreview()" asp-for="CategoryId" asp-items="ViewBag.Categories">
+                    <select id="category" onchange="updatePreview()" asp-for="CategoryId" asp-items="ViewBag.Categories" required>
                         <option value="" disabled selected>Select a category</option>
                     </select>
                     <label for="imageInput">Product Image:</label>
-                    <input type="file" id="imageInput" name="imageFile" oninput="updatePreview()" accept="image/jpeg, image/png">
+                    <input type="file" id="imageInput" name="imageFile" oninput="updatePreview()" accept="image/jpeg, image/png" required>
 
                     <button>Post a Product</button>
                 </form>

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
 using RetailRally.Contexts;
 using RetailRally.Helpers;
@@ -12,6 +13,31 @@ namespace RetailRally.Controllers;
 public class ProductController(IProductRepository _repository, IHttpContextAccessor _httpContextAccessor,
     HubContextClass _context) : Controller
 {
+    public async Task<IActionResult> FilterBy(string filterName)
+    {
+        var products = new List<Product>();
+
+        switch (filterName)
+        {
+            case "Name":
+            products = await _context.Products.OrderBy(p => p.Name).ToListAsync();
+            break;
+            case "Price":
+            products = await _context.Products.OrderBy(p => p.Price).ToListAsync();
+            break;
+            default:
+            break;
+        }
+        var categories = await _repository.GetAllCategoriesAsync();
+        var model = new MainPageVm()
+        {
+            Products = products,
+            Categories = categories
+        };
+        return View("MainPage", model);
+    }
+
+
     public async Task<IActionResult> AllProducts()
     {
         var userId = User.GetUserId();
@@ -200,7 +226,7 @@ public class ProductController(IProductRepository _repository, IHttpContextAcces
 
     public async Task<IActionResult> GoToMyCartPage()
     {
-        var userId = _httpContextAccessor.HttpContext.User.GetUserId();
+        var userId = User.GetUserId();
         if (string.IsNullOrEmpty(userId))
         {
             return View("_LoginPartial");
@@ -212,9 +238,31 @@ public class ProductController(IProductRepository _repository, IHttpContextAcces
     }
 
     [HttpPost]
+    public async Task<IActionResult> RemoveProductFromCart(int productId)
+    {
+        var userId = User.GetUserId();
+
+        if (productId == null)
+        {
+            return RedirectToAction(nameof(GoToMyCartPage));
+        }
+        var cart = await _repository.GetCartByUserIdAsync(userId);
+        if (cart != null)
+        {
+            var itemToRemove = cart.Items.FirstOrDefault(item => item.ProductId == productId);
+            if (itemToRemove != null)
+            {
+                await _repository.RemoveCartItem(itemToRemove);
+            }
+        }
+        await _repository.SaveChangesAsync();
+        return RedirectToAction(nameof(GoToMyCartPage));
+    }
+
+    [HttpPost]
     public async Task<IActionResult> RemoveSelectedFromCart(int[] selectedItems)
     {
-        var userId = _httpContextAccessor.HttpContext.User.GetUserId();
+        var userId = User.GetUserId();
 
         if (selectedItems == null || selectedItems.Length == 0)
         {
@@ -278,7 +326,7 @@ public class ProductController(IProductRepository _repository, IHttpContextAcces
                 ModelState.AddModelError("", "There was a problem saving the delivery address.");
                 return View(model);
             }
-            return View("_LoginPartial");
+            return RedirectToAction("OrderSummary", new { orderId = createdOrder.Id });
         }
 
         return RedirectToAction("OrderSummary", new { orderId = createdOrder.Id });
@@ -309,4 +357,39 @@ public class ProductController(IProductRepository _repository, IHttpContextAcces
         return View("MyOrdersPage", orders);
     }
 
+    public async Task<IActionResult> GoToOrdersFromMyShopPage()
+    {
+        var userId = User.GetUserId();
+        var orders = await _repository.GetOrdersFromMyShopAsync(userId);
+        ViewBag.OrderStatuses = Enum.GetValues(typeof(Status))
+                                .Cast<Status>()
+                                .Select(s => new SelectListItem
+                                {
+                                    Text = s.ToString(),
+                                    Value = ((int)s).ToString()
+                                })
+                                .ToList();
+        return View("OrdersFromShop", orders);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> EditOrderStatus(int orderId, string newStatus)
+    {
+        if (!Enum.TryParse(newStatus, out Status status))
+        {
+            return BadRequest("Invalid status.");
+        }
+
+        var order = await _context.Orders.FindAsync(orderId);
+        if (order == null)
+        {
+            return NotFound($"Order with ID {orderId} not found.");
+        }
+
+        order.Status = status;
+        _context.Orders.Update(order);
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction(nameof(GoToOrdersFromMyShopPage));
+    }
 }

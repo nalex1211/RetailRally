@@ -50,6 +50,7 @@ public class ProductRepository(HubContextClass _db, IConfiguration _configuratio
         return await _db.CartItems
             .Where(ci => ci.Cart.UserId == userId)
             .Include(ci => ci.Product)
+            .ThenInclude(p => p.User)
             .ToListAsync();
     }
 
@@ -162,19 +163,6 @@ public class ProductRepository(HubContextClass _db, IConfiguration _configuratio
         await _db.CartItems.AddAsync(cartItem);
     }
 
-    public async Task<List<Order>> GetAllUserOrdersAsync(string userId)
-    {
-        return await _db.Orders
-            .Where(o => o.UserId == userId)
-            .Include(o => o.OrderProducts)
-                .ThenInclude(op => op.Product)
-                .ThenInclude(p => p.Category)
-            .Include(op => op.DeliveryAddress)
-            .Include(o => o.ShippingType)
-            .Include(o => o.PaymentType)
-            .ToListAsync();
-    }
-
     public async Task<Order> GetOrderSummaryAsync(int orderId)
     {
         return await _db.Orders
@@ -219,6 +207,12 @@ public class ProductRepository(HubContextClass _db, IConfiguration _configuratio
                                      .ToListAsync();
 
             _db.CartItems.RemoveRange(cartProducts);
+            var comments = await _db.Comments.Where(c => c.ProductId == productId).ToListAsync();
+            if (comments != null)
+            {
+                _db.Comments.RemoveRange(comments);
+                await _db.SaveChangesAsync();
+            }
             var product = await _db.Products.FindAsync(productId);
             if (product != null)
             {
@@ -230,7 +224,6 @@ public class ProductRepository(HubContextClass _db, IConfiguration _configuratio
                 _db.Products.Remove(product);
                 await _db.SaveChangesAsync();
             }
-
             await transaction.CommitAsync();
             return true;
         }
@@ -270,5 +263,32 @@ public class ProductRepository(HubContextClass _db, IConfiguration _configuratio
         return await _db.Products
              .Where(p => p.Name.StartsWith(term))
              .ToListAsync();
+    }
+
+    public async Task<List<Order>> GetAllUserOrdersAsync(string userId)
+    {
+        return await _db.Orders
+            .Where(o => o.UserId == userId)
+            .Include(o => o.OrderProducts)
+                .ThenInclude(op => op.Product)
+                .ThenInclude(p => p.Category)
+            .Include(op => op.DeliveryAddress)
+            .Include(o => o.ShippingType)
+            .Include(o => o.PaymentType)
+            .ToListAsync();
+    }
+
+    public async Task<List<Order>> GetOrdersFromMyShopAsync(string userId)
+    {
+        return await _db.Orders
+            .Where(o => o.Products.Any(p => p.UserId == userId))
+            .Include(o => o.OrderProducts)
+                .ThenInclude(op => op.Product)
+                .ThenInclude(p => p.Category)
+            .Include(op => op.DeliveryAddress)
+            .Include(o => o.ShippingType)
+            .Include(o => o.PaymentType)
+            .Include(o => o.User)
+            .ToListAsync();
     }
 }

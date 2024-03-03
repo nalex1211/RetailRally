@@ -5,6 +5,7 @@ namespace RetailRally.Interfaces;
 public interface IProductRepository
 {
     Task<List<Product>> GetAllProductsAsync();
+    Task<List<Order>> GetOrdersFromMyShopAsync(string userId);
     Task<List<Product>> GetAllSearchedProductsAsync(string term);
     Task<List<Product>> GetAllCategoryProductsAsync(int categoryId);
     Task<List<Product>> GetAllUserProductsAsync(string userId);

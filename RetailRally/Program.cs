@@ -4,9 +4,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.OData;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
+using Microsoft.OData.Edm;
+using Microsoft.OData.ModelBuilder;
 using RetailRally.Contexts;
 using RetailRally.Helpers;
 using RetailRally.Interfaces;
@@ -18,6 +22,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddHttpClient();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IUserProfileService, UserProfileService>();
@@ -26,6 +31,7 @@ builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 builder.Services.AddSingleton<EmailService>();
 builder.Services.AddSingleton<AzureStorageService>();
 builder.Services.AddSignalR().AddAzureSignalR(builder.Configuration["SignalRConnString"]);
+
 builder.Services.AddControllersWithViews().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.PropertyNamingPolicy = null;
@@ -71,11 +77,11 @@ app.UseAzureSignalR(routes =>
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Product}/{action=AllProducts}/{id?}");
-//if (app.Environment.IsDevelopment())
-//{
-//    await app.AddRolesAsync();
-//    await app.AddCategoriesAsync();
-//    await app.AddAdminUser(app.Configuration);
-//    await app.AddShippingAndPaymentTypesAsync();
-//}
+if (app.Environment.IsDevelopment())
+{
+    await app.AddRolesAsync();
+    await app.AddCategoriesAsync();
+    await app.AddAdminUser(app.Configuration);
+    await app.AddShippingAndPaymentTypesAsync();
+}
 app.Run();

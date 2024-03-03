@@ -32,29 +32,6 @@ public class AzureStorageService(IConfiguration _configuration)
         await blobClient.DeleteIfExistsAsync();
     }
 
-    //public async Task UploadMessageAsync(string containerName, string senderUsername, string receiverUsername, string message)
-    //{
-    //    string blobName = $"{senderUsername}_to_{receiverUsername}.txt";
-
-    //    var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
-    //    await containerClient.CreateIfNotExistsAsync(PublicAccessType.None);
-
-    //    var blobClient = containerClient.GetBlobClient(blobName);
-
-    //    if (await blobClient.ExistsAsync())
-    //    {
-    //        var appendBlobClient = containerClient.GetAppendBlobClient(blobName);
-    //        using var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(message + Environment.NewLine));
-    //        await appendBlobClient.AppendBlockAsync(memoryStream);
-    //    }
-    //    else
-    //    {
-    //        var appendBlobClient = containerClient.GetAppendBlobClient(blobName);
-    //        await appendBlobClient.CreateAsync();
-    //        using var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(message + Environment.NewLine));
-    //        await appendBlobClient.AppendBlockAsync(memoryStream);
-    //    }
-    //}
     public async Task UploadMessageAsync(string containerName, string senderUsername, string receiverUsername, string message)
     {
         string blobName = $"{senderUsername}_to_{receiverUsername}.txt";
@@ -120,42 +97,4 @@ public class AzureStorageService(IConfiguration _configuration)
 
         return messages;
     }
-
-
-    //public async Task<List<MessagesVm>> GetMessagesAsync(string containerName, string currentUsername, string otherUsername)
-    //{
-    //    var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
-    //    var currentToOtherBlob = containerClient.GetBlobClient($"{currentUsername}_to_{otherUsername}.txt");
-    //    var otherToCurrentBlob = containerClient.GetBlobClient($"{otherUsername}_to_{currentUsername}.txt");
-
-    //    var messages = new List<MessagesVm>();
-
-    //    if (await currentToOtherBlob.ExistsAsync())
-    //    {
-    //        var response = await currentToOtherBlob.DownloadAsync();
-    //        using var reader = new StreamReader(response.Value.Content);
-    //        while (!reader.EndOfStream)
-    //        {
-    //            var messageContent = await reader.ReadLineAsync();
-    //            var fullMessageContent = $"{currentUsername}| {messageContent}";
-    //            messages.Add(new MessagesVm(fullMessageContent));
-    //        }
-    //    }
-
-    //    if (await otherToCurrentBlob.ExistsAsync())
-    //    {
-    //        var response = await otherToCurrentBlob.DownloadAsync();
-    //        using var reader = new StreamReader(response.Value.Content);
-    //        while (!reader.EndOfStream)
-    //        {
-    //            var messageContent = await reader.ReadLineAsync();
-    //            var fullMessageContent = $"{otherUsername}| {messageContent}";
-    //            messages.Add(new MessagesVm(fullMessageContent));
-    //        }
-    //    }
-
-
-    //    return messages;
-    //}
-
 }

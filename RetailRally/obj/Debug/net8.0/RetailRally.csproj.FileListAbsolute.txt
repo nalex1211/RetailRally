@@ -154,3 +154,10 @@ C:\C# Projects\RetailRally\RetailRally\bin\Debug\net8.0\Microsoft.Azure.SignalR.
 C:\C# Projects\RetailRally\RetailRally\bin\Debug\net8.0\Microsoft.Azure.SignalR.Protocols.dll
 C:\C# Projects\RetailRally\RetailRally\bin\Debug\net8.0\libman.json
 C:\C# Projects\RetailRally\RetailRally\obj\Debug\net8.0\RetailRa.570E053C.Up2Date
+C:\C# Projects\RetailRally\RetailRally\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.Facebook.dll
+C:\C# Projects\RetailRally\RetailRally\bin\Debug\net8.0\Microsoft.AspNetCore.OData.dll
+C:\C# Projects\RetailRally\RetailRally\bin\Debug\net8.0\Microsoft.OData.Core.dll
+C:\C# Projects\RetailRally\RetailRally\bin\Debug\net8.0\Microsoft.OData.Edm.dll
+C:\C# Projects\RetailRally\RetailRally\bin\Debug\net8.0\Microsoft.OData.ModelBuilder.dll
+C:\C# Projects\RetailRally\RetailRally\bin\Debug\net8.0\Microsoft.Spatial.dll
+C:\C# Projects\RetailRally\RetailRally\obj\Debug\net8.0\RetailRally.MvcApplicationPartsAssemblyInfo.cs

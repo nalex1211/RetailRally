@@ -6,6 +6,7 @@
 @{
     var cartItems = ViewBag.CartItems as List<CartItem>;
 }
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         if (@Html.Raw(Json.Serialize(TempData["ShowRegisterSuccess"])) === true) {
@@ -37,19 +38,19 @@
     });
 </script>
 
+
 <div class="container mt-4">
-    <a asp-controller="Chat" asp-action="Index">Chat</a>
     <strong><h3 style="margin-bottom:10px">Categories</h3></strong>
     <div class="d-flex flex-column flex-md-row">
         <div class="categories flex-shrink-0">
             <ul>
                 <li>
-                    <b><a asp-action="AllProducts">All products</a></b>
+                    <b><a class="link-style" asp-action="AllProducts">All products</a></b>
                 </li>
                 @foreach (var category in Model.Categories)
                 {
                     <li>
-                        <a asp-route-categoryId="@category.Id" asp-action="DisplayCategoryProducts">
+                        <a class="link-style" asp-route-categoryId="@category.Id" asp-action="DisplayCategoryProducts">
                             @category.Name
                         </a>
                     </li>
@@ -57,6 +58,15 @@
             </ul>
         </div>
         <div class="products-flex-grow-1 w-100">
+            <div class="d-flex justify-content-end">
+                <select id="filterSelect" class="btn btn-primary" style="margin-bottom:10px" onchange="filterProducts()">
+                    <option disabled selected>Filter By</option>
+                    <option value="Name">By Name</option>
+                    <option value="Price">By Price</option>
+                </select>
+
+            </div>
+
             <div class="row">
                 @foreach (var product in Model.Products)
                 {
@@ -89,8 +99,13 @@
     </div>
 </div>
 
-
 <script>
+    function filterProducts() {
+        var filterSelect = document.getElementById('filterSelect');
+        var filterName = filterSelect.value;
+        var url = '@Url.Action("FilterBy", "Product")' + '?filterName=' + filterName;
+        window.location.href = url;
+    }
     document.addEventListener('DOMContentLoaded', function () {
         var cards = document.querySelectorAll('.clickable-card');
 
@@ -122,6 +137,16 @@
 </script>
 
 <style>
+    .link-style {
+        color: lawngreen;
+        text-decoration: none;
+        border-bottom: 1px solid lawngreen;
+    }
+
+        .link-style:hover {
+            color: green;
+            border-color: green;
+        }
     .my-image {
         width: 300px;
         height: 300px;

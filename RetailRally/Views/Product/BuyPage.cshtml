@@ -90,6 +90,7 @@
                         <option value="@shippingType.Value">@shippingType.Text</option>
                     }
                 </select>
+                <span asp-validation-for="Order.ShippingType    " class="text-danger"></span>
 
                 <div id="addressFields" style="display: none;">
                     <input asp-for=DeliveryAddress.Country type="text" placeholder="Country" aria-label="Country" required>
@@ -100,6 +101,7 @@
                 <select asp-for="Order.PaymentTypeId" asp-items="ViewBag.PaymentTypes">
                     <option value="" disabled selected>Select a Payment Type</option>
                 </select>
+                <span asp-validation-for="Order.PaymentType" class="text-danger"></span>
                 <h2>Total Price: $@totalPrice</h2>
                 <button asp-action="PlaceOrder" class="btn btn-primary">Submit Purchase</button>
             </form>

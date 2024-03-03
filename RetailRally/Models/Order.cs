@@ -1,4 +1,6 @@
-﻿namespace RetailRally.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace RetailRally.Models;
 
 public class Order
 {
@@ -10,8 +12,10 @@ public class Order
     public string Email { get; set; }
     public double TotalPrice {  get; set; }
     public int ShippingTypeId {  get; set; }
+    [Required(ErrorMessage ="Shipping type is required!")]
     public ShippingType? ShippingType { get; set; }
     public int PaymentTypeId {  get; set; }
+    [Required(ErrorMessage ="Payment type is required!")]
     public PaymentType? PaymentType { get; set; }
     public Status Status { get; set; }
     public DeliveryAddress? DeliveryAddress { get; set; }

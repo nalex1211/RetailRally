@@ -133,9 +133,6 @@
             </form>
             <div class="mt-8">
                 <div class="flex flex-col space-y-4">
-                    <button id="facebook-button" class="w-full py-2 text-white bg-blue-600 rounded-md flex items-center justify-center">
-                        <i class="fab fa-facebook-f mr-2"></i> Sign in with Facebook
-                    </button>
                     <form asp-controller="Account" asp-action="ExternalLogin" method="post">
                         <input type="hidden" name="provider" value="Google" />
                         <button asp-co id="google-button" class="w-full py-2 text-white bg-red-600 rounded-md flex items-center justify-center">

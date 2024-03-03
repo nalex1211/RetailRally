@@ -15,6 +15,10 @@ public class ChatController(HubContextClass hub, AzureStorageService _service, I
     public async Task<IActionResult> Room(string userId)
     {
         var currentUserId = User.GetUserId();
+        if (currentUserId == null)
+        {
+            return View("_LoginPartial");
+        }
         var currentUser = hub.Users.FirstOrDefault(x => x.Id == currentUserId);
         var otherUser = hub.Users.FirstOrDefault(x => x.Id == userId);
 
