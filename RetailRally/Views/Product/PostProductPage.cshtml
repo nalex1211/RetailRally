@@ -4,9 +4,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@picocss/pico@1/css/pico.min.css">
     <title>Сторінка публікації товару</title>
     <style>
+        :root {
+            --theme: light;
+            --background-color-light: #f5f7fa;
+            --background-color-dark: #1c1e21;
+            --color-light: #1a1a1a;
+            --color-dark: #ecf0f1;
+            --order-summary-bg-light: #ffffff;
+            --order-summary-bg-dark: #3a3f47;
+            --order-summary-border-light: #cccccc;
+            --order-summary-border-dark: #34495e;
+            --order-summary-hover-shadow-light: #aaaaaa;
+            --order-summary-hover-shadow-dark: #5a5f67;
+            --nav-bg-light: #e0e0e0;
+            --nav-bg-dark: #222222;
+            --nav-link-color-light: #1a1a1a;
+            --nav-link-color-dark: #ffffff;
+            --nav-link-hover-bg-light: #007bff;
+            --nav-link-hover-bg-dark: #007bff;
+            --nav-link-hover-color-light: #ffffff;
+            --nav-link-hover-color-dark: #ffffff;
+            --link-color-light: #ff7f50;
+            --link-color-dark: lawngreen;
+            --link-hover-color-light: #e75432;
+            --link-hover-color-dark: green;
+            --link-hover-border-color-light: #e75432;
+            --link-hover-border-color-dark: green;
+            --validation-error-bg-light: #f8d7da;
+            --validation-error-bg-dark: #7f0000;
+            --validation-error-color-light: #721c24;
+            --validation-error-color-dark: #ffffff;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--background-color-dark);
+            color: var(--color-dark);
+            margin: 0;
+            padding: 0;
+        }
+
+            body[data-theme='light'] {
+                background-color: var(--background-color-light);
+                color: var(--color-light);
+            }
+
         .container {
             display: flex;
             flex-direction: column;
@@ -14,96 +58,195 @@
             padding: 20px;
         }
 
-        .product-edit {
+        nav.container-fluid {
             display: flex;
-            gap: 20px;
-            margin-top: 20px;
-            width: 150%;
-            background-color: #383838;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: var(--nav-bg-dark);
         }
 
-        .product-image {
-            width: 300px;
-            height: 300px;
-            object-fit: cover;
-            border-radius: 8px;
-            display: block;
-            margin: auto;
+        body[data-theme='light'] nav.container-fluid {
+            background-color: var(--nav-bg-light);
         }
 
-        .product-details {
-            flex: 2;
+        nav.container-fluid ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
             display: flex;
-            flex-direction: column;
-            gap: 20px;
+            gap: 1rem;
         }
 
-        input, textarea, select, button {
-            margin-bottom: 1rem;
+            nav.container-fluid ul li a {
+                text-decoration: none;
+                color: var(--nav-link-color-dark);
+                padding: 0.5rem 1rem;
+                transition: background-color 0.3s, color 0.3s;
+            }
+
+        body[data-theme='light'] nav.container-fluid ul li a {
+            color: var(--nav-link-color-light);
         }
 
-        button {
-            cursor: pointer;
+        nav.container-fluid ul li a:hover,
+        nav.container-fluid ul li a:focus {
+            background-color: var(--nav-link-hover-bg-dark);
+            color: var(--nav-link-hover-color-dark);
+            border-radius: 0.25rem;
+        }
+
+        body[data-theme='light'] nav.container-fluid ul li a:hover,
+        body[data-theme='light'] nav.container-fluid ul li a:focus {
+            background-color: var(--nav-link-hover-bg-light);
+            color: var(--nav-link-hover-color-light);
+        }
+
+        nav.container-fluid ul li a[role="button"] {
+            background-color: var(--nav-link-hover-bg-dark);
+            border-radius: 0.25rem;
+        }
+
+        body[data-theme='light'] nav.container-fluid ul li a[role="button"] {
+            background-color: var(--nav-link-hover-bg-light);
         }
 
         .grid {
             display: grid;
-            width: 150%;
+            width: 100%;
+            max-width: 1400px;
             grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            padding: 2rem;
+            gap: 3rem;
+            padding: 3rem;
         }
+
+        section {
+            background-color: #292929;
+            padding: 2.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        body[data-theme='light'] section {
+            background-color: var(--order-summary-bg-light);
+            box-shadow: 0 4px 8px var(--order-summary-hover-shadow-light);
+        }
+
+        h2 {
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            font-size: 1.75rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: bold;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #444;
+            border-radius: 4px;
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+            font-size: 1rem;
+        }
+
+        body[data-theme='light'] input, body[data-theme='light'] textarea, body[data-theme='light'] select {
+            background-color: var(--background-color-light);
+            color: var(--color-light);
+        }
+
+        button {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: #ffffff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 1rem;
+        }
+
+            button:hover {
+                background-color: #0056b3;
+            }
 
         .preview {
-            border: 1px solid #ccc;
-            padding: 1rem;
+            border: 1px solid #444;
+            padding: 1.5rem;
+            border-radius: 8px;
         }
 
+        body[data-theme='light'] .preview {
+            border: 1px solid var(--order-summary-border-light);
+            background-color: var(--background-color-light);
+        }
+
+        .product-image {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            object-fit: cover;
+            border-radius: 8px;
+            display: block;
+            margin-bottom: 1.5rem;
+        }
+
+        .validation-summary-errors, .validation-error {
+            background-color: var(--validation-error-bg-dark);
+            color: var(--validation-error-color-dark);
+            padding: 0.5rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        body[data-theme='light'] .validation-summary-errors, body[data-theme='light'] .validation-error {
+            background-color: var(--validation-error-bg-light);
+            color: var(--validation-error-color-light);
+        }
+
+        .validation-summary-errors::before, .validation-error::before {
+            content: '⚠ ';
+        }
     </style>
+
 </head>
 <body>
-    <nav class="container-fluid">
-        <ul>
-            <li><strong>Панель інструментів Товару</strong></li>
-        </ul>
-        <ul>
-            <li><a href="#">Головна</a></li>
-            <li><a href="#">Товари</a></li>
-            <li><a href="#" role="button">Вийти з системи</a></li>
-        </ul>
-    </nav>
     <main class="container">
         <div class="grid">
             <section>
                 <h2>Опублікуйте свій товар</h2>
+                <div class="validation-summary-errors" id="validationErrors"></div>
                 <form asp-action="PostProduct" method="post" id="productForm" enctype="multipart/form-data">
                     <label for="productName">Назва товару:</label>
-                    <input asp-for="Name" type="text" id="productName" oninput="updatePreview()">
+                    <input asp-for="Name" type="text" id="productName" oninput="updatePreview(); clearErrors();">
                     <span asp-validation-for="Name" class="text-danger"></span>
 
                     <label for="description">Опис:</label>
-                    <textarea asp-for="Description" id="description" oninput="updatePreview()"></textarea>
+                    <textarea asp-for="Description" id="description" oninput="updatePreview(); clearErrors();"></textarea>
                     <span asp-validation-for="Description" class="text-danger"></span>
 
                     <label for="price">Ціна:</label>
-                    <input asp-for="Price" class="no-spin-buttons" type="number" step="0.01" id="price" oninput="updatePreview()">
+                    <input asp-for="Price" class="no-spin-buttons" type="number" step="0.01" id="price" oninput="updatePreview(); clearErrors();">
                     <span asp-validation-for="Price" class="text-danger"></span>
 
-                    <label for="price">Кількість:</label>
-                    <input asp-for="Quantity" class="no-spin-buttons" type="number" id="quantity" oninput="updatePreview()">
+                    <label for="quantity">Кількість:</label>
+                    <input asp-for="Quantity" class="no-spin-buttons" type="number" id="quantity" oninput="updatePreview(); clearErrors();">
                     <span asp-validation-for="Quantity" class="text-danger"></span>
 
                     <label for="category">Категорія:</label>
-                    <select id="category" onchange="updatePreview()" asp-for="CategoryId" asp-items="ViewBag.Categories" >
+                    <select id="category" onchange="updatePreview(); clearErrors();" asp-for="CategoryId" asp-items="ViewBag.Categories">
                         <option value="" disabled selected>Виберіть категорію</option>
                     </select>
                     <label for="imageInput">Фото товару:</label>
-                    <input type="file" id="imageInput" name="imageFile" oninput="updatePreview()" accept="image/jpeg, image/png" >
+                    <input type="file" id="imageInput" name="imageFile" oninput="updatePreview(); clearErrors();" accept="image/jpeg, image/png">
 
-                    <button>Розмістити товар</button>
+                    <button type="submit">Розмістити товар</button>
                 </form>
             </section>
             <section class="preview" id="preview">
@@ -111,7 +254,7 @@
                 <img class="product-image" id="previewImage" src="" alt="Product Image" style="display: none;">
                 <p><strong>Назва:</strong> <span id="previewName">Назва товару</span></p>
                 <p><strong>Опис:</strong> <span id="previewDescription">Опис</span></p>
-                <p><strong>Ціна:</strong> $<span id="previewPrice">0</span></p>
+                <p><strong>Ціна:</strong> ₴<span id="previewPrice">0</span></p>
                 <p><strong>Кількість:</strong> <span id="previewQuantity">0</span></p>
                 <p><strong>Категорія:</strong> <span id="previewCategory">Категорія</span></p>
             </section>
@@ -126,17 +269,28 @@
             var categorySelect = document.getElementById('category');
             var selectedCategoryText = categorySelect.options[categorySelect.selectedIndex].text;
             document.getElementById('previewCategory').textContent = selectedCategoryText;
-            document.getElementById('imageInput').addEventListener('change', function (e) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    document.getElementById('previewImage').src = e.target.result;
-                    document.getElementById('previewImage').style.display = 'block';
-                };
-                reader.readAsDataURL(this.files[0]);
-            });
 
+            var fileInput = document.getElementById('imageInput');
+            var previewImage = document.getElementById('previewImage');
+            if (fileInput.files && fileInput.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = 'block';
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            }
         }
 
+        function clearErrors() {
+            const validationErrors = document.getElementById('validationErrors');
+            validationErrors.innerHTML = '';
+            validationErrors.style.display = 'none';
+
+            document.querySelectorAll('.text-danger').forEach(element => {
+                element.textContent = '';
+            });
+        }
 
         document.getElementById('imageInput').addEventListener('change', function (e) {
             var validTypes = ['image/jpeg', 'image/png'];
@@ -145,8 +299,45 @@
                 if (!validTypes.includes(fileType)) {
                     alert('Допускаються лише файли зображень!');
                     this.value = '';
+                } else {
+                    updatePreview();
                 }
             }
+        });
+
+        document.getElementById('productForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const response = await fetch(this.action, {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            const validationErrors = document.getElementById('validationErrors');
+            validationErrors.innerHTML = '';
+            validationErrors.style.display = 'none';
+
+            if (result.success) {
+                Swal.fire({
+                    title: 'Товар успішно створено!',
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 1000
+                }).then(() => {
+                    window.location.href = '@Url.Action("AllProducts", "Product")';
+                });
+            } else {
+                validationErrors.style.display = 'block';
+                result.errors.forEach(error => {
+                    const errorItem = document.createElement('div');
+                    errorItem.textContent = error;
+                    validationErrors.appendChild(errorItem);
+                });
+            }
+        });
+
+        document.querySelectorAll('input, textarea, select').forEach(element => {
+            element.addEventListener('input', clearErrors);
         });
     </script>
 </body>

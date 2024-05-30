@@ -12,21 +12,68 @@
 }
 
 <style>
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #1f1f1f;
-        color: #e0e0e0;
+    :root {
+        --theme: light;
+        --background-color-light: #f5f7fa;
+        --background-color-dark: #1f1f1f;
+        --color-light: #1a1a1a;
+        --color-dark: #e0e0e0;
+        --link-color-light: #ff7f50;
+        --link-color-dark: lawngreen;
+        --link-hover-color-light: #e75432;
+        --link-hover-color-dark: green;
+        --categories-background-light: #e1f5fe;
+        --categories-background-dark: #2E2E2E;
+        --card-background-light: #ffffff;
+        --card-background-dark: #333;
+        --card-description-color-light: #333;
+        --card-description-color-dark: #a0a0a0;
+        --price-color-light: #ff4500;
+        --price-color-dark: #21B10D;
+        --old-price-color-light: #d32f2f;
+        --old-price-color-dark: #ff0000;
+        --quantity-color-light: #555555;
+        --quantity-color-dark: #a0a0a0;
+        --comment-count-color-light: #ff6347;
+        --comment-count-color-dark: #8E8B8B;
+        --footer-color-light: #333;
+        --footer-color-dark: #a0a0a0;
+        --btn-primary-light: #ff7f50;
+        --btn-primary-dark: #4682b4;
+        --btn-success-light: #3cb371;
+        --btn-success-dark: #32cd32;
     }
 
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: var(--background-color-dark);
+        color: var(--color-dark);
+    }
+
+        body[data-theme='light'] {
+            background-color: var(--background-color-light);
+            color: var(--color-light);
+        }
+
     .link-style {
-        color: lawngreen;
+        color: var(--link-color-dark);
         text-decoration: none;
-        border-bottom: 1px solid lawngreen;
+        border-bottom: 1px solid var(--link-color-dark);
     }
 
         .link-style:hover {
-            color: green;
-            border-color: green;
+            color: var(--link-hover-color-dark);
+            border-color: var(--link-hover-color-dark);
+        }
+
+    body[data-theme='light'] .link-style {
+        color: var(--link-color-light);
+        border-bottom: 1px solid var(--link-color-light);
+    }
+
+        body[data-theme='light'] .link-style:hover {
+            color: var(--link-hover-color-light);
+            border-color: var(--link-hover-color-light);
         }
 
     .new-link-style:hover {
@@ -68,6 +115,7 @@
         width: 100%;
         height: 250px;
         overflow: hidden;
+        position: relative;
     }
 
     .d-flex {
@@ -83,44 +131,77 @@
     }
 
     .categories {
-        background-color: #2E2E2E;
+        background-color: var(--categories-background-dark);
         padding: 20px;
         margin-right: 20px;
         box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.5);
-        height: auto;
-        min-height: 100%;
         border-radius: 8px;
-        width:300px;
+        width: 300px;
     }
 
-    .products-flex-grow-1 {
-        flex-grow: 1;
-    }
-
-    .categories ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        overflow-y: auto;
-    }
-
-        .categories ul li a {
-            color: #e0e0e0;
-            text-decoration: none;
+        .categories ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
         }
 
-            .categories ul li a:hover {
-                color: #00ff00;
-            }
+        .categories .list-group-item {
+            background: transparent;
+            border: none;
+            padding: 5px 0;
+            color: var(--color-dark);
+        }
+
+    body[data-theme='light'] .categories .list-group-item {
+        color: var(--color-light);
+    }
+
+    .categories .form-select {
+        margin-bottom: 10px;
+    }
+
+    .filter-container h2 {
+        font-size: 1.25em;
+        margin-bottom: 10px;
+    }
+
+    .filter-container .input-group {
+        display: flex;
+        align-items: center;
+    }
+
+    .filter-container .input-group-text {
+        background-color: var(--btn-primary-dark);
+        color: white;
+        border: none;
+    }
+
+    .filter-container .form-control {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .filter-container .btn {
+        width: 35%;
+    }
+
+    body[data-theme='light'] .categories {
+        background-color: var(--categories-background-light);
+    }
 
     .card {
-        background-color: #333;
+        background-color: var(--card-background-dark);
         border: none;
-        color: #e0e0e0;
+        color: var(--color-dark);
         border-radius: 8px;
         overflow: hidden;
         position: relative;
         padding-bottom: 20px;
+    }
+
+    body[data-theme='light'] .card {
+        background-color: var(--card-background-light);
+        color: var(--color-light);
     }
 
     .card-title {
@@ -134,33 +215,53 @@
 
     .card-description {
         font-size: 0.9em;
-        color: #a0a0a0;
+        color: var(--card-description-color-dark);
         height: 40px;
         overflow: hidden;
         text-overflow: ellipsis;
     }
 
+    body[data-theme='light'] .card-description {
+        color: var(--card-description-color-light);
+    }
+
     .price {
         font-size: 1.5em;
         font-weight: bold;
-        color: #21B10D;
+        color: var(--price-color-dark);
+    }
+
+    body[data-theme='light'] .price {
+        color: var(--price-color-light);
     }
 
     .old-price {
         font-size: 1.2em;
-        color: #ff0000;
+        color: var(--old-price-color-dark);
         text-decoration: line-through;
         margin-right: 10px;
     }
 
+    body[data-theme='light'] .old-price {
+        color: var(--old-price-color-light);
+    }
+
     .quantity {
         font-size: 1em;
-        color: #a0a0a0;
+        color: var(--quantity-color-dark);
+    }
+
+    body[data-theme='light'] .quantity {
+        color: var(--quantity-color-light);
     }
 
     .comment-count {
         font-size: 0.9em;
-        color: #8E8B8B;
+        color: var(--comment-count-color-dark);
+    }
+
+    body[data-theme='light'] .comment-count {
+        color: var(--comment-count-color-light);
     }
 
     .card-body {
@@ -168,35 +269,67 @@
     }
 
     .btn-primary {
-        background-color: #007bff;
-        border-color: #007bff;
+        background-color: var(--btn-primary-dark);
+        border-color: var(--btn-primary-dark);
         color: white;
     }
 
         .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #0056b3;
+            background-color: var(--btn-primary-light);
+            border-color: var(--btn-primary-light);
+        }
+
+    body[data-theme='light'] .btn-primary {
+        background-color: var(--btn-primary-light);
+        border-color: var(--btn-primary-light);
+    }
+
+        body[data-theme='light'] .btn-primary:hover {
+            background-color: var(--btn-primary-light);
+            border-color: var(--btn-primary-light);
         }
 
     .btn-success {
-        background-color: #28a745;
-        border-color: #28a745;
+        background-color: var(--btn-success-dark);
+        border-color: var(--btn-success-dark);
         color: white;
     }
 
         .btn-success:hover {
-            background-color: #218838;
-            border-color: #1e7e34;
+            background-color: var(--btn-success-light);
+            border-color: var(--btn-success-light);
+        }
+
+    body[data-theme='light'] .btn-success {
+        background-color: var(--btn-success-light);
+        border-color: var(--btn-success-light);
+    }
+
+        body[data-theme='light'] .btn-success:hover {
+            background-color: var(--btn-success-light);
+            border-color: var(--btn-success-light);
         }
 
     .discount-badge {
         position: absolute;
         top: 10px;
         left: 10px;
-        background-color: #ff0000;
+        background-color: #ff4500;
         color: white;
         padding: 5px 10px;
         border-radius: 5px;
+        font-size: 0.9em;
+        font-weight: bold;
+    }
+
+    .discount-circle {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: #ff4500;
+        color: white;
+        padding: 5px;
+        border-radius: 50%;
         font-size: 0.9em;
         font-weight: bold;
     }
@@ -226,7 +359,11 @@
     footer {
         text-align: center;
         padding: 20px 0;
-        color: #a0a0a0;
+        color: var(--footer-color-dark);
+    }
+
+    body[data-theme='light'] footer {
+        color: var(--footer-color-light);
     }
 
     .filter-container {
@@ -245,14 +382,15 @@
             padding: 5px 10px;
             border: none;
             border-radius: 4px;
-            background-color: #007bff;
+            background-color: var(--btn-primary-dark);
             color: white;
             cursor: pointer;
         }
 
             .filter-container button:hover {
-                background-color: #0056b3;
+                background-color: var(--btn-primary-light);
             }
+
 </style>
 
 <script>
@@ -290,7 +428,6 @@
         const pageSize = @ViewBag.PageSize;
         let isFetching = false;
         let allProductsFetched = false;
-        const categoryId = @ViewBag.CategoryId;
 
         async function fetchProducts() {
             if (isFetching || allProductsFetched) return;
@@ -298,10 +435,18 @@
             pageNumber++;
             document.getElementById('loadingSpinner').style.display = 'flex';
 
+            let url = `@Url.Action("AllProducts")?pageNumber=${pageNumber}&pageSize=${pageSize}`;
+            const category = '@ViewBag.Category';
+            const filterName = '@ViewBag.FilterName';
+            const priceFrom = '@ViewBag.PriceFrom';
+            const priceTo = '@ViewBag.PriceTo';
+
+            if (category) url = `@Url.Action("FilterProducts")?pageNumber=${pageNumber}&pageSize=${pageSize}&category=${category}`;
+            if (filterName) url += `&filterName=${filterName}`;
+            if (priceFrom && priceTo) url += `&priceFrom=${priceFrom}&priceTo=${priceTo}`;
+
             try {
-                const response = await fetch(categoryId
-                    ? `@Url.Action("DisplayCategoryProducts")?categoryId=${categoryId}&pageNumber=${pageNumber}&pageSize=${pageSize}`
-                    : `@Url.Action("AllProducts")?pageNumber=${pageNumber}&pageSize=${pageSize}`);
+                const response = await fetch(url);
                 const html = await response.text();
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
@@ -333,12 +478,14 @@
         var cards = document.querySelectorAll('.clickable-card');
 
         cards.forEach(function (card) {
-            card.addEventListener('click', function () {
-                window.location.href = this.getAttribute('data-url');
+            card.addEventListener('click', function (e) {
+                if (!e.target.classList.contains('buy-button') && !e.target.classList.contains('btn-add-to-cart')) {
+                    window.location.href = this.getAttribute('data-url');
+                }
             });
 
-            var purchaseButton = card.querySelector('.btn-primary');
-            var cartButton = card.querySelector('.btn-success');
+            var purchaseButton = card.querySelector('.buy-button');
+            var cartButton = card.querySelector('.btn-add-to-cart');
 
             if (cartButton) {
                 cartButton.addEventListener('mouseenter', function () {
@@ -347,6 +494,10 @@
 
                 cartButton.addEventListener('mouseleave', function () {
                     card.classList.remove('no-outline');
+                });
+
+                cartButton.addEventListener('click', function (e) {
+                    e.stopPropagation();
                 });
             }
 
@@ -358,59 +509,93 @@
                 purchaseButton.addEventListener('mouseleave', function () {
                     card.classList.remove('no-outline');
                 });
+
+                purchaseButton.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    const productId = purchaseButton.getAttribute('data-product-id');
+                    const productQuantity = purchaseButton.getAttribute('data-product-quantity');
+                    setSelectedProductId(productId);
+                    document.getElementById('quantity').setAttribute('max', productQuantity);
+                    document.getElementById('quantityError').classList.add('d-none');
+                    $('#quantityModal').modal('show');
+                });
+            }
+        });
+
+        document.getElementById('quantity').addEventListener('input', function () {
+            const quantityInput = this;
+            const quantity = parseInt(quantityInput.value, 10);
+            const maxQuantity = parseInt(quantityInput.getAttribute('max'), 10);
+
+            if (quantity <= 0 || quantity > maxQuantity) {
+                const errorMessage = quantity <= 0 ? 'Кількість має бути більша ніж 0.' : `Кількість не має перевищувати ${maxQuantity}.`;
+                document.getElementById('quantityError').textContent = errorMessage;
+                document.getElementById('quantityError').classList.remove('d-none');
+            } else {
+                document.getElementById('quantityError').classList.add('d-none');
+            }
+        });
+
+        document.getElementById('buyButton').addEventListener('click', function (e) {
+            const quantityInput = document.getElementById('quantity');
+            const quantity = parseInt(quantityInput.value, 10);
+            const maxQuantity = parseInt(quantityInput.getAttribute('max'), 10);
+
+            if (quantity <= 0 || quantity > maxQuantity) {
+                e.preventDefault();
+                const errorMessage = quantity <= 0 ? 'Кількість має бути більша ніж 0.' : `Кількість не має перевищувати ${maxQuantity}.`;
+                document.getElementById('quantityError').textContent = errorMessage;
+                document.getElementById('quantityError').classList.remove('d-none');
             }
         });
     });
 
     function filterProducts() {
-        var filterSelect = document.getElementById('filterSelect');
-        var filterName = filterSelect.value;
-        var url = '@Url.Action("FilterBy", "Product")' + '?filterName=' + filterName;
-        window.location.href = url;
+        var filterForm = document.getElementById('filterForm');
+        filterForm.submit();
     }
 
-    function filterByPrice() {
-        var priceFrom = document.getElementById('priceFrom').value;
-        var priceTo = document.getElementById('priceTo').value;
-        var url = '@Url.Action("FilterByPrice", "Product")' + '?priceFrom=' + priceFrom + '&priceTo=' + priceTo;
-        window.location.href = url;
+    function setSelectedProductId(productId) {
+        document.getElementById('selectedProductId').value = productId;
     }
 </script>
 
 <div class="container mt-4">
     <strong style="margin-bottom:10px">Категорії</strong>
     <div class="d-flex flex-column flex-md-row">
-        <div class="categories ">
-            <ul>
-                <li>
-                    <b><a class="link-style" asp-action="AllProducts">Всі продукти</a></b>
-                </li>
-                @foreach (var category in Model.Categories)
-                {
-                    <li>
-                        <a class="link-style" asp-route-categoryId="@category.Id" asp-action="DisplayCategoryProducts">
-                            @category.Name
-                        </a>
+        <div class="categories">
+            <form id="filterForm" method="get" action="@Url.Action("FilterProducts", "Product")">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <b><a class="link-style" asp-action="AllProducts">Всі продукти</a></b>
                     </li>
-                }
-            </ul>
-            <div class="filter-container">
-                <h1>Ціна</h1>
-                <input style="width:35%" class="no-spin-buttons" type="number" id="priceFrom" placeholder="Від" />
-                -
-                <input style="width:35%" class="no-spin-buttons" type="number" id="priceTo" placeholder="До" />
-                <button onclick="filterByPrice()">OK</button>
-            </div>
+                    @foreach (var category in Model.Categories)
+                    {
+                        <li class="list-group-item">
+                            <input type="radio" name="category" value="@category.Name" @(ViewBag.Category == category.Name ? "checked" : "") /> @category.Name
+                        </li>
+                    }
+                </ul>
+                <div class="filter-container mt-4">
+                    <h2>Ціна</h2>
+                    <div class="input-group mb-3">
+                        <input type="number" class="form-control no-spin-buttons" id="priceFrom" name="priceFrom" placeholder="Від" value="@ViewBag.PriceFrom" />
+                        <span class="input-group-text">-</span>
+                        <input type="number" class="form-control no-spin-buttons" id="priceTo" name="priceTo" placeholder="До" value="@ViewBag.PriceTo" />
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <select id="filterSelect" name="filterName" class="form-select me-2" style="width: 60%;">
+                            <option disabled selected>Фільтрувати за</option>
+                            <option value="Name">За назвою</option>
+                            <option value="Price">За ціною</option>
+                        </select>
+                        <button type="button" class="btn btn-primary" onclick="filterProducts()">Filter</button>
+                    </div>
+                </div>
+            </form>
         </div>
-        <div class="products-flex-grow-1 w-100">
-            <div class="d-flex justify-content-end">
-                <select id="filterSelect" class="btn btn-primary" style="margin-bottom:10px" onchange="filterProducts()">
-                    <option disabled selected>Фільтрувати за</option>
-                    <option value="Name">За назвою</option>
-                    <option value="Price">За ціною</option>
-                </select>
-            </div>
 
+        <div class="products-flex-grow-1 w-100">
             <div class="row">
                 @foreach (var product in Model.Products)
                 {
@@ -419,6 +604,10 @@
                         <div class="card h-100 clickable-card" data-url="@Url.Action("GoToDetailsPage", new { productId = product.Id })">
                             <div class="card-img-container">
                                 <img class="card-img-top my-image" src="@product.PictureUrl" alt="Product Image">
+                                @if (product.Discount.HasValue && product.Discount.Value > 0)
+                                {
+                                    <div class="discount-circle">-@product.Discount.Value%</div>
+                                }
                             </div>
                             <div class="card-body d-flex flex-column">
                                 <h5 class="card-title">@product.Name</h5>
@@ -426,7 +615,15 @@
                                 <h5 class="card-title">@product.Category.Name</h5>
                                 <p class="card-text quantity">В наявності: @product.Quantity</p>
                                 <p class="card-text">
-                                    <span class="price">$@product.Price.ToString("0.00")</span>
+                                    @if (product.Discount.HasValue && product.Discount.Value > 0)
+                                    {
+                                        <span class="price">₴@product.DiscountedPrice?.ToString("0.00")</span>
+                                        <span class="old-price">₴@product.Price?.ToString("0.00")</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="price">₴@product.Price?.ToString("0.00")</span>
+                                    }
                                 </p>
                                 <div class="comment-count">
                                     <i class="fa fa-comment" aria-hidden="true"></i> @product.Comments.Count
@@ -434,7 +631,7 @@
                                 <div class="mt-auto d-flex justify-content-between">
                                     @if (product.UserId != User.GetUserId())
                                     {
-                                        <a asp-route-selectedItems="@product.Id" asp-action="GoToBuyPage" class="btn btn-primary btn-sm">Купити</a>
+                                        <button type="button" class="btn btn-primary btn-sm buy-button" data-toggle="modal" data-target="#quantityModal" data-product-id="@product.Id" data-product-quantity="@product.Quantity">Купити</button>
                                         <form asp-action="AddToCart" method="post">
                                             <input type="hidden" name="productId" value="@product.Id" />
                                             <button class="btn btn-success btn-sm btn-add-to-cart" @(isInCart ? "disabled" : "")>
@@ -452,6 +649,7 @@
                     </div>
                 }
             </div>
+
             <div class="loading-spinner" id="loadingSpinner" style="display: none;">
                 <img src="~/icons/loading.gif" alt="Завантаження...">
             </div>
@@ -459,6 +657,31 @@
     </div>
 </div>
 
+
+<div class="modal fade" id="quantityModal" tabindex="-1" role="dialog" aria-labelledby="quantityModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="quantityModalLabel">Введіть кількість</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="quantityForm" method="post" asp-action="GoToBuyPage">
+                    <input type="hidden" name="selectedItems" id="selectedProductId" value="" />
+                    <div class="form-group text-center">
+                        <label for="quantity">Кількість</label>
+                        <input type="number" class="form-control mx-auto no-spin-buttons" id="quantity" name="quantities" min="1" required />
+                        <span id="quantityError" class="text-danger d-none"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="buyButton">Купити</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <footer class="container">
-    <small><a class="new-link-style" asp-controller="Home" asp-action="TermsAndConditions">Умови та положення</a> • <a class="new-link-style" asp-controller="Home" asp-action="Privacy">Політика конфіденційності</a></small>
+    <small><a class="new-link-style" asp-controller="Home" asp-action="GoToTermsAndConditionsPage">Умови та положення</a></small>
 </footer>

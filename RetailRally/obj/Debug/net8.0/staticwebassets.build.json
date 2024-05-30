@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "tYhdYlMBqBWQ5VqSAOomlQ+/ILEPnrhBAgE1oA8aPKk=",
+  "Hash": "88+oW7tAZkr8leZmfaYTWw5AiaZSK73Q+2s4N2/fpkg=",
   "Source": "RetailRally",
   "BasePath": "_content/RetailRally",
   "Mode": "Default",
@@ -91,25 +91,6 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\styles.css"
-    },
-    {
-      "Identity": "C:\\C# Projects\\RetailRally\\RetailRally\\wwwroot\\css\\theme.css",
-      "SourceId": "RetailRally",
-      "SourceType": "Discovered",
-      "ContentRoot": "C:\\C# Projects\\RetailRally\\RetailRally\\wwwroot\\",
-      "BasePath": "_content/RetailRally",
-      "RelativePath": "css/theme.css",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "PreferTarget",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\css\\theme.css"
     },
     {
       "Identity": "C:\\C# Projects\\RetailRally\\RetailRally\\wwwroot\\favicon.ico",

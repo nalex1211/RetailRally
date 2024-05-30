@@ -126,7 +126,10 @@
                 <div class="flex items-center justify-between my-4">
                     <div class="flex items-center">
                         <input id="terms" type="checkbox" class="w-4 h-4 text-blue-600 rounded" onchange="document.getElementById('register-button').disabled = !this.checked;" />
-                        <label for="terms" class="ml-2 text-sm text-gray-600">Реєструючись, ви погоджуєтеся з умовами положення про збір та захист персональних даних та користувацької угоди</label>
+                        <label for="terms" class="ml-2 text-sm text-gray-600">
+                            Реєструючись, ви погоджуєтеся з умовами положення про збір та захист персональних даних та користувацької угоди.
+                            <a for="terms" asp-controller="Home" asp-action="GoToTermsAndConditionsPage">Див. тут</a>
+                        </label>
                     </div>
                 </div>
                 <button id="register-button" class="w-full py-3 mt-3 text-white bg-green-600 rounded-md focus:outline-none" disabled>Зареєструватися</button>

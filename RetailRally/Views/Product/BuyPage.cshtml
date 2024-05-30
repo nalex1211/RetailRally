@@ -1,122 +1,259 @@
 ﻿@using RetailRally.ViewModels
 @model BuyProductVm
 @{
-    var totalPrice = Model.Products.Sum(product => product.Price * Model.ProductQuantities[product.Id]);
+    var totalPrice = Model.Products.Sum(product =>
+        (product.Discount.HasValue ? product.DiscountedPrice : product.Price) * Model.ProductQuantities[product.Id]);
 }
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@picocss/pico@1/css/pico.min.css">
     <title>Сторінка купівлі товару</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
     <style>
+        :root {
+            --theme: light;
+            --background-color-light: #f5f7fa;
+            --background-color-dark: #1f1f1f;
+            --color-light: #1a1a1a;
+            --color-dark: #e0e0e0;
+            --product-info-bg-light: #e1f5fe;
+            --product-info-bg-dark: #2a2a2a;
+            --product-info-shadow-light: rgba(0, 0, 0, 0.1);
+            --product-info-shadow-dark: rgba(0, 0, 0, 0.3);
+            --purchase-form-bg-light: #e1f5fe;
+            --purchase-form-bg-dark: #2a2a2a;
+            --input-bg-light: #ffffff;
+            --input-bg-dark: #333;
+            --input-border-light: #ccc;
+            --input-border-dark: #444;
+            --input-color-light: #1a1a1a;
+            --input-color-dark: #ffffff;
+            --btn-bg-light: #007bff;
+            --btn-bg-dark: #007bff;
+            --btn-hover-bg-light: #0056b3;
+            --btn-hover-bg-dark: #0056b3;
+            --footer-color-light: #333;
+            --footer-color-dark: #a0a0a0;
+            --link-color-light: #333;
+            --link-color-dark: #a0a0a0;
+            --link-hover-color-light: #000000;
+            --link-hover-color-dark: #ffffff;
+            --validation-error-bg-light: #f8d7da;
+            --validation-error-bg-dark: #7f0000;
+            --validation-error-color-light: #721c24;
+            --validation-error-color-dark: #ffffff;
+        }
+
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #1f1f1f;
-            color: #e0e0e0;
+            background-color: var(--background-color-dark);
+            color: var(--color-dark);
             margin: 0;
             padding: 0;
         }
 
-        .product-purchase-container {
-            display: flex;
-            justify-content: space-between;
-            gap: 2rem;
-            padding: 2rem;
+            body[data-theme='light'] {
+                background-color: var(--background-color-light);
+                color: var(--color-light);
+            }
+
+        nav {
+            background-color: #343a40;
+            padding: 1rem;
         }
 
-        .label {
-            margin-bottom: 5px;
-            font-size: 1em;
-            margin-top: 0;
+            nav ul {
+                display: flex;
+                justify-content: space-between;
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+
+                nav ul li {
+                    margin-right: 1rem;
+                }
+
+                    nav ul li a {
+                        color: #ffffff;
+                        text-decoration: none;
+                        padding: 0.5rem 1rem;
+                        border-radius: 4px;
+                        transition: background-color 0.3s ease;
+                    }
+
+                        nav ul li a:hover {
+                            background-color: #495057;
+                        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .product-purchase-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
         }
 
         .products-container {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: 1fr 1fr;
             gap: 1rem;
         }
 
         .product-info {
-            background-color: #2a2a2a;
+            background-color: var(--product-info-bg-dark);
             padding: 1rem;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 8px var(--product-info-shadow-dark);
             text-align: center;
         }
 
-            .product-info img {
-                width: 100%;
-                height: 200px;
-                object-fit: cover;
-                border-radius: 8px;
-                margin-bottom: 1rem;
-            }
-
-        .purchase-form {
-            background-color: #2a2a2a;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            width: 100%;
-            max-width: 450px;
+        body[data-theme='light'] .product-info {
+            background-color: var(--product-info-bg-light);
+            box-shadow: 0 4px 8px var(--product-info-shadow-light);
         }
 
-            .purchase-form h2 {
-                color: #ffffff;
-                margin-bottom: 1rem;
-            }
+        .product-info img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
 
-            .purchase-form input,
-            .purchase-form select,
-            .purchase-form button {
-                width: 100%;
-                padding: 0.5rem;
-                margin-bottom: 1rem;
-                border-radius: 4px;
-                border: 1px solid #444;
-                background-color: #333;
-                color: #ffffff;
-            }
+        .purchase-form {
+            background-color: var(--purchase-form-bg-dark);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px var(--product-info-shadow-dark);
+            width: 100%;
+        }
 
-            .purchase-form button {
-                background-color: #007bff;
-                border-color: #007bff;
-                cursor: pointer;
-            }
+        body[data-theme='light'] .purchase-form {
+            background-color: var(--purchase-form-bg-light);
+            box-shadow: 0 4px 8px var(--product-info-shadow-light);
+        }
 
-                .purchase-form button:hover {
-                    background-color: #0056b3;
-                }
+        .purchase-form h2 {
+            color: var(--color-dark);
+            margin-bottom: 1rem;
+        }
+
+        body[data-theme='light'] .purchase-form h2 {
+            color: var(--color-light);
+        }
+
+        .purchase-form input,
+        .purchase-form select,
+        .purchase-form button {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+            border: 1px solid var(--input-border-dark);
+            background-color: var(--input-bg-dark);
+            color: var(--input-color-dark);
+        }
+
+        body[data-theme='light'] .purchase-form input,
+        body[data-theme='light'] .purchase-form select,
+        body[data-theme='light'] .purchase-form button {
+            border: 1px solid var(--input-border-light);
+            background-color: var(--input-bg-light);
+            color: var(--input-color-light);
+        }
+
+        .purchase-form button {
+            background-color: var(--btn-bg-dark);
+            border-color: var(--btn-bg-dark);
+            cursor: pointer;
+        }
+
+        body[data-theme='light'] .purchase-form button {
+            background-color: var(--btn-bg-light);
+            border-color: var(--btn-bg-light);
+        }
+
+        .purchase-form button:hover {
+            background-color: var(--btn-hover-bg-dark);
+        }
+
+        body[data-theme='light'] .purchase-form button:hover {
+            background-color: var(--btn-hover-bg-light);
+        }
 
         footer {
             text-align: center;
-            padding: 20px 0;
-            color: #a0a0a0;
+            padding: 1rem 0;
+            color: var(--footer-color-dark);
+        }
+
+        body[data-theme='light'] footer {
+            color: var(--footer-color-light);
         }
 
         .container small a {
-            color: #a0a0a0;
+            color: var(--link-color-dark);
             text-decoration: none;
         }
 
-            .container small a:hover {
-                color: #ffffff;
+        body[data-theme='light'] .container small a {
+            color: var(--link-color-light);
+        }
+
+        .container small a:hover {
+            color: var(--link-hover-color-dark);
+        }
+
+        body[data-theme='light'] .container small a:hover {
+            color: var(--link-hover-color-light);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+            .form-group span.text-danger {
+                display: block;
+                margin-top: -0.75rem;
+                margin-bottom: 0.75rem;
             }
+
+        .validation-error {
+            background-color: var(--validation-error-bg-dark);
+            color: var(--validation-error-color-dark);
+            padding: 0.5rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        body[data-theme='light'] .validation-error {
+            background-color: var(--validation-error-bg-light);
+            color: var(--validation-error-color-light);
+        }
+
+        .validation-error::before {
+            content: '⚠ ';
+        }
+
     </style>
+
 </head>
 <body>
-    <nav class="container-fluid">
-        <ul>
-            <li><strong>RetailRally</strong></li>
-        </ul>
-        <ul>
-            <li><a href="#">Головна</a></li>
-            <li><a href="#">Повернутися до продукту</a></li>
-            <li><a href="#" role="button">Контакти</a></li>
-        </ul>
-    </nav>
     <main class="container">
         <div class="product-purchase-container">
             <div class="products-container">
@@ -125,80 +262,163 @@
                     <div class="product-info">
                         <img src="@product.PictureUrl" alt="Product Image">
                         <h3>@product.Name</h3>
-                        <p>Ціна: $@product.Price</p>
+                        @if (product.Discount.HasValue && product.Discount.Value > 0)
+                        {
+                            <p>Ціна: ₴@product.DiscountedPrice</p>
+                            <p class="original-price">Стара ціна: ₴@product.Price</p>
+                        }
+                        else
+                        {
+                            <p>Ціна: ₴@product.Price</p>
+                        }
                         <p>Кількість: @Model.ProductQuantities[product.Id]</p>
-                        <p>Проміжний підсумок: $@(product.Price * Model.ProductQuantities[product.Id])</p>
+                        <p>Проміжний підсумок: ₴@(product.Discount.HasValue ? product.DiscountedPrice * Model.ProductQuantities[product.Id] : product.Price * Model.ProductQuantities[product.Id])</p>
                     </div>
                 }
             </div>
-            <form asp-action="PlaceOrder" method="post" class="purchase-form">
+            <form asp-action="PlaceOrder" method="post" class="purchase-form" id="purchaseForm">
+                @Html.AntiForgeryToken()
                 <h2>Завершіть покупку</h2>
+                <div id="errorContainer" class="validation-error hidden"></div>
+
                 @foreach (var product in Model.Products)
                 {
                     <input type="hidden" name="productIds[]" value="@product.Id" />
                     <input type="hidden" name="quantities[]" value="@Model.ProductQuantities[product.Id]" />
                 }
-                <h1 class="label">Ім'я:</h1>
-                <input asp-for="Order.FirstName" value="@Model.User.FirstName" type="text" id="firstname" placeholder="Ім'я" aria-label="First Name">
-                <h1 class="label">Прізвище:</h1>
-                <input asp-for="Order.LastName" value="@Model.User.LastName" type="text" id="surname" placeholder="Прізвище" aria-label="Surname">
-                <h1 class="label">Електронна пошта:</h1>
-                <input asp-for="Order.Email" value="@Model.User.Email" type="email" id="email" placeholder="Електронна пошта" aria-label="Email">
-                <h1 class="label">Тип доставки:</h1>
-                <select asp-for="Order.ShippingTypeId" id="shippingTypeSelect">
-                    <option value="" disabled selected>Виберіть тип доставки</option>
-                    @foreach (var shippingType in ViewBag.ShippingTypes)
-                    {
-                        <option value="@shippingType.Value">@shippingType.Text</option>
-                    }
-                </select>
-                <span asp-validation-for="Order.ShippingType" class="text-danger"></span>
 
-                <div id="addressFields" style="display: none;">
-                    <h1 class="label">Країна:</h1>
-                    <input asp-for="DeliveryAddress.Country" type="text" placeholder="Країна" aria-label="Country">
-                    <h1 class="label">Місто:</h1>
-                    <input asp-for="DeliveryAddress.City" type="text" placeholder="Місто" aria-label="City">
-                    <h1 class="label">Вулиця:</h1>
-                    <input asp-for="DeliveryAddress.Street" type="text" placeholder="Вулиця" aria-label="Street">
-                    <h1 class="label">Поштовий індекс:</h1>
-                    <input asp-for="DeliveryAddress.PostalCode" type="text" placeholder="Поштовий індекс" aria-label="Postal Code">
+                <div class="form-group">
+                    <label for="firstname" class="label">Ім'я:</label>
+                    <input asp-for="Order.FirstName" value="@Model.User.FirstName" type="text" id="firstname" placeholder="Ім'я" aria-label="First Name">
+                    <span asp-validation-for="Order.FirstName" class="text-danger"></span>
                 </div>
-                <h1 class="label">Тип оплати:</h1>
-                <select asp-for="Order.PaymentTypeId" asp-items="ViewBag.PaymentTypes" >
-                    <option value="" disabled selected>Виберіть тип оплати</option>
-                </select>
-                <span asp-validation-for="Order.PaymentType" class="text-danger"></span>
-                <h2>Загальна ціна: $@totalPrice</h2>
-                <button asp-action="PlaceOrder" class="btn btn-primary">Підтвердити покупку</button>
+
+                <div class="form-group">
+                    <label for="surname" class="label">Прізвище:</label>
+                    <input asp-for="Order.LastName" value="@Model.User.LastName" type="text" id="surname" placeholder="Прізвище" aria-label="Surname">
+                    <span asp-validation-for="Order.LastName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="label">Електронна пошта:</label>
+                    <input asp-for="Order.Email" value="@Model.User.Email" type="email" id="email" placeholder="Електронна пошта" aria-label="Email">
+                    <span asp-validation-for="Order.Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="shippingTypeSelect" class="label">Тип доставки:</label>
+                    <select asp-for="Order.ShippingTypeId" id="shippingTypeSelect">
+                        <option value="" disabled selected>Виберіть тип доставки</option>
+                        @foreach (var shippingType in ViewBag.ShippingTypes)
+                        {
+                            <option value="@shippingType.Value">@shippingType.Text</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Order.ShippingTypeId" class="text-danger"></span>
+                </div>
+
+                <div id="addressFields" class="hidden">
+                    <div class="form-group">
+                        <label for="country" class="label">Країна:</label>
+                        <input asp-for="DeliveryAddress.Country" type="text" id="country" placeholder="Країна" aria-label="Country">
+                        <span asp-validation-for="DeliveryAddress.Country" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="city" class="label">Місто:</label>
+                        <input asp-for="DeliveryAddress.City" type="text" id="city" placeholder="Місто" aria-label="City">
+                        <span asp-validation-for="DeliveryAddress.City" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="street" class="label">Вулиця:</label>
+                        <input asp-for="DeliveryAddress.Street" type="text" id="street" placeholder="Вулиця" aria-label="Street">
+                        <span asp-validation-for="DeliveryAddress.Street" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="postalCode" class="label">Поштовий індекс:</label>
+                        <input asp-for="DeliveryAddress.PostalCode" type="text" id="postalCode" placeholder="Поштовий індекс" aria-label="Postal Code">
+                        <span asp-validation-for="DeliveryAddress.PostalCode" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="paymentType" class="label">Тип оплати:</label>
+                    <select asp-for="Order.PaymentTypeId" asp-items="ViewBag.PaymentTypes" id="paymentType">
+                        <option value="" disabled selected>Виберіть тип оплати</option>
+                    </select>
+                    <span asp-validation-for="Order.PaymentTypeId" class="text-danger"></span>
+                </div>
+
+                <h2>Загальна ціна: ₴@totalPrice</h2>
+                <button type="submit" class="btn btn-primary">Підтвердити покупку</button>
             </form>
         </div>
     </main>
+
     <footer class="container">
         <small>
             <a href="#">Політика конфіденційності</a> • <a href="#">Умови надання послуг</a>
         </small>
     </footer>
-</body>
-</html>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var shippingTypeSelect = document.getElementById('shippingTypeSelect');
-        var addressFields = document.getElementById('addressFields');
-        var addressInputs = addressFields.querySelectorAll('input');
+    <script>
+        $(document).ready(function () {
+            var shippingTypeSelect = document.getElementById('shippingTypeSelect');
+            var addressFields = document.getElementById('addressFields');
+            var addressInputs = addressFields.querySelectorAll('input');
+            var errorContainer = $('#errorContainer');
 
-        var shippingTypesRequiringAddress = ['1', '2'];
+            var shippingTypesRequiringAddress = ['1', '2'];
 
-        shippingTypeSelect.addEventListener('change', function () {
-            var selectedShippingTypeId = this.value;
-            var requiresAddress = shippingTypesRequiringAddress.includes(selectedShippingTypeId);
+            shippingTypeSelect.addEventListener('change', function () {
+                var selectedShippingTypeId = this.value;
+                var requiresAddress = shippingTypesRequiringAddress.includes(selectedShippingTypeId);
 
-            addressFields.style.display = requiresAddress ? "block" : "none";
+                addressFields.classList.toggle('hidden', !requiresAddress);
 
-            addressInputs.forEach(input => {
-                input.disabled = !requiresAddress;
+                addressInputs.forEach(input => {
+                    input.disabled = !requiresAddress;
+                });
+            });
+
+            $('#purchaseForm input, #purchaseForm select').on('input change', function () {
+                errorContainer.addClass('hidden').html('');
+            });
+
+            $('#purchaseForm').submit(function (event) {
+                event.preventDefault();
+
+                var form = $(this);
+                var url = form.attr('action');
+
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: form.serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            window.location.href = response.redirectUrl;
+                        } else {
+                            if (response.errors.length > 0) {
+                                errorContainer.removeClass('hidden');
+                                errorContainer.html('');
+                                $.each(response.errors, function (index, error) {
+                                    errorContainer.append('<p>' + error + '</p>');
+                                });
+                            } else {
+                                errorContainer.addClass('hidden');
+                            }
+                        }
+                    },
+                    error: function () {
+                        errorContainer.removeClass('hidden');
+                        errorContainer.html('<p>Сталася помилка. Будь ласка, спробуйте ще раз.</p>');
+                    }
+                });
             });
         });
-    });
-</script>
+    </script>
+</body>
+</html>

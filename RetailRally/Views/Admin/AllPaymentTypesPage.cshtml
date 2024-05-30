@@ -10,13 +10,46 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <style>
+        :root {
+            --theme: light;
+            --background-color-light: #f5f7fa;
+            --background-color-dark: #1c1e21;
+            --color-light: #1a1a1a;
+            --color-dark: #ecf0f1;
+            --order-summary-bg-light: #ffffff;
+            --order-summary-bg-dark: #3a3f47;
+            --order-summary-border-light: #cccccc;
+            --order-summary-border-dark: #34495e;
+            --order-summary-hover-shadow-light: #aaaaaa;
+            --order-summary-hover-shadow-dark: #5a5f67;
+            --nav-bg-light: #e0e0e0;
+            --nav-bg-dark: #222222;
+            --nav-link-color-light: #1a1a1a;
+            --nav-link-color-dark: #ffffff;
+            --nav-link-hover-bg-light: #007bff;
+            --nav-link-hover-bg-dark: #007bff;
+            --nav-link-hover-color-light: #ffffff;
+            --nav-link-hover-color-dark: #ffffff;
+            --link-color-light: #ff7f50;
+            --link-color-dark: lawngreen;
+            --link-hover-color-light: #e75432;
+            --link-hover-color-dark: green;
+            --link-hover-border-color-light: #e75432;
+            --link-hover-border-color-dark: green;
+        }
+
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #1c1e21;
-            color: #ecf0f1;
+            background-color: var(--background-color-dark);
+            color: var(--color-dark);
             margin: 0;
             padding: 0;
         }
+
+            body[data-theme='light'] {
+                background-color: var(--background-color-light);
+                color: var(--color-light);
+            }
 
         .container {
             max-width: 800px;
@@ -27,22 +60,35 @@
         h1 {
             text-align: center;
             margin-bottom: 30px;
-            color: #ecf0f1;
+            color: var(--color-dark);
+        }
+
+        body[data-theme='light'] h1 {
+            color: var(--color-light);
         }
 
         .shipping-type-card {
-            border: 1px solid #34495e;
+            border: 1px solid var(--order-summary-border-dark);
             border-radius: 8px;
             margin-bottom: 20px;
             padding: 15px;
-            background-color: #3a3f47;
+            background-color: var(--order-summary-bg-dark);
             transition: all 0.3s ease;
         }
 
-            .shipping-type-card:hover {
-                box-shadow: 0 0 10px #5a5f67;
-                cursor: pointer;
-            }
+        body[data-theme='light'] .shipping-type-card {
+            border: 1px solid var(--order-summary-border-light);
+            background-color: var(--order-summary-bg-light);
+        }
+
+        .shipping-type-card:hover {
+            box-shadow: 0 0 10px var(--order-summary-hover-shadow-dark);
+            cursor: pointer;
+        }
+
+        body[data-theme='light'] .shipping-type-card:hover {
+            box-shadow: 0 0 10px var(--order-summary-hover-shadow-light);
+        }
 
         .shipping-type-details p {
             margin: 5px 0;
@@ -64,11 +110,16 @@
                 margin-top: 20px;
             }
 
-                .add-shipping-type form input,
-                .add-shipping-type form button {
-                    margin-bottom: 10px;
-                    width: 80%;
-                }
+        body[data-theme='light'] .add-shipping-type form {
+            background-color: var(--background-color-light);
+            box-shadow: 0 4px 8px rgba(200, 200, 200, 0.5);
+        }
+
+        .add-shipping-type form input,
+        .add-shipping-type form button {
+            margin-bottom: 10px;
+            width: 80%;
+        }
 
         .btn-toggle {
             background-color: #007bff;

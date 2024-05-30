@@ -4,38 +4,157 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Подати запит на зміну адреси електронної пошти</title>
+    <style>
+        :root {
+            --theme: light;
+            --background-color-light: #f5f7fa;
+            --background-color-dark: #1c1e21;
+            --color-light: #1a1a1a;
+            --color-dark: #ecf0f1;
+            --card-bg-light: #ffffff;
+            --card-bg-dark: #3a3f47;
+            --card-border-light: #cccccc;
+            --card-border-dark: #34495e;
+            --btn-bg-light: #007bff;
+            --btn-bg-dark: #007bff;
+            --btn-hover-bg-light: #0056b3;
+            --btn-hover-bg-dark: #0056b3;
+            --form-text-light: #6c757d;
+            --form-text-dark: #a0a0a0;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--background-color-dark);
+            color: var(--color-dark);
+            margin: 0;
+            padding: 0;
+        }
+
+            body[data-theme='light'] {
+                background-color: var(--background-color-light);
+                color: var(--color-light);
+            }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .card {
+            border: 1px solid var(--card-border-dark);
+            border-radius: 8px;
+            background-color: var(--card-bg-dark);
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        body[data-theme='light'] .card {
+            border: 1px solid var(--card-border-light);
+            background-color: var(--card-bg-light);
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+            .card-header h3 {
+                margin: 0;
+                color: var(--color-dark);
+            }
+
+        body[data-theme='light'] .card-header h3 {
+            color: var(--color-light);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid var(--card-border-dark);
+            border-radius: 4px;
+            background-color: var(--card-bg-dark);
+            color: var(--color-dark);
+        }
+
+        body[data-theme='light'] .form-control {
+            border: 1px solid var(--card-border-light);
+            background-color: var(--card-bg-light);
+            color: var(--color-light);
+        }
+
+        .btn {
+            background-color: var(--btn-bg-dark);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+            .btn:hover {
+                background-color: var(--btn-hover-bg-dark);
+            }
+
+        body[data-theme='light'] .btn {
+            background-color: var(--btn-bg-light);
+        }
+
+            body[data-theme='light'] .btn:hover {
+                background-color: var(--btn-hover-bg-light);
+            }
+
+        .form-text {
+            color: var(--form-text-dark);
+        }
+
+        body[data-theme='light'] .form-text {
+            color: var(--form-text-light);
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+    </style>
 </head>
 <body>
     @{
         var messageSent = TempData["MessageSent"] as bool?;
     }
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col-md-6 offset-md-3">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="text-center">Подати запит на зміну адреси електронної пошти/h3>
-                    </div>
-                    <div class="card-body">
-                        @if (messageSent == true)
-                        {
-                            <p class="alert alert-success">Будь ласка, перевірте свою електронну пошту, щоб підтвердити зміну адреси.</p>
-                        }
-                        else
-                        {
-                            <p class="card-text">Будь ласка, введіть вашу поточну електронну адресу, щоб отримати посилання для зміни адреси електронної пошти.</p>
-                            <form asp-action="SendEmailChangeLink" method="post">
-                                <div class="form-group">
-                                    <label for="emailInput">Адреса електронної пошти</label>
-                                    <input type="email" class="form-control" id="emailInput" aria-describedby="emailHelp" placeholder="Введіть свою електронну адресу" name="email">
-                                    <small id="emailHelp" class="form-text text-muted">Ми ніколи не передамо вашу електронну пошту нікому іншому.</small>
-                                    <span class="text-danger">@TempData["WrongEmail"]</span>
-                                </div>
-                                <button class="btn btn-primary">Надіслати запит</button>
-                            </form>
-                        }
-                    </div>
-                </div>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="text-center">Подати запит на зміну адреси електронної пошти</h3>
+            </div>
+            <div class="card-body">
+                @if (messageSent == true)
+                {
+                    <p class="alert alert-success">Будь ласка, перевірте свою електронну пошту, щоб підтвердити зміну адреси.</p>
+                }
+                else
+                {
+                    <p class="card-text">Будь ласка, введіть вашу поточну електронну адресу, щоб отримати посилання для зміни адреси електронної пошти.</p>
+                    <form asp-action="SendEmailChangeLink" method="post">
+                        <div class="form-group">
+                            <label for="emailInput">Адреса електронної пошти</label>
+                            <input type="email" class="form-control" id="emailInput" aria-describedby="emailHelp" placeholder="Введіть свою електронну адресу" name="email">
+                            <small id="emailHelp" class="form-text">Ми ніколи не передамо вашу електронну пошту нікому іншому.</small>
+                            <span class="text-danger">@TempData["WrongEmail"]</span>
+                        </div>
+                        <button class="btn btn-primary">Надіслати запит</button>
+                    </form>
+                }
             </div>
         </div>
     </div>

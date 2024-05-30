@@ -6,15 +6,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Підсумок замовлення</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@picocss/pico@1/css/pico.min.css">
     <style>
+        :root {
+            --theme: light;
+            --background-color-light: #f5f7fa; /* Light blueish */
+            --background-color-dark: #1c1e21;
+            --color-light: #1a1a1a; /* Darker for contrast */
+            --color-dark: #e1e1e1;
+            --header-footer-bg-light: #e1f5fe; /* Light cyan */
+            --header-footer-bg-dark: #2c2f33;
+            --header-footer-color-light: #1a1a1a; /* Darker for contrast */
+            --header-footer-color-dark: #f1f1f1;
+            --nav-bg-light: #e0e0e0;
+            --nav-bg-dark: #3a3f47;
+            --nav-hover-bg-light: #d0d0d0;
+            --nav-hover-bg-dark: #5a5f67;
+            --order-details-bg-light: #ffffff;
+            --order-details-bg-dark: #2c2f33;
+            --product-card-border-light: #ccc;
+            --product-card-border-dark: #3a3f47;
+            --product-card-img-border-light: #ccc;
+            --product-card-img-border-dark: #3a3f47;
+            --footer-link-color-light: #333;
+            --footer-link-color-dark: #818181;
+            --footer-link-hover-color-light: #000000;
+            --footer-link-hover-color-dark: #f1f1f1;
+        }
+
         body {
             font-family: 'Arial', sans-serif;
+            background-color: var(--background-color-dark);
+            color: var(--color-dark);
             margin: 0;
             padding: 0;
-            background-color: #1c1e21;
-            color: #e1e1e1;
         }
+
+            body[data-theme='light'] {
+                background-color: var(--background-color-light);
+                color: var(--color-light);
+            }
 
         .container {
             max-width: 1200px;
@@ -25,33 +55,20 @@
         header, footer {
             text-align: center;
             padding: 20px;
-            background-color: #2c2f33;
+            background-color: var(--header-footer-bg-dark);
         }
 
-            header h1, footer small {
-                color: #f1f1f1;
-            }
-
-        nav ul {
-            list-style: none;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
+        body[data-theme='light'] header, body[data-theme='light'] footer {
+            background-color: var(--header-footer-bg-light);
         }
 
-        nav a {
-            color: #f1f1f1;
-            text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            background-color: #3a3f47;
-            transition: background-color 0.3s;
+        header h1, footer small {
+            color: var(--header-footer-color-dark);
         }
 
-            nav a:hover {
-                background-color: #5a5f67;
-            }
+        body[data-theme='light'] header h1, body[data-theme='light'] footer small {
+            color: var(--header-footer-color-light);
+        }
 
         .main-content {
             display: flex;
@@ -62,33 +79,53 @@
 
         .order-details, .products-list {
             flex: 1;
-            background-color: #2c2f33;
+            background-color: var(--order-details-bg-dark);
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-            .order-details h2, .products-list h2 {
-                border-bottom: 2px solid #3a3f47;
-                padding-bottom: 10px;
-                margin-bottom: 20px;
-            }
+        body[data-theme='light'] .order-details, body[data-theme='light'] .products-list {
+            background-color: var(--order-details-bg-light);
+        }
+
+        .order-details h2, .products-list h2 {
+            border-bottom: 2px solid var(--product-card-border-dark);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        body[data-theme='light'] .order-details h2, body[data-theme='light'] .products-list h2 {
+            border-bottom: 2px solid var(--product-card-border-light);
+        }
+
+        .order-details p {
+            margin-bottom: 20px; /* Added more margin to spread out the order details */
+        }
 
         .product-card {
             display: flex;
             gap: 20px;
-            border: 1px solid #3a3f47;
+            border: 1px solid var(--product-card-border-dark);
             border-radius: 8px;
             overflow: hidden;
             margin-bottom: 20px;
         }
 
-            .product-card img {
-                width: 150px;
-                height: 150px;
-                object-fit: cover;
-                border-right: 1px solid #3a3f47;
-            }
+        body[data-theme='light'] .product-card {
+            border: 1px solid var(--product-card-border-light);
+        }
+
+        .product-card img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-right: 1px solid var(--product-card-img-border-dark);
+        }
+
+        body[data-theme='light'] .product-card img {
+            border-right: 1px solid var(--product-card-img-border-light);
+        }
 
         .product-card-details {
             padding: 15px;
@@ -98,13 +135,23 @@
         }
 
         footer a {
-            color: #818181;
+            color: var(--footer-link-color-dark);
             text-decoration: none;
         }
 
-            footer a:hover {
-                text-decoration: underline;
-            }
+        body[data-theme='light'] footer a {
+            color: var(--footer-link-color-light);
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+            color: var(--footer-link-hover-color-dark);
+        }
+
+        body[data-theme='light'] footer a:hover {
+            color: var(--footer-link-hover-color-light);
+        }
+
     </style>
 </head>
 <body>
@@ -112,22 +159,16 @@
         <h1>Підсумок замовлення</h1>
     </header>
 
-    <nav class="container">
-        <ul>
-            <li><a asp-action="AllProducts">Товари</a></li>
-            <li><a asp-action="MyOrders" role="button">Мої замовлення</a></li>
-        </ul>
-    </nav>
-
     <main class="container main-content">
         <div class="order-details">
             <h2>Деталі вашого замовлення</h2>
             <p><strong>Код замовлення:</strong> @Model.Id</p>
             <p><strong>Повне ім'я:</strong> @Model.FirstName @Model.LastName</p>
             <p><strong>Електронна пошта:</strong> @Model.Email</p>
-            <p><strong>Загальна ціна:</strong> $@String.Format("{0:F2}", Model.TotalPrice)</p>
+            <p><strong>Загальна ціна:</strong> ₴@String.Format("{0:F2}", Model.TotalPrice)</p>
             <p><strong>Доставка:</strong> @Model.ShippingType?.Name</p>
             <p><strong>Оплата:</strong> @Model.PaymentType?.Name</p>
+            <a asp-controller="Product" asp-action="AllProducts" class="btn btn-primary">На головну сторінку</a>
         </div>
 
         <div class="products-list">
@@ -138,9 +179,9 @@
                     <img src="@op.Product.PictureUrl" alt="Product Image">
                     <div class="product-card-details">
                         <p><strong>Назва товару:</strong> @op.Product.Name</p>
-                        <p><strong>Кількість:</strong> @op.Quantity</p> 
-                        <p><strong>Ціна:</strong> $@String.Format("{0:F2}", op.Product.Price)</p>
-                        <p><strong>Всього:</strong> $@String.Format("{0:F2}", op.Product.Price * op.Quantity)</p>
+                        <p><strong>Кількість:</strong> @op.Quantity</p>
+                        <p><strong>Ціна:</strong> ₴@String.Format("{0:F2}", op.Product.Price)</p>
+                        <p><strong>Всього:</strong> ₴@String.Format("{0:F2}", op.Product.Price * op.Quantity)</p>
                     </div>
                 </div>
             }

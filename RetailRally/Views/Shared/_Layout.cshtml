@@ -10,23 +10,39 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - RetailRally</title>
-    <link rel="stylesheet" href="~/css/theme.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/styles.css">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link id="theme-stylesheet" rel="stylesheet" href="~/css/global.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
+    <script src="~/js/site.js" asp-append-version="true"></script>
     <style>
+        :root {
+            --background-color-dark: #1F2937;
+            --header-background-dark: #111827;
+            --header-color-dark: #F9FAFB;
+            --button-background-dark: #10B981;
+            --sidebar-background-dark: #111;
+            --sidebar-color-dark: #818181;
+            --sidebar-border-color-dark: #2c3e50;
+            --count-background-dark: #FEE2E2;
+            --count-color-dark: #EF4444;
+            --input-background-dark: #333;
+            --input-border-dark: #444;
+            --input-color-dark: #e0e0e0;
+            --header-color-light: #9CA3AF;
+            --user-email-color: #a1b2c3;
+        }
+
         body {
             margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1F2937;
+            background-color: var(--background-color-dark);
         }
 
         .header {
-            background-color: #111827;
-            color: #F9FAFB;
+            background-color: var(--header-background-dark);
+            color: var(--header-color-dark);
             padding: 16px 32px;
             display: flex;
             justify-content: space-between;
@@ -38,13 +54,13 @@
         }
 
             .header .logo {
-                color: #10B981;
+                color: var(--button-background-dark);
                 font-size: 24px;
                 font-weight: bold;
             }
 
             .header .menu-button {
-                color: #9CA3AF;
+                color: var(--header-color-light);
                 margin-right: 16px;
                 cursor: pointer;
             }
@@ -58,7 +74,7 @@
             }
 
             .header .icons {
-                color: #9CA3AF;
+                color: var(--header-color-light);
                 cursor: pointer;
                 margin-bottom: 8px;
                 margin-left: 15px;
@@ -66,8 +82,8 @@
             }
 
                 .header .icons .count {
-                    color: #EF4444;
-                    background-color: #FEE2E2;
+                    color: var(--count-color-dark);
+                    background-color: var(--count-background-dark);
                     border-radius: 9999px;
                     padding: 2px 6px;
                     font-size: 12px;
@@ -83,8 +99,8 @@
         .header .language-switcher button {
             padding: 4px 12px;
             margin-left: 4px;
-            background-color: #10B981;
-            color: #F9FAFB;
+            background-color: var(--button-background-dark);
+            color: var(--header-color-dark);
             border: none;
             border-radius: 9999px;
             cursor: pointer;
@@ -98,10 +114,10 @@
             height: 100%;
             width: 0;
             position: fixed;
-            z-index: 1001; /* Ensure the sidebar appears above the overlay */
+            z-index: 1001; 
             top: 0;
             left: 0;
-            background-color: #111;
+            background-color: var(--sidebar-background-dark);
             overflow-x: hidden;
             transition: 0.3s;
             padding-top: 60px;
@@ -111,15 +127,15 @@
                 padding: 8px 8px 8px 32px;
                 text-decoration: none;
                 font-size: 25px;
-                color: #818181;
+                color: var(--sidebar-color-dark);
                 display: block;
                 transition: 0.3s;
-                border-bottom: 1px solid #2c3e50;
+                border-bottom: 1px solid var(--sidebar-border-color-dark);
                 margin-bottom: 8px;
             }
 
                 .sidebar a:hover {
-                    color: #f1f1f1;
+                    color: var(--header-color-dark);
                     text-decoration: none;
                 }
 
@@ -134,18 +150,19 @@
                 padding: 8px;
             }
 
-            .sidebar .close-btn {
-                border-bottom: none;
+            .sidebar .sidebar-link {
+                border: none;
+                border-bottom: 1px solid var(--sidebar-border-color-dark);
             }
 
         .sidebar-link {
             padding: 8px 8px 8px 32px;
             text-decoration: none;
             font-size: 25px;
-            color: #818181;
+            color: var(--sidebar-color-dark);
             display: block;
             transition: 0.3s;
-            border-bottom: 1px solid #2c3e50;
+            border-bottom: 1px solid var(--sidebar-border-color-dark);
             margin-bottom: 8px;
             background: none;
             border: none;
@@ -155,15 +172,9 @@
         }
 
             .sidebar-link:hover {
-                color: #f1f1f1;
+                color: var(--header-color-dark);
                 text-decoration: none;
             }
-
-
-        .sidebar .sidebar-link {
-            border: none;
-            border-bottom: 1px solid #2c3e50;
-        }
 
         .overlay {
             display: none;
@@ -174,8 +185,8 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(0,0,0,0.5);
-            z-index: 1000; /* Ensure the overlay appears above other content */
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000; 
             cursor: pointer;
             transition: 0.3s;
         }
@@ -184,7 +195,15 @@
             display: flex;
             align-items: center;
             justify-content: flex-start;
+            padding-left: 32px; */
         }
+
+            .user-profile img {
+                width: 72px;
+                height: 72px;
+                border-radius: 50%;
+                margin-right: 16px;
+            }
 
         .user-info {
             display: flex;
@@ -193,12 +212,12 @@
 
         .user-name {
             font-size: 1rem;
-            color: #fff;
+            color: var(--header-color-dark);
         }
 
         .user-email {
             font-size: 0.8rem;
-            color: #a1b2c3;
+            color: var(--user-email-color);
         }
 
         .right-side {
@@ -228,7 +247,7 @@
             }
 
         .user-info-header .user-email {
-            color: #9CA3AF;
+            color: var(--header-color-light);
             font-size: 0.875rem;
             margin-bottom: 8px;
             white-space: nowrap;
@@ -239,7 +258,6 @@
             color: inherit;
             text-decoration: none;
         }
-
 
             .user-profile-link:hover {
                 color: inherit;
@@ -255,10 +273,10 @@
             padding: 8px 8px 8px 32px;
             text-decoration: none;
             font-size: 20px;
-            color: #818181;
+            color: var(--sidebar-color-dark);
             display: block;
             transition: 0.3s;
-            border-bottom: 1px solid #2c3e50;
+            border-bottom: 1px solid var(--sidebar-border-color-dark);
             margin-bottom: 8px;
             background: none;
             border: none;
@@ -268,20 +286,15 @@
         }
 
             .sidebar-link:hover, .dropdown-item:hover {
-                color: #f1f1f1;
+                color: var(--header-color-dark);
                 text-decoration: none;
-                background-color: #2c3e50;
+                background-color: var(--sidebar-border-color-dark);
             }
-
-        .sidebar .sidebar-link {
-            border: none;
-            border-bottom: 1px solid #2c3e50;
-        }
 
         .dropdown-toggle {
             padding: 8px 8px 8px 32px;
             font-size: 20px;
-            color: #818181;
+            color: var(--sidebar-color-dark);
             background: none;
             border: none;
             cursor: pointer;
@@ -291,7 +304,7 @@
         }
 
             .dropdown-toggle:hover {
-                color: #f1f1f1;
+                color: var(--header-color-dark);
             }
 
         .dropdown-menu {
@@ -304,14 +317,74 @@
             .dropdown-menu .dropdown-item {
                 padding: 10px 20px;
                 font-size: 18px;
-                color: #818181;
+                color: var(--sidebar-color-dark);
                 transition: 0.3s;
             }
 
                 .dropdown-menu .dropdown-item:hover {
-                    background-color: #2c3e50;
-                    color: #f1f1f1;
+                    background-color: var(--sidebar-border-color-dark);
+                    color: var(--header-color-dark);
                 }
+
+
+        .theme-switch-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .theme-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+            .theme-switch input {
+                display: none;
+            }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 26px;
+                width: 26px;
+                left: 4px;
+                bottom: 4px;
+                background-color: white;
+                transition: 0.4s;
+                border-radius: 50%;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+            input:checked + .slider:before {
+                transform: translateX(26px);
+            }
+
+        .slider.round {
+            border-radius: 34px;
+        }
+
+            .slider.round:before {
+                border-radius: 50%;
+            }
     </style>
 </head>
 <body>
@@ -324,6 +397,7 @@
             </div>
         </div>
     </div>
+
     <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -390,6 +464,13 @@
             <div id="searchResults"></div>
         </div>
         <div class="right-side">
+            <div class="theme-switch-wrapper">
+                <label class="theme-switch" for="checkbox">
+                    <input type="checkbox" id="checkbox" />
+                    <div class="slider round"></div>
+                </label>
+            </div>
+
             @if (User.Identity.IsAuthenticated)
             {
                 @await Component.InvokeAsync("UserProfile", "UserProfileEmailOnly")
@@ -399,7 +480,7 @@
                     </i>
                 </a>
             }
-        </div>
+                    </div>
     </div>
     <div class="container" style="padding-top: 100px;">
         <main role="main" class="pb-3">
@@ -407,7 +488,7 @@
         </main>
     </div>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
     <script>
@@ -508,7 +589,7 @@
         });
 
         function openNav() {
-            document.getElementById("sidebar").style.width = "250px";
+            document.getElementById("sidebar").style.width = "300px";
             document.getElementById("overlay").style.display = "block";
         }
         function closeNav() {

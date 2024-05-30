@@ -9,22 +9,49 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <title>Мої товари</title>
     <style>
+        :root {
+            --theme: light;
+            --background-color-light: #f5f7fa;
+            --background-color-dark: #1f1f1f;
+            --color-light: #1a1a1a;
+            --color-dark: #e0e0e0;
+            --link-color-light: #ff7f50;
+            --link-color-dark: lawngreen;
+            --link-hover-color-light: #e75432;
+            --link-hover-color-dark: green;
+        }
+
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #1f1f1f;
-            color: #e0e0e0;
+            background-color: var(--background-color-dark);
+            color: var(--color-dark);
         }
+
+            body[data-theme='light'] {
+                background-color: var(--background-color-light);
+                color: var(--color-light);
+            }
 
         .link-style {
-            color: lawngreen;
+            color: var(--link-color-dark);
             text-decoration: none;
-            border-bottom: 1px solid lawngreen;
+            border-bottom: 1px solid var(--link-color-dark);
         }
 
-            .link-style:hover {
-                color: green;
-                border-color: green;
-            }
+        body[data-theme='light'] .link-style {
+            color: var(--link-color-light);
+            border-bottom: 1px solid var(--link-color-light);
+        }
+
+        .link-style:hover {
+            color: var(--link-hover-color-dark);
+            border-color: var(--link-hover-color-dark);
+        }
+
+        body[data-theme='light'] .link-style:hover {
+            color: var(--link-hover-color-light);
+            border-color: var(--link-hover-color-light);
+        }
 
         .new-link-style:hover {
             color: gray;
@@ -89,6 +116,11 @@
             border-radius: 8px;
         }
 
+        body[data-theme='light'] .categories {
+            background-color: #f5f7fa;
+            box-shadow: 0px 0px 5px 0px rgba(200,200,200,0.5);
+        }
+
         .products-flex-grow-1 {
             flex-grow: 1;
         }
@@ -101,22 +133,31 @@
         }
 
             .categories ul li a {
-                color: #e0e0e0;
+                color: var(--color-dark);
                 text-decoration: none;
             }
 
-                .categories ul li a:hover {
-                    color: #00ff00;
-                }
+        body[data-theme='light'] .categories ul li a {
+            color: var(--color-light);
+        }
+
+        .categories ul li a:hover {
+            color: #00ff00;
+        }
 
         .card {
             background-color: #333;
             border: none;
-            color: #e0e0e0;
+            color: var(--color-dark);
             border-radius: 8px;
             overflow: hidden;
             position: relative;
             padding-bottom: 20px;
+        }
+
+        body[data-theme='light'] .card {
+            background-color: var(--background-color-light);
+            color: var(--color-light);
         }
 
         .card-title {
@@ -216,27 +257,36 @@
             border-radius: 8px;
         }
 
-            nav.container-fluid ul {
-                list-style: none;
-                padding: 0;
-                margin: 0;
-                display: flex;
-                gap: 1rem;
+        body[data-theme='light'] nav.container-fluid {
+            background-color: var(--background-color-light);
+            box-shadow: 0 4px 8px rgba(200, 200, 200, 0.2);
+        }
+
+        nav.container-fluid ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 1rem;
+        }
+
+            nav.container-fluid ul li a {
+                text-decoration: none;
+                color: var(--color-dark);
+                padding: 0.5rem 1rem;
+                transition: background-color 0.3s, color 0.3s;
             }
 
-                nav.container-fluid ul li a {
-                    text-decoration: none;
-                    color: #e0e0e0;
-                    padding: 0.5rem 1rem;
-                    transition: background-color 0.3s, color 0.3s;
-                }
+        body[data-theme='light'] nav.container-fluid ul li a {
+            color: var(--color-light);
+        }
 
-                    nav.container-fluid ul li a:hover,
-                    nav.container-fluid ul li a:focus {
-                        background-color: #007bff;
-                        color: white;
-                        border-radius: 0.25rem;
-                    }
+        nav.container-fluid ul li a:hover,
+        nav.container-fluid ul li a:focus {
+            background-color: #007bff;
+            color: white;
+            border-radius: 0.25rem;
+        }
 
         footer {
             text-align: center;
@@ -303,7 +353,7 @@
                                 <h5 class="card-title">@product.Category.Name</h5>
                                 <p class="card-text quantity">В наявності: @product.Quantity</p>
                                 <p class="card-text">
-                                    <span class="price">$@product.Price.ToString("0.00")</span>
+                                    <span class="price">₴@product.Price?.ToString("0.00")</span>
                                 </p>
                                 <div class="mt-auto d-flex justify-content-between">
                                     <a asp-route-productId="@product.Id" asp-action="GoToProductEditPage" class="btn btn-primary btn-sm">Редагувати</a>

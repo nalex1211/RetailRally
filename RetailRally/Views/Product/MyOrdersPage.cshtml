@@ -8,13 +8,46 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pico.css/dist/pico.min.css">
     <title>Мої замовлення</title>
     <style>
+        :root {
+            --theme: light;
+            --background-color-light: #f5f7fa; 
+            --background-color-dark: #1c1e21;
+            --color-light: #1a1a1a; 
+            --color-dark: #ecf0f1;
+            --order-summary-bg-light: #ffffff;
+            --order-summary-bg-dark: #3a3f47;
+            --order-summary-border-light: #cccccc;
+            --order-summary-border-dark: #34495e;
+            --order-summary-hover-shadow-light: #aaaaaa;
+            --order-summary-hover-shadow-dark: #5a5f67;
+            --nav-bg-light: #e0e0e0;
+            --nav-bg-dark: #222222;
+            --nav-link-color-light: #1a1a1a; 
+            --nav-link-color-dark: #ffffff;
+            --nav-link-hover-bg-light: #007bff;
+            --nav-link-hover-bg-dark: #007bff;
+            --nav-link-hover-color-light: #ffffff;
+            --nav-link-hover-color-dark: #ffffff;
+            --link-color-light: #ff7f50; 
+            --link-color-dark: lawngreen;
+            --link-hover-color-light: #e75432; 
+            --link-hover-color-dark: green;
+            --link-hover-border-color-light: #e75432; 
+            --link-hover-border-color-dark: green;
+        }
+
         body {
             font-family: 'Arial', sans-serif;
+            background-color: var(--background-color-dark);
+            color: var(--color-dark);
             margin: 0;
             padding: 0;
-            background-color: #1c1e21;
-            color: #ecf0f1;
         }
+
+            body[data-theme='light'] {
+                background-color: var(--background-color-light);
+                color: var(--color-light);
+            }
 
         main.container {
             max-width: 1000px;
@@ -25,29 +58,43 @@
         h1 {
             text-align: center;
             margin-bottom: 30px;
-            color: #ecf0f1;
+            color: var(--color-dark);
+        }
+
+        body[data-theme='light'] h1 {
+            color: var(--color-light);
         }
 
         .order-summary {
-            border: 1px solid #34495e;
+            border: 1px solid var(--order-summary-border-dark);
             border-radius: 8px;
             margin-bottom: 20px;
             padding: 15px;
             transition: all 0.3s ease;
-            background-color: #3a3f47;
+            background-color: var(--order-summary-bg-dark);
             font-size: 20px;
-            color: #ecf0f1;
+            color: var(--color-dark);
             position: relative;
         }
 
-            .order-summary.no-outline {
-                box-shadow: none !important;
-            }
+        body[data-theme='light'] .order-summary {
+            border: 1px solid var(--order-summary-border-light);
+            background-color: var(--order-summary-bg-light);
+            color: var(--color-light);
+        }
 
-            .order-summary:hover {
-                box-shadow: 0 0 10px #5a5f67;
-                cursor: pointer;
-            }
+        .order-summary.no-outline {
+            box-shadow: none !important;
+        }
+
+        .order-summary:hover {
+            box-shadow: 0 0 10px var(--order-summary-hover-shadow-dark);
+            cursor: pointer;
+        }
+
+        body[data-theme='light'] .order-summary:hover {
+            box-shadow: 0 0 10px var(--order-summary-hover-shadow-light);
+        }
 
         .details {
             display: none;
@@ -59,46 +106,74 @@
             justify-content: space-between;
             align-items: center;
             padding: 1rem 2rem;
-            background-color: #222222;
+            background-color: var(--nav-bg-dark);
         }
 
-            nav.container-fluid ul {
-                list-style: none;
-                padding: 0;
-                margin: 0;
-                display: flex;
-                gap: 1rem;
-            }
+        body[data-theme='light'] nav.container-fluid {
+            background-color: var(--nav-bg-light);
+        }
+
+        nav.container-fluid ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 1rem;
+        }
 
         .link-style {
-            color: lawngreen;
+            color: var(--link-color-dark);
             text-decoration: none;
-            border-bottom: 1px solid lawngreen;
+            border-bottom: 1px solid var(--link-color-dark);
         }
 
-            .link-style:hover {
-                color: green;
-                border-color: green;
-            }
+        body[data-theme='light'] .link-style {
+            color: var(--link-color-light);
+            border-bottom: 1px solid var(--link-color-light);
+        }
+
+        .link-style:hover {
+            color: var(--link-hover-color-dark);
+            border-color: var(--link-hover-border-color-dark);
+        }
+
+        body[data-theme='light'] .link-style:hover {
+            color: var(--link-hover-color-light);
+            border-color: var(--link-hover-border-color-light);
+        }
 
         nav.container-fluid ul li a {
             text-decoration: none;
-            color: white;
+            color: var(--nav-link-color-dark);
             padding: 0.5rem 1rem;
             transition: background-color 0.3s, color 0.3s;
         }
 
-            nav.container-fluid ul li a:hover,
-            nav.container-fluid ul li a:focus {
-                background-color: #007bff;
-                color: white;
-                border-radius: 0.25rem;
-            }
+        body[data-theme='light'] nav.container-fluid ul li a {
+            color: var(--nav-link-color-light);
+        }
 
-            nav.container-fluid ul li a[role="button"] {
-                background-color: #007bff;
-                border-radius: 0.25rem;
-            }
+        nav.container-fluid ul li a:hover,
+        nav.container-fluid ul li a:focus {
+            background-color: var(--nav-link-hover-bg-dark);
+            color: var(--nav-link-hover-color-dark);
+            border-radius: 0.25rem;
+        }
+
+        body[data-theme='light'] nav.container-fluid ul li a:hover,
+        body[data-theme='light'] nav.container-fluid ul li a:focus {
+            background-color: var(--nav-link-hover-bg-light);
+            color: var(--nav-link-hover-color-light);
+        }
+
+        nav.container-fluid ul li a[role="button"] {
+            background-color: var(--nav-link-hover-bg-dark);
+            border-radius: 0.25rem;
+        }
+
+        body[data-theme='light'] nav.container-fluid ul li a[role="button"] {
+            background-color: var(--nav-link-hover-bg-light);
+        }
 
         .order-details {
             margin-bottom: 20px;
@@ -135,19 +210,18 @@
         .order-summary .toggle-button {
             background-color: transparent;
             border: none;
-            color: #ecf0f1;
+            color: var(--color-dark);
             font-size: 1.5rem;
             cursor: pointer;
         }
+
+        body[data-theme='light'] .order-summary .toggle-button {
+            color: var(--color-light);
+        }
+
     </style>
 </head>
 <body>
-    <nav class="container-fluid">
-        <ul>
-            <li><a asp-action="AllProducts">Товари</a></li>
-            <li><a asp-action="MyOrders" role="button">Мої замовлення</a></li>
-        </ul>
-    </nav>
     <main class="container">
         <h1>Мої замовлення</h1>
         @if (Model.Count == 0)
@@ -161,7 +235,7 @@
                 <div class="order-summary" id="order-summary-@order.Id" onclick="toggleDetails(@order.Id)">
                     <div class="order-summary-header">
                         <p>Код замовлення: @order.Id</p>
-                        <p>Загальна ціна: $@String.Format("{0:F2}", order.TotalPrice)</p>
+                        <p>Загальна ціна: ₴@String.Format("{0:F2}", order.TotalPrice)</p>
                         <button class="toggle-button">&#9662;</button>
                     </div>
                     <div id="details-@order.Id" class="details">

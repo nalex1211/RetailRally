@@ -10,11 +10,52 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <title>Редагувати товар</title>
     <style>
+        :root {
+            --theme: light;
+            --background-color-light: #f5f7fa;
+            --background-color-dark: #1f1f1f;
+            --color-light: #1a1a1a;
+            --color-dark: #e0e0e0;
+            --link-color-light: #ff7f50;
+            --link-color-dark: lawngreen;
+            --link-hover-color-light: #e75432;
+            --link-hover-color-dark: green;
+            --categories-background-light: #e1f5fe;
+            --categories-background-dark: #2E2E2E;
+            --card-background-light: #ffffff;
+            --card-background-dark: #333;
+            --card-description-color-light: #333;
+            --card-description-color-dark: #a0a0a0;
+            --price-color-light: #ff4500;
+            --price-color-dark: #21B10D;
+            --old-price-color-light: #d32f2f;
+            --old-price-color-dark: #ff0000;
+            --quantity-color-light: #555555;
+            --quantity-color-dark: #a0a0a0;
+            --comment-count-color-light: #ff6347;
+            --comment-count-color-dark: #8E8B8B;
+            --footer-color-light: #333;
+            --footer-color-dark: #a0a0a0;
+            --btn-primary-light: #ff7f50;
+            --btn-primary-dark: #4682b4;
+            --btn-success-light: #3cb371;
+            --btn-success-dark: #32cd32;
+            --validation-error-bg-light: #f8d7da;
+            --validation-error-bg-dark: #7f0000;
+            --validation-error-color-light: #721c24;
+            --validation-error-color-dark: #ffffff;
+        }
+
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #1f1f1f;
-            color: #e0e0e0;
+            background-color: var(--background-color-dark);
+            color: var(--color-dark);
         }
+
+            body[data-theme='light'] {
+                background-color: var(--background-color-light);
+                color: var(--color-light);
+            }
 
         .container {
             display: flex;
@@ -31,7 +72,12 @@
             background-color: #383838;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        body[data-theme='light'] .product-edit {
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .product-image {
@@ -80,25 +126,39 @@
             border-radius: 8px;
             cursor: pointer;
             transition: background-color 0.3s;
-            margin-top: 10px
+            margin-top: 10px;
         }
 
-            .edit-button:hover, .change-picture-button:hover {
-                background-color: #0056b3;
-            }
+        body[data-theme='light'] .edit-button, body[data-theme='light'] .change-picture-button {
+            background-color: #ff7f50;
+        }
+
+        .edit-button:hover, .change-picture-button:hover {
+            background-color: #0056b3;
+        }
+
+        body[data-theme='light'] .edit-button:hover, body[data-theme='light'] .change-picture-button:hover {
+            background-color: #e75432;
+        }
 
         .validation-summary-errors, .validation-error {
-            background-color: #f8d7da;
-            color: #721c24;
+            background-color: var(--validation-error-bg-dark);
+            color: var(--validation-error-color-dark);
             padding: 0.5rem;
             border-radius: 4px;
             margin-bottom: 1rem;
-            display: none; /* Initially hidden */
+            display: none; 
         }
 
-            .validation-summary-errors::before, .validation-error::before {
-                content: '⚠ ';
-            }
+        body[data-theme='light'] .validation-summary-errors, body[data-theme='light'] .validation-error {
+            background-color: var(--validation-error-bg-light);
+            color: var(--validation-error-color-light);
+        }
+
+        .validation-summary-errors::before, .validation-error::before {
+            content: '⚠ ';
+        }
+
     </style>
     <script>
         $(document).ready(function () {
@@ -147,13 +207,7 @@
                                 window.location.href = '@Url.Action("GoToMyProductsPage")';
                             });
                         } else {
-                            Swal.fire({
-                                title: 'Не вдалося оновити товар.',
-                                text: response.error,
-                                icon: 'error',
-                                showConfirmButton: true
-                            });
-
+                           
                             var errors = response.errors;
                             var validationSummary = $('.validation-summary-errors');
                             validationSummary.html('').show();
@@ -176,16 +230,6 @@
 
 </head>
 <body>
-    <nav class="container-fluid">
-        <ul>
-            <li><strong>RetailRally</strong></li>
-        </ul>
-        <ul>
-            <li><a href="#">Головна</a></li>
-            <li><a href="#">Товари</a></li>
-            <li><a href="#" role="button">Контакти</a></li>
-        </ul>
-    </nav>
     <form asp-action="EditProduct" enctype="multipart/form-data" method="post">
         <input type="hidden" asp-for="UserId" value="@User.GetUserId()" />
         <input type="hidden" asp-for="Id" />
@@ -208,6 +252,9 @@
                     <h1 class="label">Ціна товару:</h1>
                     <input class="no-spin-buttons" asp-for="Price" type="number" placeholder="Ціна товару" aria-label="Price" />
 
+                    <h1 class="label">Знижка (%):</h1>
+                    <input class="no-spin-buttons" asp-for="Discount" type="number" placeholder="Знижка" aria-label="Discount" />
+
                     <h1 class="label">Кількість товару:</h1>
                     <input class="no-spin-buttons" asp-for="Quantity" type="number" placeholder="Кількість товару" aria-label="Quantity" />
 
@@ -225,4 +272,5 @@
         <small><a href="#">Політика конфіденційності</a> • <a href="#">Умови надання послуг</a></small>
     </footer>
 </body>
+
 </html>

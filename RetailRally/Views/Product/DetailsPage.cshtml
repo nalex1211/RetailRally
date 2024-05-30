@@ -12,16 +12,68 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <title>Продукт RetailRally</title>
     <style>
+        :root {
+            --theme: light;
+            --background-color-light: #f5f7fa;
+            --background-color-dark: #1f1f1f;
+            --color-light: #1a1a1a;
+            --color-dark: #e0e0e0;
+            --link-hover-color-light: #ff7f50;
+            --link-hover-color-dark: #27539c;
+            --link-style-hover-color: gray;
+            --product-details-bg-light: #e1f5fe;
+            --product-details-bg-dark: #2a2a2a;
+            --product-details-border-light: #ddd;
+            --product-details-border-dark: #444;
+            --product-details-color-light: #1a1a1a;
+            --product-details-color-dark: #e0e0e0;
+            --product-details-h3-color-light: #333;
+            --product-details-h3-color-dark: #cccccc;
+            --product-details-p-color-light: #555;
+            --product-details-p-color-dark: #aaaaaa;
+            --comment-section-bg-light: #e1f5fe;
+            --comment-section-bg-dark: #2a2a2a;
+            --comment-border-light: #ddd;
+            --comment-border-dark: #444;
+            --trash-icon-color-light: #666;
+            --trash-icon-color-dark: #666;
+            --trash-icon-hover-color-light: #333;
+            --trash-icon-hover-color-dark: #333;
+            --metadata-color-light: #aaa;
+            --metadata-color-dark: #aaa;
+            --comment-text-color-light: #555;
+            --comment-text-color-dark: #ccc;
+            --footer-color-light: #333;
+            --footer-color-dark: #a0a0a0;
+            --btn-primary-light: #ff7f50;
+            --btn-primary-dark: #4682b4;
+            --btn-secondary-light: #6c757d;
+            --btn-secondary-dark: #5a6268;
+            --btn-comment-light: #ff6347;
+            --btn-comment-dark: #505050;
+            --btn-comment-text-light: #ffffff;
+            --btn-comment-text-dark: #e0e0e0;
+        }
+
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #1f1f1f;
-            color: #e0e0e0;
+            background-color: var(--background-color-dark);
+            color: var(--color-dark);
             margin: 0;
             padding: 0;
         }
 
+            body[data-theme='light'] {
+                background-color: var(--background-color-light);
+                color: var(--color-light);
+            }
+
         .link:hover {
-            color: #27539c;
+            color: var(--link-hover-color-dark);
+        }
+
+        body[data-theme='light'] .link:hover {
+            color: var(--link-hover-color-light);
         }
 
         p {
@@ -29,7 +81,7 @@
         }
 
         .link-style:hover {
-            color: gray;
+            color: var(--link-style-hover-color);
         }
 
         .product-container {
@@ -43,7 +95,7 @@
 
         .product-image {
             flex: 1 1 500px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             margin-bottom: 1rem;
             display: flex;
             justify-content: center;
@@ -60,32 +112,50 @@
 
         .product-details {
             flex: 1 1 300px;
-            background-color: #2a2a2a;
+            background-color: var(--product-details-bg-dark);
             padding: 2rem;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            border: 1px solid #444;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--product-details-border-dark);
         }
 
-            .product-details h2 {
-                margin-top: 0;
-                color: #e0e0e0;
-                border-bottom: 1px solid #444;
-                padding-bottom: 0.5rem;
-                margin-bottom: 1rem;
-            }
+        body[data-theme='light'] .product-details {
+            background-color: var(--product-details-bg-light);
+            border: 1px solid var(--product-details-border-light);
+        }
 
-            .product-details h3 {
-                color: #cccccc;
-                margin-top: 1.5rem;
-                font-size: 1.1rem;
-            }
+        .product-details h2 {
+            margin-top: 0;
+            color: var(--product-details-color-dark);
+            border-bottom: 1px solid var(--product-details-border-dark);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
 
-            .product-details p {
-                color: #aaaaaa;
-                margin-bottom: 1rem;
-                font-size: 1rem;
-            }
+        body[data-theme='light'] .product-details h2 {
+            color: var(--product-details-color-light);
+            border-bottom: 1px solid var(--product-details-border-light);
+        }
+
+        .product-details h3 {
+            color: var(--product-details-h3-color-dark);
+            margin-top: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        body[data-theme='light'] .product-details h3 {
+            color: var(--product-details-h3-color-light);
+        }
+
+        .product-details p {
+            color: var(--product-details-p-color-dark);
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        body[data-theme='light'] .product-details p {
+            color: var(--product-details-p-color-light);
+        }
 
         .btn {
             display: inline-block;
@@ -103,45 +173,68 @@
         }
 
         .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
+            background-color: var(--btn-primary-light);
+            border-color: var(--btn-primary-light);
             color: white;
         }
 
             .btn-primary:hover {
-                background-color: #0056b3;
-                border-color: #0056b3;
+                background-color: var(--btn-primary-dark);
+                border-color: var(--btn-primary-dark);
+            }
+
+        body[data-theme='dark'] .btn-primary {
+            background-color: var(--btn-primary-dark);
+            border-color: var(--btn-primary-dark);
+        }
+
+            body[data-theme='dark'] .btn-primary:hover {
+                background-color: var(--btn-primary-dark);
+                border-color: var(--btn-primary-dark);
             }
 
         .btn-secondary {
-            background-color: #6c757d;
-            border-color: #6c757d;
+            background-color: var(--btn-secondary-light);
+            border-color: var(--btn-secondary-light);
+            color: white;
         }
 
             .btn-secondary:hover {
-                background-color: #5a6268;
-                border-color: #545b62;
+                background-color: var(--btn-secondary-dark);
+                border-color: var(--btn-secondary-dark);
             }
 
-            .btn-secondary:disabled {
-                background-color: #cccccc;
-                border-color: #cccccc;
-                cursor: not-allowed;
+        body[data-theme='dark'] .btn-secondary {
+            background-color: var(--btn-secondary-dark);
+            border-color: var(--btn-secondary-dark);
+        }
+
+            body[data-theme='dark'] .btn-secondary:hover {
+                background-color: var(--btn-secondary-dark);
+                border-color: var(--btn-secondary-dark);
             }
 
         .comment-section {
             border-radius: 5px;
             padding: 1rem;
             margin-bottom: 1rem;
-            background-color: #2a2a2a;
+            background-color: var(--comment-section-bg-dark);
+        }
+
+        body[data-theme='light'] .comment-section {
+            background-color: var(--comment-section-bg-light);
         }
 
         .comment {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #444;
+            border-bottom: 1px solid var(--comment-border-dark);
             padding: 0.5rem 0;
+        }
+
+        body[data-theme='light'] .comment {
+            border-bottom: 1px solid var(--comment-border-light);
         }
 
         .left-content {
@@ -151,11 +244,19 @@
 
         .trash-icon {
             cursor: pointer;
-            color: #666;
+            color: var(--trash-icon-color-dark);
         }
 
             .trash-icon:hover {
-                color: #333;
+                color: var(--trash-icon-hover-color-dark);
+            }
+
+        body[data-theme='light'] .trash-icon {
+            color: var(--trash-icon-color-light);
+        }
+
+            body[data-theme='light'] .trash-icon:hover {
+                color: var(--trash-icon-hover-color-light);
             }
 
         .text-content {
@@ -173,24 +274,152 @@
 
         .metadata {
             font-size: 0.875em;
-            color: #aaa;
+            color: var(--metadata-color-dark);
+        }
+
+        body[data-theme='light'] .metadata {
+            color: var(--metadata-color-light);
         }
 
         .comment-text {
             margin-top: 0.25rem;
-            color: #ccc;
+            color: var(--comment-text-color-dark);
+        }
+
+        body[data-theme='light'] .comment-text {
+            color: var(--comment-text-color-light);
         }
 
         .placeholder-gray-400::placeholder {
-            color: #aaa;
+            color: var(--metadata-color-dark);
+        }
+
+        body[data-theme='light'] .placeholder-gray-400::placeholder {
+            color: var(--metadata-color-light);
         }
 
         footer {
             text-align: center;
             padding: 20px 0;
-            color: #a0a0a0;
+            color: var(--footer-color-dark);
         }
+
+        body[data-theme='light'] footer {
+            color: var(--footer-color-light);
+        }
+
+        #commentInput {
+            color: var(--color-dark);
+        }
+
+        body[data-theme='light'] #commentInput {
+            color: var(--color-light);
+        }
+
+        .comment-button {
+            background-color: var(--btn-comment-dark);
+            color: var(--btn-comment-text-dark);
+        }
+
+        body[data-theme='light'] .comment-button {
+            background-color: var(--btn-comment-light);
+            color: var(--btn-comment-text-light);
+        }
+
+            body[data-theme='light'] .comment-button:hover {
+                background-color: darken(var(--btn-comment-light), 10%);
+            }
+
+        body[data-theme='dark'] .comment-button:hover {
+            background-color: lighten(var(--btn-comment-dark), 10%);
+        }
+
+        .star-rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+            .star-rating label {
+                font-size: 2rem;
+                color: gray;
+                cursor: default;
+                position: relative;
+            }
+
+            .star-rating .filled {
+                color: gold;
+            }
+
+            .star-rating .half:before {
+                content: '\f005';
+                font-family: 'Font Awesome 5 Free';
+                font-weight: 900;
+                position: absolute;
+                color: gold;
+                left: 0;
+                width: 50%;
+                overflow: hidden;
+            }
+
+
     </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelector('.buy-button').addEventListener('click', function (e) {
+                const productId = this.getAttribute('data-product-id');
+                const productQuantity = this.getAttribute('data-product-quantity');
+                setSelectedProductId(productId);
+                document.getElementById('quantity').setAttribute('max', productQuantity);
+                document.getElementById('quantityError').classList.add('d-none');
+                $('#quantityModal').modal('show');
+            });
+
+            document.getElementById('quantity').addEventListener('input', function () {
+                const quantityInput = this;
+                const quantity = parseInt(quantityInput.value, 10);
+                const maxQuantity = parseInt(quantityInput.getAttribute('max'), 10);
+
+                if (quantity <= 0 || quantity > maxQuantity) {
+                    const errorMessage = quantity <= 0 ? 'Кількість має бути більша ніж 0.' : `Кількість не має перевищувати ${maxQuantity}.`;
+                    document.getElementById('quantityError').textContent = errorMessage;
+                    document.getElementById('quantityError').classList.remove('d-none');
+                } else {
+                    document.getElementById('quantityError').classList.add('d-none');
+                }
+            });
+
+            document.getElementById('buyButton').addEventListener('click', function (e) {
+                const quantityInput = document.getElementById('quantity');
+                const quantity = parseInt(quantityInput.value, 10);
+                const maxQuantity = parseInt(quantityInput.getAttribute('max'), 10);
+
+                if (quantity <= 0 || quantity > maxQuantity) {
+                    e.preventDefault();
+                    const errorMessage = quantity <= 0 ? 'Кількість має бути більша ніж 0.' : `Кількість не має перевищувати ${maxQuantity}.`;
+                    document.getElementById('quantityError').textContent = errorMessage;
+                    document.getElementById('quantityError').classList.remove('d-none');
+                }
+            });
+
+            function setSelectedProductId(productId) {
+                document.getElementById('selectedProductId').value = productId;
+            }
+        });
+
+        function checkCommentLength() {
+            var input = document.getElementById('commentInput');
+            var button = document.getElementById('commentButton');
+            button.disabled = input.value.length < 3;
+            if (button.disabled) {
+                button.classList.add('btn-disabled');
+            } else {
+                button.classList.remove('btn-disabled');
+            }
+        }
+    </script>
 </head>
 <body>
     <nav class="px-4 py-2">
@@ -212,17 +441,26 @@
                 <p>@Model.Product.Description</p>
                 <h3>Виробник:</h3>
                 <p>@Model.User.UserName</p>
+                <h3>Рейтинг:</h3>
+                <div class="star-rating">
+                    <label style="color:yellow"> @Model.Product.AverageRating</label>
+                    @for (int i = 5; i >= 1; i--)
+                    {
+                        var starClass = i <= Model.Product.AverageRating ? "filled" : (i - 0.5 <= Model.Product.AverageRating ? "half" : "");
+                        <label class="@starClass"><i class="fas fa-star"></i></label>
+                    }
+                </div>
                 @if (Model.Product.UserId != User.GetUserId())
                 {
                     <a class="btn btn-primary" asp-controller="Chat" asp-action="Room" asp-route-userId="@Model.User.Id">Написати виробнику</a>
                 }
                 <h3>Ціна</h3>
-                <p>$ @Model.Product.Price</p>
+                <p>₴@Model.Product.Price</p>
                 <h3>Кількість</h3>
                 <p>@Model.Product.Quantity</p>
                 @if (Model.Product.UserId != User.GetUserId())
                 {
-                    <a asp-action="GoToBuyPage" asp-route-selectedItems="@Model.Product.Id" class="btn btn-primary">Купити зараз</a>
+                    <button type="button" class="btn btn-primary btn-sm buy-button" data-toggle="modal" data-target="#quantityModal" data-product-id="@Model.Product.Id" data-product-quantity="@Model.Product.Quantity">Купити зараз</button>
                 }
             </div>
         </div>
@@ -231,10 +469,11 @@
         @if (User.Identity.IsAuthenticated)
         {
             <form asp-controller="Comment" asp-action="AddComment" method="post">
-                <div class="flex items-center space-x-4 py-2">
-                    <img src="@await UserProfileService.GetUserPictureAsync(User.GetUserId())" alt="Зображення профілю користувача" class="rounded-full" style="width:40px;height:40px">
-                    <input id="commentInput" asp-for="NewComment.Content" type="text" placeholder="Додати публічний коментар..." class="bg-transparent border-none placeholder-gray-400 flex-1 text-sm focus:outline-none" style="color:white" onkeyup="checkCommentLength()" />
-                    <button style="width:15%" id="commentButton" class="btn btn-secondary" disabled>Прокоментувати</button>
+                <div class="flex items-center space-x-4 py-4">
+                    <img src="@await UserProfileService.GetUserPictureAsync(User.GetUserId())" alt="Зображення профілю користувача" class="rounded-full" style="width:60px;height:60px">
+                    <input id="commentInput" asp-for="NewComment.Content" type="text" placeholder="Додати публічний коментар..." class="bg-transparent border-none placeholder-gray-400 flex-1 text-sm focus:outline-none" onkeyup="checkCommentLength()" />
+                    <input asp-for="NewComment.Rating" type="number" min="1" max="5" step="0.1" placeholder="Оцінка" class="bg-white border border-gray-300 placeholder-gray-700 text-lg focus:outline-none p-2 rounded contrast-rating no-spin-buttons" />
+                    <button style="width:20%" id="commentButton" class="btn btn-secondary" disabled>Прокоментувати</button>
                 </div>
                 <input asp-for="NewComment.ProductId" type="hidden" value="@Model.Product.Id" />
                 <input asp-for="NewComment.UserId" type="hidden" value="@User.GetUserId()" />
@@ -253,6 +492,9 @@
                             <p class="comment-text">@comment.Content</p>
                         </div>
                     </div>
+                    <div class="right-content">
+                        <span class="rating">Рейтинг:@comment.Rating</span>
+                    </div>
                     @if (User.GetUserId() == comment.UserId)
                     {
                         <form asp-controller="Comment" asp-action="DeleteComment">
@@ -268,23 +510,37 @@
                 </div>
             }
         </div>
+
     </section>
     <footer class="container">
-        <small><a class="link-style" asp-controller="Home" asp-action="GoToTermsAndConditionsPage">Умови та положення</a> • <a class="link-style" asp-controller="Home" asp-action="Privacy">Політика конфіденційності</a></small>
+        <small><a class="link-style" asp-controller="Home" asp-action="GoToTermsAndConditionsPage">Умови та положення</a></small>
     </footer>
+
+
+    <div class="modal fade" id="quantityModal" tabindex="-1" role="dialog" aria-labelledby="quantityModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="quantityModalLabel">Введіть кількість</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="quantityForm" method="post" asp-action="GoToBuyPage">
+                        <input type="hidden" name="selectedItems" id="selectedProductId" value="" />
+                        <div class="form-group text-center">
+                            <label for="quantity">Кількість</label>
+                            <input type="number" class="form-control mx-auto no-spin-buttons" id="quantity" name="quantities" min="1" required />
+                            <span id="quantityError" class="text-danger d-none"></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="buyButton">Купити</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
-    function checkCommentLength() {
-        var input = document.getElementById('commentInput');
-        var button = document.getElementById('commentButton');
-        button.disabled = input.value.length < 3;
-        if (button.disabled) {
-            button.classList.add('btn-disabled');
-        } else {
-            button.classList.remove('btn-disabled');
-        }
-    }
-</script>

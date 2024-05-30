@@ -8,10 +8,55 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
-        body {
-            background-color: #1f1f1f;
-            color: #e0e0e0;
+        :root {
+            --theme: light;
+            --background-color-light: #efedea;
+            --background-color-dark: #1f1f1f;
+            --color-light: #000000;
+            --color-dark: #e0e0e0;
+            --container-bg-light: #ffffff;
+            --container-bg-dark: #2a2a2a;
+            --cart-header-footer-bg-light: #f0f0f0;
+            --cart-header-footer-bg-dark: #2a2a2a;
+            --cart-header-footer-color-light: #000000;
+            --cart-header-footer-color-dark: #ffffff;
+            --cart-item-bg-light: #f0f0f0;
+            --cart-item-bg-dark: #2a2a2a;
+            --cart-item-hover-bg-light: #e0e0e0;
+            --cart-item-hover-bg-dark: #444;
+            --cart-item-details-color-light: #000000;
+            --cart-item-details-color-dark: #999999;
+            --order-summary-bg-light: #f0f0f0;
+            --order-summary-bg-dark: #2a2a2a;
+            --order-summary-color-light: #000000;
+            --order-summary-color-dark: #ffffff;
+            --btn-blue-bg-light: #007bff;
+            --btn-blue-bg-dark: #007bff;
+            --btn-blue-hover-bg-light: #0056b3;
+            --btn-blue-hover-bg-dark: #0056b3;
+            --btn-red-bg-light: #dc3545;
+            --btn-red-bg-dark: #dc3545;
+            --btn-red-hover-bg-light: #c82333;
+            --btn-red-hover-bg-dark: #c82333;
+            --custom-checkbox-bg-light: #ccc;
+            --custom-checkbox-bg-dark: #007bff;
+            --quantity-input-bg-light: #ffffff;
+            --quantity-input-bg-dark: #1f1f1f;
+            --quantity-input-border-light: #ccc;
+            --quantity-input-border-dark: #555;
+            --error-message-color-light: #ff0000;
+            --error-message-color-dark: #ff0000;
         }
+
+        body {
+            background-color: var(--background-color-dark);
+            color: var(--color-dark);
+        }
+
+            body[data-theme='light'] {
+                background-color: var(--background-color-light);
+                color: var(--color-light);
+            }
 
         .container {
             max-width: 1400px;
@@ -20,31 +65,52 @@
         }
 
         .cart-header, .cart-footer {
-            background-color: #2a2a2a;
+            background-color: var(--cart-header-footer-bg-dark);
             padding: 10px 20px;
             border-radius: 8px;
         }
 
             .cart-header p, .cart-footer a {
-                color: #ffffff;
+                color: var(--cart-header-footer-color-dark);
+            }
+
+        body[data-theme='light'] .cart-header, body[data-theme='light'] .cart-footer {
+            background-color: var(--cart-header-footer-bg-light);
+        }
+
+            body[data-theme='light'] .cart-header p, body[data-theme='light'] .cart-footer a {
+                color: var(--cart-header-footer-color-light);
             }
 
         .cart-item {
-            background-color: #2a2a2a;
+            background-color: var(--cart-item-bg-dark);
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 10px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            transition: background-color 0.3s ease;
         }
 
-            .cart-item img {
-                width: 100px;
-                height: 100px;
-                object-fit: cover;
-                border-radius: 8px;
+            .cart-item:hover {
+                background-color: var(--cart-item-hover-bg-dark);
             }
+
+        body[data-theme='light'] .cart-item {
+            background-color: var(--cart-item-bg-light);
+        }
+
+            body[data-theme='light'] .cart-item:hover {
+                background-color: var(--cart-item-hover-bg-light);
+            }
+
+        .cart-item img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
 
         .cart-item-details {
             flex-grow: 1;
@@ -56,11 +122,15 @@
             }
 
             .cart-item-details .text-sm {
-                color: #999999;
+                color: var(--cart-item-details-color-dark);
             }
 
+        body[data-theme='light'] .cart-item-details .text-sm {
+            color: var(--cart-item-details-color-light);
+        }
+
         .order-summary {
-            background-color: #2a2a2a;
+            background-color: var(--order-summary-bg-dark);
             padding: 20px;
             border-radius: 8px;
             margin-top: 20px;
@@ -68,16 +138,24 @@
             max-width: 400px;
         }
 
-            .order-summary h2, .order-summary span {
-                color: #ffffff;
-            }
+        body[data-theme='light'] .order-summary {
+            background-color: var(--order-summary-bg-light);
+        }
 
-            .order-summary .order-summary-items img {
-                width: 40px;
-                height: 40px;
-                object-fit: cover;
-                border-radius: 8px;
-            }
+        .order-summary h2, .order-summary span {
+            color: var(--order-summary-color-dark);
+        }
+
+        body[data-theme='light'] .order-summary h2, body[data-theme='light'] .order-summary span {
+            color: var(--order-summary-color-light);
+        }
+
+        .order-summary .order-summary-items img {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
 
         .order-summary-item {
             display: flex;
@@ -95,21 +173,37 @@
         }
 
         .btn-blue {
-            background-color: #007bff;
+            background-color: var(--btn-blue-bg-dark);
             color: #ffffff;
         }
 
             .btn-blue:hover {
-                background-color: #0056b3;
+                background-color: var(--btn-blue-hover-bg-dark);
+            }
+
+        body[data-theme='light'] .btn-blue {
+            background-color: var(--btn-blue-bg-light);
+        }
+
+            body[data-theme='light'] .btn-blue:hover {
+                background-color: var(--btn-blue-hover-bg-light);
             }
 
         .btn-red {
-            background-color: #dc3545;
+            background-color: var(--btn-red-bg-dark);
             color: #ffffff;
         }
 
             .btn-red:hover {
-                background-color: #c82333;
+                background-color: var(--btn-red-hover-bg-dark);
+            }
+
+        body[data-theme='light'] .btn-red {
+            background-color: var(--btn-red-bg-light);
+        }
+
+            body[data-theme='light'] .btn-red:hover {
+                background-color: var(--btn-red-hover-bg-light);
             }
 
         .disabled {
@@ -136,12 +230,16 @@
             left: 0;
             height: 20px;
             width: 20px;
-            background-color: #ccc;
+            background-color: var(--custom-checkbox-bg-light);
             border-radius: 4px;
         }
 
+        body[data-theme='light'] .checkmark {
+            background-color: var(--custom-checkbox-bg-light);
+        }
+
         .custom-checkbox input:checked ~ .checkmark {
-            background-color: #007bff;
+            background-color: var(--custom-checkbox-bg-dark);
         }
 
         .checkmark:after {
@@ -165,24 +263,35 @@
         }
 
         .quantity-input {
-            background-color: #1f1f1f;
-            border: 1px solid #555;
-            color: #e0e0e0;
+            background-color: var(--quantity-input-bg-dark);
+            border: 1px solid var(--quantity-input-border-dark);
+            color: var(--color-dark);
             border-radius: 4px;
             text-align: center;
             width: 60px;
         }
 
-            .quantity-input:focus {
-                border-color: #007bff;
-                outline: none;
-            }
+        body[data-theme='light'] .quantity-input {
+            background-color: var(--quantity-input-bg-light);
+            border: 1px solid var(--quantity-input-border-light);
+            color: var(--color-light);
+        }
+
+        .quantity-input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
 
         .error-message {
-            color: #ff0000;
+            color: var(--error-message-color-dark);
             font-size: 0.8em;
             display: none;
         }
+
+        body[data-theme='light'] .error-message {
+            color: var(--error-message-color-light);
+        }
+
     </style>
 </head>
 <body>
@@ -192,8 +301,13 @@
                 <div class="w-full md:w-3/4 md:mr-2">
                     <div class="cart-header flex justify-between items-center border-b border-gray-600 p-4">
                         <p class="text-xl font-semibold">Кошик товарів</p>
-                        <p class="text-xl">@Model.Count Items</p>
+                        <div class="flex items-center">
+                            <button type="button" id="selectAllButton" class="text-blue-500 text-sm mr-4">Select All</button>
+                            <button type="button" id="deselectAllButton" class="text-blue-500 text-sm mr-4">Deselect All</button>
+                            <p class="text-xl">@Model.Count Items</p>
+                        </div>
                     </div>
+
                     <div class="cart-header flex mt-6 pb-5 border-b border-gray-600">
                         <p class="text-xs font-semibold uppercase w-2/5 pl-4">Деталі продукту</p>
                         <p class="text-xs font-semibold uppercase w-1/5 text-center">Ціна</p>
@@ -213,7 +327,17 @@
                                 </div>
                             </div>
                             <div class="w-1/5 text-center">
-                                <span>$@String.Format("{0:F2}", product.Product.Price)</span>
+                                @if (product.Product.Discount.HasValue && product.Product.Discount.Value > 0)
+                                {
+                                    <span class="line-through">₴@String.Format("{0:F2}", product.Product.Price)</span>
+
+                                    <br />
+                                    <span>₴@String.Format("{0:F2}", product.Product.DiscountedPrice)</span>
+                                }
+                                else
+                                {
+                                    <span>₴@String.Format("{0:F2}", product.Product.Price)</span>
+                                }
                             </div>
                             <div class="w-1/5 text-center">
                                 <span>@product.Product.Quantity</span>
@@ -226,7 +350,7 @@
                                 <label class="custom-checkbox">
                                     <input type="checkbox" name="selectedItems" value="@product.ProductId" class="product-checkbox"
                                            data-product-name="@product.Product.Name"
-                                           data-product-price="@product.Product.Price"
+                                           data-product-price="@product.Product.DiscountedPrice"
                                            data-product-image="@product.Product.PictureUrl"
                                            data-product-quantity="@product.Product.Quantity">
                                     <span class="checkmark"></span>
@@ -245,7 +369,7 @@
                     </div>
                     <div class="flex justify-between mb-4">
                         <span class="text-sm font-semibold uppercase">Всього</span>
-                        <span class="text-sm font-semibold" id="orderSummaryTotal">$0</span>
+                        <span class="text-sm font-semibold" id="orderSummaryTotal">₴0</span>
                     </div>
                     <button asp-action="GoToBuyPage" id="buySelectedButton" class="btn btn-blue disabled" disabled>Каса</button>
                     <button id="removeSelectedButton" class="btn btn-red disabled" disabled>Вилучити обране</button>
@@ -263,6 +387,8 @@
         var checkboxes = document.querySelectorAll('.product-checkbox');
         var orderSummaryItems = document.getElementById('orderSummaryItems');
         var orderSummaryTotal = document.getElementById('orderSummaryTotal');
+        var selectAllButton = document.getElementById('selectAllButton');
+        var deselectAllButton = document.getElementById('deselectAllButton');
 
         function updateOrderSummary() {
             orderSummaryItems.innerHTML = '';
@@ -276,8 +402,9 @@
                     var productPrice = parseFloat(correctedString);
                     var productQuantity = parseInt(checkbox.closest('.cart-item').querySelector('.quantity-input').value);
                     var productImage = checkbox.dataset.productImage;
+                    var errorMessage = checkbox.closest('.cart-item').querySelector('.error-message');
 
-                    if (productQuantity > 0) {
+                    if (errorMessage.style.display === 'none' && productQuantity > 0) {
                         totalCost += productPrice * productQuantity;
 
                         var itemElement = document.createElement('div');
@@ -293,7 +420,7 @@
                         nameElement.className = 'text-sm font-bold';
 
                         var priceElement = document.createElement('span');
-                        priceElement.textContent = '$' + (productPrice * productQuantity).toFixed(2);
+                        priceElement.textContent = '₴' + (productPrice * productQuantity).toFixed(2);
                         priceElement.className = 'text-sm ml-2';
 
                         itemElement.appendChild(imageElement);
@@ -305,7 +432,7 @@
                 }
             });
 
-            orderSummaryTotal.textContent = '$' + totalCost.toFixed(2);
+            orderSummaryTotal.textContent = '₴' + totalCost.toFixed(2);
         }
 
         function updateButtonStates() {
@@ -324,7 +451,56 @@
             }
         }
 
+        function validateQuantity(quantityInput, errorMessage, availableQuantity) {
+            var enteredQuantity = quantityInput.value.trim();
+
+            if (enteredQuantity === '') {
+                errorMessage.textContent = 'Кількість не може бути порожньою!';
+                errorMessage.style.display = 'block';
+            } else if (parseInt(enteredQuantity) > availableQuantity) {
+                errorMessage.textContent = 'Кількість перевищує наявний складський запас!';
+                errorMessage.style.display = 'block';
+            } else if (parseInt(enteredQuantity) <= 0) {
+                errorMessage.textContent = 'Кількість повинна бути більшою за нуль!';
+                errorMessage.style.display = 'block';
+            } else {
+                errorMessage.style.display = 'none';
+            }
+        }
+
+        selectAllButton.addEventListener('click', function () {
+            checkboxes.forEach(function (checkbox) {
+                var quantityInput = checkbox.closest('.cart-item').querySelector('.quantity-input');
+                var errorMessage = checkbox.closest('.cart-item').querySelector('.error-message');
+                var availableQuantity = parseInt(checkbox.dataset.productQuantity);
+
+                validateQuantity(quantityInput, errorMessage, availableQuantity);
+
+                if (errorMessage.style.display === 'none' && quantityInput.value > 0) {
+                    checkbox.checked = true;
+                }
+            });
+
+            updateButtonStates();
+            updateOrderSummary();
+        });
+
+        deselectAllButton.addEventListener('click', function () {
+            checkboxes.forEach(function (checkbox) {
+                checkbox.checked = false;
+            });
+
+            updateButtonStates();
+            updateOrderSummary();
+        });
+
         checkboxes.forEach(function (checkbox) {
+            var quantityInput = checkbox.closest('.cart-item').querySelector('.quantity-input');
+            var errorMessage = checkbox.closest('.cart-item').querySelector('.error-message');
+            var availableQuantity = parseInt(checkbox.dataset.productQuantity);
+
+            validateQuantity(quantityInput, errorMessage, availableQuantity);
+
             checkbox.addEventListener('change', function () {
                 updateButtonStates();
                 updateOrderSummary();
@@ -334,26 +510,8 @@
                 e.stopPropagation();
             });
 
-            var quantityInput = checkbox.closest('.cart-item').querySelector('.quantity-input');
-            var errorMessage = checkbox.closest('.cart-item').querySelector('.error-message');
-
             quantityInput.addEventListener('input', function () {
-                var availableQuantity = parseInt(checkbox.dataset.productQuantity);
-                var enteredQuantity = quantityInput.value.trim();
-
-                if (enteredQuantity === '') {
-                    errorMessage.textContent = 'Quantity cannot be empty!';
-                    errorMessage.style.display = 'block';
-                } else if (parseInt(enteredQuantity) > availableQuantity) {
-                    errorMessage.textContent = 'Quantity exceeds available stock!';
-                    errorMessage.style.display = 'block';
-                } else if (parseInt(enteredQuantity) <= 0) {
-                    errorMessage.textContent = 'Quantity must be greater than zero!';
-                    errorMessage.style.display = 'block';
-                } else {
-                    errorMessage.style.display = 'none';
-                }
-
+                validateQuantity(quantityInput, errorMessage, availableQuantity);
                 updateButtonStates();
                 updateOrderSummary();
             });
@@ -362,5 +520,4 @@
         updateButtonStates();
         updateOrderSummary();
     });
-
 </script>

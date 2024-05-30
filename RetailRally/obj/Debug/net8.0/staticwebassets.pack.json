@@ -13,10 +13,6 @@
       "PackagePath": "staticwebassets\\css\\styles.css"
     },
     {
-      "Id": "C:\\C# Projects\\RetailRally\\RetailRally\\wwwroot\\css\\theme.css",
-      "PackagePath": "staticwebassets\\css\\theme.css"
-    },
-    {
       "Id": "C:\\C# Projects\\RetailRally\\RetailRally\\wwwroot\\favicon.ico",
       "PackagePath": "staticwebassets\\favicon.ico"
     },

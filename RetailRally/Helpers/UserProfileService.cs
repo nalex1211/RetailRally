@@ -9,7 +9,7 @@ public class UserProfileService(HubContextClass _db) : IUserProfileService
 {
     public async Task<UserProfileViewModel> GetUserProfileAsync(string userId)
     {
-        var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        var user = await _db.Users.Where(u => u.Id == userId).FirstOrDefaultAsync();
         if (user == null)
         {
             return null;

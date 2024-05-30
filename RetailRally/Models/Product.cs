@@ -14,15 +14,21 @@ public class Product
     public string Description { get; set; }
     [Required(ErrorMessage = "Необхідно вказати ціну товару!")]
     [Range(1, 1e8, ErrorMessage = "Ціна повинна бути від 1 до 100,000,000")]
-    public float Price { get; set; }
+    public float? Price { get; set; }
+    public float? Discount { get; set; }
     public string UserId { get; set; }
     public User? User { get; set; }
     public string? PictureUrl { get; set; }
     public int? CategoryId { get; set; }
-    [Range(1, 100000, ErrorMessage = "Quantity must be between 1 and 100,000")]
-    public int Quantity { get; set; }
+    [Required(ErrorMessage = "Необхідно вказати кількість товару!")]
+    [Range(1, 100000, ErrorMessage = "Кількість повинна бути від 1 до 100,000")]
+    public int? Quantity { get; set; }
     public Category? Category { get; set; }
     public List<Order> Orders { get; set; } = new List<Order>();
     public List<Comment>? Comments { get; set; } = new List<Comment>();
     public List<OrderProduct>? OrderProducts { get; set; } = new List<OrderProduct>();
+
+    public float? DiscountedPrice => Discount.HasValue ? Price * (1 - Discount.Value / 100) : Price;
+
+    public double? AverageRating => Comments.Any() ? (double?)Comments.Average(r => r.Rating) : null;
 }

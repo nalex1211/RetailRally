@@ -60,10 +60,10 @@
             msgDiv.classList.add(alignmentClass, "bg-white", "px-4", "py-5", "flex");
             msgDiv.innerHTML = `
                         <div class="max-w-half w-full rounded-lg shadow-md p-4">
-                            <dt class="text-sm font-medium text-gray-500">${user}</dt>
+                            <dt class="text-sm font-medium text-gray-500">₴{user}</dt>
                             <dd class="mt-1 text-sm text-gray-900">
-                                ${message} <br>
-                                <div class="timestamp text-gray-500 text-xs">${new Date().toLocaleString()}</div>
+                                ₴{message} <br>
+                                <div class="timestamp text-gray-500 text-xs">₴{new Date().toLocaleString()}</div>
                             </dd>
                         </div>
                     `;

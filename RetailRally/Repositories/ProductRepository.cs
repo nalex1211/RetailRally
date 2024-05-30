@@ -39,50 +39,7 @@ public class ProductRepository(HubContextClass _context, IConfiguration _configu
         return await _context.PaymentTypes.ToListAsync();
     }
 
-    //public async Task<List<Product>> GetAllProductsAsync()
-    //{
-    //    return await _db.Products.Include(p => p.Category).Include(p=>p.Comments).ToListAsync();
-    //}
-
-    //public async Task<List<Product>> GetAllProductsAsync()
-    //{
-    //    var cacheKey = "allProducts";
-    //    var cacheVersionKey = "productsCacheVersion";
-
-    //    var cacheVersion = await _cache.GetStringAsync(cacheVersionKey) ?? "1";
-    //    var fullCacheKey = $"{cacheKey}_v{cacheVersion}";
-
-    //    List<Product> products;
-
-    //    var cachedProducts = await _cache.GetStringAsync(fullCacheKey);
-    //    if (!string.IsNullOrEmpty(cachedProducts))
-    //    {
-    //        _logger.LogInformation("Fetched products from cache.");
-    //        products = JsonConvert.DeserializeObject<List<Product>>(cachedProducts);
-    //    }
-    //    else
-    //    {
-    //        _logger.LogInformation("Fetching products from database.");
-    //        products = await _context.Products.Include(p => p.Category).Include(p => p.Comments).ToListAsync();
-
-    //        var cacheOptions = new DistributedCacheEntryOptions
-    //        {
-    //            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30)
-    //        };
-
-    //        var jsonSettings = new JsonSerializerSettings
-    //        {
-    //            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-    //        };
-
-    //        await _cache.SetStringAsync(fullCacheKey, JsonConvert.SerializeObject(products, jsonSettings), cacheOptions);
-    //        _logger.LogInformation("Products stored in cache.");
-    //    }
-
-    //    return products;
-    //}
-
-    public async Task<List<Product>> GetAllProductsAsync(int pageNumber, int pageSize)
+     public async Task<List<Product>> GetAllProductsAsync(int pageNumber, int pageSize)
     {
         var cacheVersionKey = "productsCacheVersion";
         var cacheKey = $"products_{pageNumber}_{pageSize}_v{await GetCacheVersionAsync(cacheVersionKey)}";
@@ -344,6 +301,7 @@ public class ProductRepository(HubContextClass _context, IConfiguration _configu
                 newProduct.PictureUrl = imageUrl;
             }
         }
+        await InvalidateProductCache();
         _context.Products.Update(newProduct);
         return await SaveChangesAsync();
     }
@@ -361,7 +319,7 @@ public class ProductRepository(HubContextClass _context, IConfiguration _configu
         else
         {
             products = await _context.Products
-                .Where(p=>p.CategoryId == categoryId)
+                .Where(p => p.CategoryId == categoryId)
                 .Include(p => p.Category)
                 .Include(p => p.Comments)
                 .Skip((pageNumber - 1) * pageSize)
@@ -417,5 +375,15 @@ public class ProductRepository(HubContextClass _context, IConfiguration _configu
             .Include(o => o.PaymentType)
             .Include(o => o.User)
             .ToListAsync();
+    }
+
+    public async Task<ShippingType> GetShippingTypeByIdAsync(int id)
+    {
+        return await _context.ShippingTypes.FirstOrDefaultAsync(s => s.Id == id);
+    }
+
+    public async Task<PaymentType> GetPaymentTypeByIdAsync(int id)
+    {
+        return await _context.PaymentTypes.FirstOrDefaultAsync(p => p.Id == id);
     }
 }

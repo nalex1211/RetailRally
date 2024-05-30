@@ -19,56 +19,108 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <link rel="stylesheet" href="~/css/styles.css">
     <style>
+        :root {
+            --theme: light;
+            --background-color-light: #f5f7fa; /* Light blueish */
+            --background-color-dark: #1f1f1f;
+            --background-main-color-dark: #4A4A4A;
+            --color-light: #000000;
+            --color-dark: #e0e0e0;
+            --profile-sidebar-bg-light: #ffffff; /* White */
+            --profile-sidebar-bg-dark: #2c2f33;
+            --profile-sidebar-color-light: #000000;
+            --profile-sidebar-color-dark: #ffffff;
+            --profile-content-bg-light: #f0f0f0;
+            --profile-content-bg-dark: #2c2f33;
+            --profile-content-color-light: #000000;
+            --profile-content-color-dark: #ffffff;
+            --info-color-light: #000000;
+            --info-color-dark: #e0e0e0;
+            --validation-error-bg-light: #f8d7da;
+            --validation-error-bg-dark: #721c24;
+            --validation-error-color-light: #721c24;
+            --validation-error-color-dark: #ffffff;
+            --button-bg-dark: #3a3a3a; /* Button background */
+            --button-color-dark: #ffffff; /* Button text color */
+        }
+
         body {
             font-family: 'Arial', sans-serif;
+            background-color: var(--background-color-dark);
+            color: var(--color-dark);
             margin: 0;
-            background-color: #1f1f1f;
-            color: #e0e0e0;
             padding: 0;
         }
 
+            body[data-theme='light'] {
+                background-color: var(--background-color-light);
+                color: var(--color-light);
+            }
+
         .profile-page {
-            margin-top: 100px;
+            background-color: var(--background-main-color-dark);
+            margin-top: 50px;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             padding: 2rem;
             gap: 2rem;
         }
 
+        body[data-theme='light'] .profile-page{
+            background-color: var(--background-color-light);
+            color:white;
+        }
+
         .profile-sidebar {
             flex: 1;
-            background-color: #2c2f33;
+            background-color: var(--profile-sidebar-bg-dark);
             padding: 2rem;
             border-radius: 8px;
             text-align: center;
-            color: white;
-        }
-
-            .profile-sidebar img {
-                border-radius: 50%;
-                width: 150px;
-                height: 150px;
-                object-fit: cover;
-                margin-bottom: 1rem;
-            }
-
-        .profile-content {
-            flex: 2;
-            background-color: #ffffff;
-            padding: 2rem;
-            border-radius: 8px;
+            color: var(--profile-sidebar-color-dark);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-            .profile-content h2 {
-                margin-bottom: 2rem;
-                font-size: 1.5rem;
+        body[data-theme='light'] .profile-sidebar {
+            background-color: var(--profile-sidebar-bg-light);
+            color: var(--profile-sidebar-color-light);
+        }
+
+        .profile-sidebar img {
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            margin-bottom: 1rem;
+        }
+
+        .profile-content {
+            flex: 2;
+            background-color: var(--profile-content-bg-dark);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            color: var(--profile-content-color-dark);
+        }
+
+            .profile-content label {
+                color: var(--profile-content-color-dark);
             }
 
-        .info label {
-            font-weight: bold;
-            margin-right: 1rem;
+        body[data-theme='light'] .profile-content {
+            background-color: var(--profile-content-bg-light);
+            color: var(--profile-content-color-light);
+        }
+
+            body[data-theme='light'] .profile-content label {
+                color: var(--profile-content-color-light);
+            }
+
+
+        .profile-content h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
         }
 
         .info {
@@ -77,31 +129,57 @@
             align-items: center;
         }
 
-            .info span {
-                flex: 1;
-                color: #333;
+            .info label {
+                font-weight: bold;
+                width: 150px;
             }
 
-            .info input {
+            .info span {
                 flex: 1;
-                display: none;
+                color: var(--info-color-dark);
             }
+
+        body[data-theme='light'] .info span {
+            color: var(--info-color-light);
+        }
+
+        .info input {
+            flex: 1;
+            display: none;
+        }
 
         .btn {
             margin-right: 1rem;
+            background-color: var(--button-bg-dark);
+            color: var(--button-color-dark);
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        body[data-theme='light'] .btn {
+            background-color: #007bff; /* Light theme button background */
+            color: #ffffff; /* Light theme button text color */
         }
 
         .validation-error {
-            background-color: #f8d7da;
-            color: #721c24;
+            background-color: var(--validation-error-bg-dark);
+            color: var(--validation-error-color-dark);
             padding: 0.5rem;
             border-radius: 4px;
             margin-bottom: 1rem;
         }
 
-            .validation-error::before {
-                content: '⚠ ';
-            }
+        body[data-theme='light'] .validation-error {
+            background-color: var(--validation-error-bg-light);
+            color: var(--validation-error-color-light);
+        }
+
+        .validation-error::before {
+            content: '⚠ ';
+        }
+
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -326,7 +404,7 @@
                     <input type="hidden" asp-for="PictureUrl" />
                     <input type="hidden" asp-for="BirthDate" />
                     <input type="hidden" asp-for="Email" />
-                    <h2 style="color:black">Профіль</h2>
+                    <h2>Профіль</h2>
                     <div class="validation-error" style="display:none;">
                         Будь ласка, виправте наступні помилки:
                         <ul></ul>
@@ -353,7 +431,7 @@
                             <span>@Model.Email</span>
                             <a asp-controller="Account" asp-action="ShowEmailChangePage" id="changeEmailButton" class="btn btn-primary" style="display:none;">Змінити адресу електронної пошти</a>
                         </div>
-                        <a asp-controller="Account" asp-action="ShowPasswordChangePage" id="changePasswordButton" class="btn btn-primary" style="display:none;margin-top:10px; margin-bottom:10px;">Змінити пароль</a>
+                        <a asp-controller="Account" asp-action="ShowPasswordChangePage" id="changePasswordButton" class="btn btn-primary" style="display:none; margin-top:10px; margin-bottom:10px;">Змінити пароль</a>
                         @if (!User.IsInRole(Role.Vendor) && !User.IsInRole(Role.Admin))
                         {
                             <button type="button" id="becomeVendorButton" class="btn btn-primary" style="display:none;">Стати продавцем</button>
@@ -376,8 +454,8 @@
                         <label>Дата народження:</label>
                         <span>@(Model.BirthDate?.ToString("dd-MM-yyyy") ?? "N/A")</span>
                     </div>
-                    <button type="submit" class="btn btn-primary" id="saveButton" style="display:none;margin-top:5px;">Зберегти зміни</button>
-                    <button type="button" class="btn btn-secondary" id="backButton" style="display:none;margin-top:10px;">Повернутися до профілю</button>
+                    <button type="submit" class="btn btn-primary" id="saveButton" style="display:none; margin-top:5px;">Зберегти зміни</button>
+                    <button type="button" class="btn btn-secondary" id="backButton" style="display:none; margin-top:10px;">Повернутися до профілю</button>
                     <button type="button" class="btn btn-primary" id="editButton" style="margin-top:5px;">Редагувати профіль</button>
                 </form>
             </div>
@@ -414,7 +492,7 @@
                     });
                 } else {
                     Swal.fire({
-                        title: 'FНе вдалося стати продавцем.',
+                        title: 'Не вдалося стати продавцем.',
                         text: data.error,
                         icon: 'error',
                         showConfirmButton: true
