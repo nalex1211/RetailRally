@@ -461,3 +461,10 @@ C:\C# Projects\RetailRally\RetailRally\bin\Release\net8.0\win-x86\mscorrc.dll
 C:\C# Projects\RetailRally\RetailRally\bin\Release\net8.0\win-x86\msquic.dll
 C:\C# Projects\RetailRally\RetailRally\bin\Release\net8.0\win-x86\aspnetcorev2_inprocess.dll
 C:\C# Projects\RetailRally\RetailRally\obj\Release\net8.0\win-x86\RetailRa.570E053C.Up2Date
+C:\C# Projects\RetailRally\RetailRally\bin\Release\net8.0\win-x86\Microsoft.AspNetCore.Authentication.Facebook.dll
+C:\C# Projects\RetailRally\RetailRally\bin\Release\net8.0\win-x86\Microsoft.AspNetCore.OData.dll
+C:\C# Projects\RetailRally\RetailRally\bin\Release\net8.0\win-x86\Microsoft.OData.Core.dll
+C:\C# Projects\RetailRally\RetailRally\bin\Release\net8.0\win-x86\Microsoft.OData.Edm.dll
+C:\C# Projects\RetailRally\RetailRally\bin\Release\net8.0\win-x86\Microsoft.OData.ModelBuilder.dll
+C:\C# Projects\RetailRally\RetailRally\bin\Release\net8.0\win-x86\Microsoft.Spatial.dll
+C:\C# Projects\RetailRally\RetailRally\obj\Release\net8.0\win-x86\RetailRally.MvcApplicationPartsAssemblyInfo.cs

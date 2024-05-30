@@ -6,17 +6,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pico.css/dist/pico.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@picocss/pico@1/css/pico.min.css">
-    <title>My Orders</title>
+    <title>Мої замовлення</title>
     <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1c1e21;
+            color: #ecf0f1;
+        }
+
+        main.container {
+            max-width: 1000px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #ecf0f1;
+        }
+
         .order-summary {
-            border: 1px solid #ccc;
+            border: 1px solid #34495e;
             border-radius: 8px;
             margin-bottom: 20px;
             padding: 15px;
             transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            font-size:20px;
+            background-color: #3a3f47;
+            font-size: 20px;
+            color: #ecf0f1;
+            position: relative;
         }
 
             .order-summary.no-outline {
@@ -24,8 +45,8 @@
             }
 
             .order-summary:hover {
-                box-shadow: 0 0 10px #007bff;
-                cursor: pointer
+                box-shadow: 0 0 10px #5a5f67;
+                cursor: pointer;
             }
 
         .details {
@@ -78,74 +99,130 @@
                 background-color: #007bff;
                 border-radius: 0.25rem;
             }
+
+        .order-details {
+            margin-bottom: 20px;
+        }
+
+            .order-details p {
+                margin: 5px 0;
+            }
+
+        .order-products ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+            .order-products ul li {
+                margin: 5px 0;
+            }
+
+        .delivery-address {
+            margin-top: 10px;
+        }
+
+        .order-summary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+            .order-summary-header p {
+                margin: 0;
+            }
+
+        .order-summary .toggle-button {
+            background-color: transparent;
+            border: none;
+            color: #ecf0f1;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <nav class="container-fluid">
         <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#" role="button">Contact</a></li>
+            <li><a asp-action="AllProducts">Товари</a></li>
+            <li><a asp-action="MyOrders" role="button">Мої замовлення</a></li>
         </ul>
     </nav>
     <main class="container">
-        <h1>My Orders</h1>
-        @foreach (var order in Model)
+        <h1>Мої замовлення</h1>
+        @if (Model.Count == 0)
         {
-            <div class="order-summary" id="order-summary-@order.Id">
-                <p>Order ID: @order.Id</p>
-                <p>Total Price: $@order.TotalPrice</p>
-                <div id="details-@order.Id" class="details">
-                    <p>Shipping: @order.ShippingType.Name</p>
-                    <p>Payment: @order.PaymentType.Name</p>
-                    <p style="margin-bottom:10px">Status: @order.Status.ToString()</p>
-                    <p>Products:</p>
-                    @if (order.Products.Count == 0)
-                    {
-                        <p>Sorry, but youre products have been deleted(((</p>
-                    }
-                    <ul style="margin-bottom:15px">
-                        @foreach (var op in order.OrderProducts)
+            <h1>Ще немає замовлень.</h1>
+        }
+        else
+        {
+            @foreach (var order in Model)
+            {
+                <div class="order-summary" id="order-summary-@order.Id" onclick="toggleDetails(@order.Id)">
+                    <div class="order-summary-header">
+                        <p>Код замовлення: @order.Id</p>
+                        <p>Загальна ціна: $@String.Format("{0:F2}", order.TotalPrice)</p>
+                        <button class="toggle-button">&#9662;</button>
+                    </div>
+                    <div id="details-@order.Id" class="details">
+                        <div class="order-details">
+                            <p>Доставка: @order.ShippingType.Name</p>
+                            <p>Оплата: @order.PaymentType.Name</p>
+                            <p>Стан: @order.Status.ToString()</p>
+                        </div>
+                        <div class="order-products">
+                            <p>Товари:</p>
+                            @if (order.Products.Count == 0)
+                            {
+                                <p>Вибачте, але ваші товари було видалено.</p>
+                            }
+                            else
+                            {
+                                <ul>
+                                    @foreach (var op in order.OrderProducts)
+                                    {
+                                        <li>
+                                            <a class="link-style" asp-controller="Product" asp-action="GoToDetailsPage" asp-route-productId="@op.Product.Id">
+                                                @op.Product.Name
+                                            </a> - @op.Product.Category.Name - Кількість: @op.Quantity
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                        </div>
+                        @if (order.DeliveryAddress != null)
                         {
-                            <li>
-                                <a class="link-style" asp-controller="Product" asp-action="GoToDetailsPage" asp-route-productId="@op.Product.Id">
-                                    @op.Product.Name
-                                </a> - @op.Product.Category.Name - Quantity: @op.Quantity
-                            </li>
+                            <div class="delivery-address">
+                                <p>Адреса доставки:</p>
+                                <ul>
+                                    <li>@order.DeliveryAddress.Country</li>
+                                    <li>@order.DeliveryAddress.City</li>
+                                    <li>@order.DeliveryAddress.Street</li>
+                                </ul>
+                            </div>
                         }
-                    </ul>
-                    @if (order.DeliveryAddress != null)
-                    {
-                        <p>Delivery Address</p>
-                        <ul>
-                            <li>@order.DeliveryAddress.Country</li>
-                            <li>@order.DeliveryAddress.City</li>
-                            <li>@order.DeliveryAddress.Street</li>
-                        </ul>
-                    }
+                    </div>
                 </div>
-            </div>
+            }
         }
     </main>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            document.querySelectorAll('.order-summary').forEach(function (summary) {
-                summary.addEventListener('click', function () {
-                    const detailsId = this.getAttribute('id').replace('order-summary-', 'details-');
-                    const details = document.getElementById(detailsId);
-                    details.style.display = details.style.display === 'block' ? 'none' : 'block';
-                });
+        function toggleDetails(orderId) {
+            const details = document.getElementById(`details-${orderId}`);
+            const toggleButton = document.querySelector(`#order-summary-${orderId} .toggle-button`);
+            if (details.style.display === 'block') {
+                details.style.display = 'none';
+                toggleButton.innerHTML = '&#9662;';
+            } else {
+                details.style.display = 'block';
+                toggleButton.innerHTML = '&#9652;';
+            }
+        }
 
-                summary.querySelectorAll('a').forEach(function (link) {
-                    link.addEventListener('mouseenter', function (e) {
-                        summary.classList.add('no-outline');
-                    });
-                    link.addEventListener('mouseleave', function (e) {
-                        summary.classList.remove('no-outline');
-                    });
-                    link.addEventListener('click', function (e) {
-                        e.stopPropagation();
-                    });
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.order-summary a').forEach(function (link) {
+                link.addEventListener('click', function (e) {
+                    e.stopPropagation();
                 });
             });
         });

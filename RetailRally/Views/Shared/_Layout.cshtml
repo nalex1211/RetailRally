@@ -2,6 +2,7 @@
 @using RetailRally.Interfaces
 @using System.Security.Claims
 @using RetailRally.ViewModels
+@using static RetailRally.Helpers.Roles
 @inject IProductRepository ProductRepository
 <!DOCTYPE html>
 <html lang="en">
@@ -30,6 +31,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
         }
 
             .header .logo {
@@ -49,7 +54,7 @@
                 border-radius: 9999px;
                 border: none;
                 width: 400px;
-                margin-right: 185px
+                margin-right: 185px;
             }
 
             .header .icons {
@@ -57,7 +62,7 @@
                 cursor: pointer;
                 margin-bottom: 8px;
                 margin-left: 15px;
-                margin-right: -20px
+                margin-right: -20px;
             }
 
                 .header .icons .count {
@@ -93,7 +98,7 @@
             height: 100%;
             width: 0;
             position: fixed;
-            z-index: 2;
+            z-index: 1001; /* Ensure the sidebar appears above the overlay */
             top: 0;
             left: 0;
             background-color: #111;
@@ -170,10 +175,9 @@
             right: 0;
             bottom: 0;
             background-color: rgba(0,0,0,0.5);
-            z-index: 1;
+            z-index: 1000; /* Ensure the overlay appears above other content */
             cursor: pointer;
             transition: 0.3s;
-            cursor: default;
         }
 
         .user-profile {
@@ -247,6 +251,67 @@
             border: none;
         }
 
+        .sidebar-link, .dropdown-item {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 20px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+            border-bottom: 1px solid #2c3e50;
+            margin-bottom: 8px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+        }
+
+            .sidebar-link:hover, .dropdown-item:hover {
+                color: #f1f1f1;
+                text-decoration: none;
+                background-color: #2c3e50;
+            }
+
+        .sidebar .sidebar-link {
+            border: none;
+            border-bottom: 1px solid #2c3e50;
+        }
+
+        .dropdown-toggle {
+            padding: 8px 8px 8px 32px;
+            font-size: 20px;
+            color: #818181;
+            background: none;
+            border: none;
+            cursor: pointer;
+            text-align: left;
+            width: 100%;
+            transition: 0.3s;
+        }
+
+            .dropdown-toggle:hover {
+                color: #f1f1f1;
+            }
+
+        .dropdown-menu {
+            background-color: #2c2f33;
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+            .dropdown-menu .dropdown-item {
+                padding: 10px 20px;
+                font-size: 18px;
+                color: #818181;
+                transition: 0.3s;
+            }
+
+                .dropdown-menu .dropdown-item:hover {
+                    background-color: #2c3e50;
+                    color: #f1f1f1;
+                }
     </style>
 </head>
 <body>
@@ -276,25 +341,52 @@
         {
             @await Component.InvokeAsync("UserProfile")
 
-            <a asp-controller="Product" asp-action="MyOrders">My orders</a>
+            <a asp-controller="Product" asp-action="MyOrders">Мої замовлення</a>
+            <a asp-controller="Chat" asp-action="GoToMyChats">Мої чати</a>
             <form asp-controller="Account" asp-action="Logout">
-                <button class="sidebar-link" asp-controller="Account" asp-action="Logout">Logout</button>
-
+                <button class="sidebar-link" asp-controller="Account" asp-action="Logout">Вийти з системи</button>
             </form>
+            @if (User.IsInRole(Role.Vendor) || User.IsInRole(Role.Admin))
+            {
+                <div>
+                    <button class="btn dropdown-toggle sidebar-link" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Управління товарами
+                    </button>
+                    <div class="dropdown-menu">
+                        <a asp-controller="Product" asp-action="ViewPostProductPage" class="dropdown-item">Додати товар</a>
+                        <a asp-controller="Product" asp-action="GoToMyProductsPage" class="dropdown-item">Мої товари</a>
+                        <a asp-controller="Product" asp-action="GoToOrdersFromMyShopPage" class="dropdown-item">Замовлення з магазину</a>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole(Role.Admin))
+            {
+                <div>
+                    <button class="btn dropdown-toggle sidebar-link" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Панель адміністратора
+                    </button>
+                    <div class="dropdown-menu">
+                        <a asp-controller="Admin" asp-action="GoToAllUsersPage" class="dropdown-item">Переглянути всіх користувачів</a>
+                        <a asp-controller="Admin" asp-action="GoToAllShippingTypesPage" class="dropdown-item">Переглянути всі типи доставки</a>
+                        <a asp-controller="Admin" asp-action="GoToAllPaymentTypesPage" class="dropdown-item">Переглянути всі типи оплати</a>
+                    </div>
+                </div>
+            }
         }
         else
         {
-            <a class="sidebar-link" data-toggle="modal" data-target="#loginModal">Login</a>
-            <a class="sidebar-link" data-toggle="modal" data-target="#registerModal">Register</a>
+            <a class="sidebar-link" data-toggle="modal" data-target="#loginModal">Вхід в систему</a>
+            <a class="sidebar-link" data-toggle="modal" data-target="#registerModal">Реєстрація</a>
         }
     </div>
+
     <div class="header">
         <div class="left-side">
             <i class="fas fa-bars menu-button" onclick="openNav()"></i>
             <a asp-controller="Product" asp-action="AllProducts" class="logo">RETAIL RALLY</a>
         </div>
         <div>
-            <input id="productSearch" type="search" placeholder="I search...">
+            <input id="productSearch" type="search" placeholder="Я шукаю...">
             <div id="searchResults"></div>
         </div>
         <div class="right-side">
@@ -309,7 +401,7 @@
             }
         </div>
     </div>
-    <div class="container">
+    <div class="container" style="padding-top: 100px;">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -360,7 +452,7 @@
                     url: form.attr('action'),
                     data: form.serialize(),
                     success: function (response) {
-                        form.find('.text-danger').empty(); 
+                        form.find('.text-danger').empty();
 
                         if (response.success) {
                             $('#registerModal').modal('hide');
@@ -392,7 +484,7 @@
                     url: form.attr('action'),
                     data: form.serialize(),
                     success: function (response) {
-                        form.find('.text-danger').empty(); 
+                        form.find('.text-danger').empty();
 
                         if (response.success) {
                             $('#loginModal').modal('hide');
@@ -401,7 +493,7 @@
                             if (response.errors) {
                                 Object.keys(response.errors).forEach(function (key) {
                                     var errorMessage = response.errors[key].join(', ');
-                                    form.find('span[data-valmsg-for="' + key + '"]').text(errorMessage); 
+                                    form.find('span[data-valmsg-for="' + key + '"]').text(errorMessage);
                                 });
                             } else if (response.message) {
                                 form.find('#generalLoginError').text(response.message);
@@ -432,4 +524,3 @@
     </script>
 </body>
 </html>
-

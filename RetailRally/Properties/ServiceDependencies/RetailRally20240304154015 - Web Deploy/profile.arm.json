@@ -21,7 +21,7 @@
     },
     "resourceName": {
       "type": "string",
-      "defaultValue": "RetailRally20240227220654",
+      "defaultValue": "RetailRally20240304154015",
       "metadata": {
         "description": "Name of the main resource to be created by this template."
       }

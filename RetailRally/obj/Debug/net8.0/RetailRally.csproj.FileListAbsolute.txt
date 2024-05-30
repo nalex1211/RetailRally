@@ -161,3 +161,8 @@ C:\C# Projects\RetailRally\RetailRally\bin\Debug\net8.0\Microsoft.OData.Edm.dll
 C:\C# Projects\RetailRally\RetailRally\bin\Debug\net8.0\Microsoft.OData.ModelBuilder.dll
 C:\C# Projects\RetailRally\RetailRally\bin\Debug\net8.0\Microsoft.Spatial.dll
 C:\C# Projects\RetailRally\RetailRally\obj\Debug\net8.0\RetailRally.MvcApplicationPartsAssemblyInfo.cs
+C:\C# Projects\RetailRally\RetailRally\bin\Debug\net8.0\Microsoft.Extensions.Caching.StackExchangeRedis.dll
+C:\C# Projects\RetailRally\RetailRally\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\C# Projects\RetailRally\RetailRally\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+C:\C# Projects\RetailRally\RetailRally\bin\Debug\net8.0\Pipelines.Sockets.Unofficial.dll
+C:\C# Projects\RetailRally\RetailRally\bin\Debug\net8.0\StackExchange.Redis.dll

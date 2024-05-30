@@ -162,8 +162,8 @@ public class AccountRepository(HubContextClass _db,
             values: new { userId = userId, email = email },
             protocol: _httpContextAccessor.HttpContext.Request.Scheme);
 
-        string messageText = "If you want to change your email, click the button below:";
-        await _emailService.SendEmailAsync(email, "Email change", callbackUrl, messageText, "Email");
+        string messageText = "Якщо ви хочете змінити свою електронну адресу, натисніть кнопку нижче:";
+        await _emailService.SendEmailAsync(email, "Email change", callbackUrl, messageText, "Електронну пошту");
 
         return true;
     }
@@ -179,8 +179,8 @@ public class AccountRepository(HubContextClass _db,
             values: new { userId },
             protocol: _httpContextAccessor.HttpContext.Request.Scheme);
 
-        string messageText = "If you want to confirm your account, click the button below:";
-        await _emailService.SendEmailAsync(email, "Email confirmation", callbackUrl, messageText, "Email");
+        string messageText = "Якщо ви хочете підтвердити свій обліковий запис, натисніть кнопку нижче:";
+        await _emailService.SendEmailAsync(email, "Email confirmation", callbackUrl, messageText, "Електронну пошту");
 
         return true;
     }
@@ -195,8 +195,8 @@ public class AccountRepository(HubContextClass _db,
             values: new { userId = user.Id },
             protocol: _httpContextAccessor.HttpContext.Request.Scheme);
 
-        string messageText = "If you want to change your password, click the button below:";
-        await _emailService.SendEmailAsync(email, "Password change", callbackUrl, messageText, "Password");
+        string messageText = "Якщо ви хочете змінити пароль, натисніть кнопку нижче:";
+        await _emailService.SendEmailAsync(email, "Password change", callbackUrl, messageText, "Пароль");
 
         return true;
     }

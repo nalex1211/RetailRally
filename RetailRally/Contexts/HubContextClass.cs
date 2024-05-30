@@ -37,6 +37,18 @@ public class HubContextClass : IdentityDbContext<User>
             .HasForeignKey(c => c.ProductId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        modelBuilder.Entity<User>()
+          .HasMany(u => u.Products)
+          .WithOne(p => p.User)
+          .HasForeignKey(c => c.UserId)
+          .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<User>()
+          .HasMany(u => u.Comments)
+          .WithOne(c => c.User)
+          .HasForeignKey(c => c.UserId)
+          .OnDelete(DeleteBehavior.Cascade);
+
         modelBuilder.Entity<CartItem>()
             .HasOne(ci => ci.Product)
             .WithMany()
@@ -83,7 +95,6 @@ public class HubContextClass : IdentityDbContext<User>
                     .HasForeignKey(pt => pt.OrderId),
                 j =>
                 {
-                    j.Property(pt => pt.Quantity).HasDefaultValue(0);
                     j.HasKey(t => new { t.OrderId, t.ProductId });
                     j.ToTable("OrderProducts");
                 });

@@ -1,142 +1,23 @@
-﻿@using RetailRally.ViewModels
+﻿@using RetailRally.Helpers
+@using RetailRally.ViewModels
 @model MainPageVm
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
 @{
     var cartItems = ViewBag.CartItems as List<CartItem>;
+    var categoryId = ViewBag.CategoryId as int?;
 }
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        if (@Html.Raw(Json.Serialize(TempData["ShowRegisterSuccess"])) === true) {
-            Swal.fire({
-                title: 'Registration successful!',
-                icon: 'success',
-                showConfirmButton: false,
-                timer: 1000
-            });
-        }
-
-        if (@Html.Raw(Json.Serialize(TempData["ShowLoginSuccess"])) === true) {
-            Swal.fire({
-                title: 'Login successful!',
-                icon: 'success',
-                showConfirmButton: false,
-                timer: 1000
-            });
-        }
-
-        if (@Html.Raw(Json.Serialize(TempData["ShowLogoutSuccess"])) === true) {
-            Swal.fire({
-                title: 'You have logged out!',
-                icon: 'success',
-                showConfirmButton: false,
-                timer: 1000
-            });
-        }
-    });
-</script>
-
-
-<div class="container mt-4">
-    <strong><h3 style="margin-bottom:10px">Categories</h3></strong>
-    <div class="d-flex flex-column flex-md-row">
-        <div class="categories flex-shrink-0">
-            <ul>
-                <li>
-                    <b><a class="link-style" asp-action="AllProducts">All products</a></b>
-                </li>
-                @foreach (var category in Model.Categories)
-                {
-                    <li>
-                        <a class="link-style" asp-route-categoryId="@category.Id" asp-action="DisplayCategoryProducts">
-                            @category.Name
-                        </a>
-                    </li>
-                }
-            </ul>
-        </div>
-        <div class="products-flex-grow-1 w-100">
-            <div class="d-flex justify-content-end">
-                <select id="filterSelect" class="btn btn-primary" style="margin-bottom:10px" onchange="filterProducts()">
-                    <option disabled selected>Filter By</option>
-                    <option value="Name">By Name</option>
-                    <option value="Price">By Price</option>
-                </select>
-
-            </div>
-
-            <div class="row">
-                @foreach (var product in Model.Products)
-                {
-                    var isInCart = cartItems?.Any(ci => ci.ProductId == product.Id) == true;
-                    <div class="col-md-4 mb-4">
-                        <div class="card h-100 clickable-card" data-url="@Url.Action("GoToDetailsPage", new { productId = product.Id })">
-                            <div class="card-img-container d-flex justify-content-center">
-                                <img class="card-img-top my-image" src="@product.PictureUrl" alt="Product Image">
-                            </div>
-
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title">@product.Name</h5>
-                                <h5 class="card-title">@product.Category.Name</h5>
-                                <p class="card-text">$@product.Price.ToString("0.00")</p>
-                                <div class="mt-auto d-flex justify-content-between">
-                                    <a asp-route-selectedItems="@product.Id" asp-action="GoToBuyPage" class="btn btn-primary btn-sm">Purchase</a>
-                                    <form asp-action="AddToCart" method="post">
-                                        <input type="hidden" name="productId" value="@product.Id" />
-                                        <button class="btn btn-success btn-sm btn-add-to-cart" @(isInCart ? "disabled" : "")>
-                                            <i class="fas fa-shopping-cart"></i> Add to Cart
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                }
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    function filterProducts() {
-        var filterSelect = document.getElementById('filterSelect');
-        var filterName = filterSelect.value;
-        var url = '@Url.Action("FilterBy", "Product")' + '?filterName=' + filterName;
-        window.location.href = url;
-    }
-    document.addEventListener('DOMContentLoaded', function () {
-        var cards = document.querySelectorAll('.clickable-card');
-
-        cards.forEach(function (card) {
-            card.addEventListener('click', function () {
-                window.location.href = this.getAttribute('data-url');
-            });
-
-            var purchaseButton = card.querySelector('.btn-primary');
-            var cartButton = card.querySelector('.btn-success')
-
-            cartButton.addEventListener('mouseenter', function () {
-                card.classList.add('no-outline');
-            });
-
-            cartButton.addEventListener('mouseleave', function () {
-                card.classList.remove('no-outline');
-            });
-
-            purchaseButton.addEventListener('mouseenter', function () {
-                card.classList.add('no-outline');
-            });
-
-            purchaseButton.addEventListener('mouseleave', function () {
-                card.classList.remove('no-outline');
-            });
-        });
-    });
-</script>
-
 <style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #1f1f1f;
+        color: #e0e0e0;
+    }
+
     .link-style {
         color: lawngreen;
         text-decoration: none;
@@ -147,28 +28,36 @@
             color: green;
             border-color: green;
         }
+
+    .new-link-style:hover {
+        color: gray;
+    }
+
     .my-image {
-        width: 300px;
-        height: 300px;
+        width: 100%;
+        height: 200px;
         object-fit: cover;
-        border-radius: 8px;
-        margin: auto;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
     }
 
     .clickable-card {
         cursor: pointer;
-        transition: transform 0.3s ease, border 0.3s ease;
-        border: 2px solid transparent;
-        border-radius: 5px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
 
         .clickable-card:hover {
-            border: 2px solid #007bff;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
         }
 
     .no-outline:hover {
-        border: 2px solid transparent;
         transform: none;
+        box-shadow: none;
     }
 
     .btn-add-to-cart {
@@ -176,14 +65,9 @@
     }
 
     .card-img-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        overflow: hidden;
-        border-top-left-radius: 5px;
-        border-top-right-radius: 5px;
         width: 100%;
-        height: 300px;
+        height: 250px;
+        overflow: hidden;
     }
 
     .d-flex {
@@ -198,24 +82,19 @@
         flex-direction: row;
     }
 
-
     .categories {
         background-color: #2E2E2E;
         padding: 20px;
         margin-right: 20px;
-        box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);
+        box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.5);
         height: auto;
         min-height: 100%;
+        border-radius: 8px;
+        width:300px;
     }
-
 
     .products-flex-grow-1 {
         flex-grow: 1;
-    }
-
-
-    .categories h3 {
-        color: #fff;
     }
 
     .categories ul {
@@ -224,5 +103,362 @@
         padding: 0;
         overflow-y: auto;
     }
+
+        .categories ul li a {
+            color: #e0e0e0;
+            text-decoration: none;
+        }
+
+            .categories ul li a:hover {
+                color: #00ff00;
+            }
+
+    .card {
+        background-color: #333;
+        border: none;
+        color: #e0e0e0;
+        border-radius: 8px;
+        overflow: hidden;
+        position: relative;
+        padding-bottom: 20px;
+    }
+
+    .card-title {
+        font-size: 1.2em;
+        margin-bottom: 0.5em;
+    }
+
+    .card-text {
+        margin-bottom: 1em;
+    }
+
+    .card-description {
+        font-size: 0.9em;
+        color: #a0a0a0;
+        height: 40px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .price {
+        font-size: 1.5em;
+        font-weight: bold;
+        color: #21B10D;
+    }
+
+    .old-price {
+        font-size: 1.2em;
+        color: #ff0000;
+        text-decoration: line-through;
+        margin-right: 10px;
+    }
+
+    .quantity {
+        font-size: 1em;
+        color: #a0a0a0;
+    }
+
+    .comment-count {
+        font-size: 0.9em;
+        color: #8E8B8B;
+    }
+
+    .card-body {
+        padding: 10px;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: white;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+        color: white;
+    }
+
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+
+    .discount-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background-color: #ff0000;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 0.9em;
+        font-weight: bold;
+    }
+
+    .wishlist-icon {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        color: #ff9800;
+        font-size: 1.5em;
+        cursor: pointer;
+    }
+
+    .loading-spinner {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 20px 0;
+        width: 100%;
+    }
+
+        .loading-spinner img {
+            width: 50px;
+            height: 50px;
+        }
+
+    footer {
+        text-align: center;
+        padding: 20px 0;
+        color: #a0a0a0;
+    }
+
+    .filter-container {
+        margin-top: 20px;
+    }
+
+        .filter-container input {
+            margin: 5px 0;
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .filter-container button {
+            margin-top: 5px;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+            .filter-container button:hover {
+                background-color: #0056b3;
+            }
 </style>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        if (@Html.Raw(Json.Serialize(TempData["ShowRegisterSuccess"])) === true) {
+            Swal.fire({
+                title: 'Реєстрація пройшла успішно!',
+                icon: 'success',
+                showConfirmButton: false,
+                timer: 1000
+            });
+        }
+
+        if (@Html.Raw(Json.Serialize(TempData["ShowLoginSuccess"])) === true) {
+            Swal.fire({
+                title: 'Успішний вхід в систему!',
+                icon: 'success',
+                showConfirmButton: false,
+                timer: 1000
+            });
+        }
+
+        if (@Html.Raw(Json.Serialize(TempData["ShowLogoutSuccess"])) === true) {
+            Swal.fire({
+                title: 'Ви вийшли з системи!',
+                icon: 'success',
+                showConfirmButton: false,
+                timer: 1000
+            });
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        let pageNumber = @ViewBag.PageNumber;
+        const pageSize = @ViewBag.PageSize;
+        let isFetching = false;
+        let allProductsFetched = false;
+        const categoryId = @ViewBag.CategoryId;
+
+        async function fetchProducts() {
+            if (isFetching || allProductsFetched) return;
+            isFetching = true;
+            pageNumber++;
+            document.getElementById('loadingSpinner').style.display = 'flex';
+
+            try {
+                const response = await fetch(categoryId
+                    ? `@Url.Action("DisplayCategoryProducts")?categoryId=${categoryId}&pageNumber=${pageNumber}&pageSize=${pageSize}`
+                    : `@Url.Action("AllProducts")?pageNumber=${pageNumber}&pageSize=${pageSize}`);
+                const html = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const newProducts = doc.querySelectorAll('.col-md-4.mb-4');
+
+                if (newProducts.length < pageSize) {
+                    allProductsFetched = true;
+                }
+
+                newProducts.forEach(product => {
+                    document.querySelector('.row').appendChild(product);
+                });
+
+                isFetching = false;
+                document.getElementById('loadingSpinner').style.display = 'none';
+            } catch (error) {
+                console.error('Error fetching products:', error);
+                isFetching = false;
+                document.getElementById('loadingSpinner').style.display = 'none';
+            }
+        }
+
+        window.addEventListener('scroll', () => {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
+                fetchProducts();
+            }
+        });
+
+        var cards = document.querySelectorAll('.clickable-card');
+
+        cards.forEach(function (card) {
+            card.addEventListener('click', function () {
+                window.location.href = this.getAttribute('data-url');
+            });
+
+            var purchaseButton = card.querySelector('.btn-primary');
+            var cartButton = card.querySelector('.btn-success');
+
+            if (cartButton) {
+                cartButton.addEventListener('mouseenter', function () {
+                    card.classList.add('no-outline');
+                });
+
+                cartButton.addEventListener('mouseleave', function () {
+                    card.classList.remove('no-outline');
+                });
+            }
+
+            if (purchaseButton) {
+                purchaseButton.addEventListener('mouseenter', function () {
+                    card.classList.add('no-outline');
+                });
+
+                purchaseButton.addEventListener('mouseleave', function () {
+                    card.classList.remove('no-outline');
+                });
+            }
+        });
+    });
+
+    function filterProducts() {
+        var filterSelect = document.getElementById('filterSelect');
+        var filterName = filterSelect.value;
+        var url = '@Url.Action("FilterBy", "Product")' + '?filterName=' + filterName;
+        window.location.href = url;
+    }
+
+    function filterByPrice() {
+        var priceFrom = document.getElementById('priceFrom').value;
+        var priceTo = document.getElementById('priceTo').value;
+        var url = '@Url.Action("FilterByPrice", "Product")' + '?priceFrom=' + priceFrom + '&priceTo=' + priceTo;
+        window.location.href = url;
+    }
+</script>
+
+<div class="container mt-4">
+    <strong style="margin-bottom:10px">Категорії</strong>
+    <div class="d-flex flex-column flex-md-row">
+        <div class="categories ">
+            <ul>
+                <li>
+                    <b><a class="link-style" asp-action="AllProducts">Всі продукти</a></b>
+                </li>
+                @foreach (var category in Model.Categories)
+                {
+                    <li>
+                        <a class="link-style" asp-route-categoryId="@category.Id" asp-action="DisplayCategoryProducts">
+                            @category.Name
+                        </a>
+                    </li>
+                }
+            </ul>
+            <div class="filter-container">
+                <h1>Ціна</h1>
+                <input style="width:35%" class="no-spin-buttons" type="number" id="priceFrom" placeholder="Від" />
+                -
+                <input style="width:35%" class="no-spin-buttons" type="number" id="priceTo" placeholder="До" />
+                <button onclick="filterByPrice()">OK</button>
+            </div>
+        </div>
+        <div class="products-flex-grow-1 w-100">
+            <div class="d-flex justify-content-end">
+                <select id="filterSelect" class="btn btn-primary" style="margin-bottom:10px" onchange="filterProducts()">
+                    <option disabled selected>Фільтрувати за</option>
+                    <option value="Name">За назвою</option>
+                    <option value="Price">За ціною</option>
+                </select>
+            </div>
+
+            <div class="row">
+                @foreach (var product in Model.Products)
+                {
+                    var isInCart = cartItems?.Any(ci => ci.ProductId == product.Id) == true;
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 clickable-card" data-url="@Url.Action("GoToDetailsPage", new { productId = product.Id })">
+                            <div class="card-img-container">
+                                <img class="card-img-top my-image" src="@product.PictureUrl" alt="Product Image">
+                            </div>
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">@product.Name</h5>
+                                <p class="card-description">@product.Description</p>
+                                <h5 class="card-title">@product.Category.Name</h5>
+                                <p class="card-text quantity">В наявності: @product.Quantity</p>
+                                <p class="card-text">
+                                    <span class="price">$@product.Price.ToString("0.00")</span>
+                                </p>
+                                <div class="comment-count">
+                                    <i class="fa fa-comment" aria-hidden="true"></i> @product.Comments.Count
+                                </div>
+                                <div class="mt-auto d-flex justify-content-between">
+                                    @if (product.UserId != User.GetUserId())
+                                    {
+                                        <a asp-route-selectedItems="@product.Id" asp-action="GoToBuyPage" class="btn btn-primary btn-sm">Купити</a>
+                                        <form asp-action="AddToCart" method="post">
+                                            <input type="hidden" name="productId" value="@product.Id" />
+                                            <button class="btn btn-success btn-sm btn-add-to-cart" @(isInCart ? "disabled" : "")>
+                                                <i class="fas fa-shopping-cart"></i> Add to Cart
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <a asp-route-productId="@product.Id" asp-action="GoToProductEditPage" class="btn btn-primary btn-sm">Редагувати</a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="loading-spinner" id="loadingSpinner" style="display: none;">
+                <img src="~/icons/loading.gif" alt="Завантаження...">
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="container">
+    <small><a class="new-link-style" asp-controller="Home" asp-action="TermsAndConditions">Умови та положення</a> • <a class="new-link-style" asp-controller="Home" asp-action="Privacy">Політика конфіденційності</a></small>
+</footer>

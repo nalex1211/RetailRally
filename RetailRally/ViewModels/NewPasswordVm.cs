@@ -5,12 +5,12 @@ namespace RetailRally.ViewModels;
 public class NewPasswordVm
 {
     public string UserId { get; set; }
-    [Required(ErrorMessage = "New password is required!")]
+    [Required(ErrorMessage = "Потрібен новий пароль!")]
     [DataType(DataType.Password)]
     public string NewPassword { get; set; }
 
-    [Required(ErrorMessage = "Confirmation is required!")]
+    [Required(ErrorMessage = "Потрібне підтвердження пароля!")]
     [DataType(DataType.Password)]
-    [Compare("NewPassword", ErrorMessage = "Passwords don't match!")]
+    [Compare("NewPassword", ErrorMessage = "Паролі не збігаються!")]
     public string ConfirmPassword { get; set; }
 }

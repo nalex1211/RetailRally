@@ -1,6 +1,8 @@
 ﻿using MailKit.Search;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 using RetailRally.Contexts;
 using RetailRally.Helpers;
 using RetailRally.Interfaces;
@@ -8,8 +10,8 @@ using RetailRally.Models;
 
 namespace RetailRally.Repositories;
 
-public class ProductRepository(HubContextClass _db, IConfiguration _configuration,
-    AzureStorageService _service, UserManager<User> _userManager) : IProductRepository
+public class ProductRepository(HubContextClass _context, IConfiguration _configuration,
+    AzureStorageService _service, UserManager<User> _userManager, IDistributedCache _cache) : IProductRepository
 {
     private readonly string _containerName = _configuration["AzureStorageConfig:ProductsImageContainer"];
     public async Task<bool> AddProductAsync(Product product, IFormFile image)
@@ -22,32 +24,115 @@ public class ProductRepository(HubContextClass _db, IConfiguration _configuratio
                 product.PictureUrl = imageUrl;
             }
         }
-        await _db.Products.AddAsync(product);
+        await _context.Products.AddAsync(product);
+        await InvalidateProductCache();
         return await SaveChangesAsync();
     }
 
     public async Task<List<Category>> GetAllCategoriesAsync()
     {
-        return await _db.Categories.ToListAsync();
+        return await _context.Categories.ToListAsync();
     }
 
     public async Task<List<PaymentType>> GetAllPaymentTypesAsync()
     {
-        return await _db.PaymentTypes.ToListAsync();
+        return await _context.PaymentTypes.ToListAsync();
     }
 
-    public async Task<List<Product>> GetAllProductsAsync()
+    //public async Task<List<Product>> GetAllProductsAsync()
+    //{
+    //    return await _db.Products.Include(p => p.Category).Include(p=>p.Comments).ToListAsync();
+    //}
+
+    //public async Task<List<Product>> GetAllProductsAsync()
+    //{
+    //    var cacheKey = "allProducts";
+    //    var cacheVersionKey = "productsCacheVersion";
+
+    //    var cacheVersion = await _cache.GetStringAsync(cacheVersionKey) ?? "1";
+    //    var fullCacheKey = $"{cacheKey}_v{cacheVersion}";
+
+    //    List<Product> products;
+
+    //    var cachedProducts = await _cache.GetStringAsync(fullCacheKey);
+    //    if (!string.IsNullOrEmpty(cachedProducts))
+    //    {
+    //        _logger.LogInformation("Fetched products from cache.");
+    //        products = JsonConvert.DeserializeObject<List<Product>>(cachedProducts);
+    //    }
+    //    else
+    //    {
+    //        _logger.LogInformation("Fetching products from database.");
+    //        products = await _context.Products.Include(p => p.Category).Include(p => p.Comments).ToListAsync();
+
+    //        var cacheOptions = new DistributedCacheEntryOptions
+    //        {
+    //            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30)
+    //        };
+
+    //        var jsonSettings = new JsonSerializerSettings
+    //        {
+    //            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+    //        };
+
+    //        await _cache.SetStringAsync(fullCacheKey, JsonConvert.SerializeObject(products, jsonSettings), cacheOptions);
+    //        _logger.LogInformation("Products stored in cache.");
+    //    }
+
+    //    return products;
+    //}
+
+    public async Task<List<Product>> GetAllProductsAsync(int pageNumber, int pageSize)
     {
-        return await _db.Products.Include(p => p.Category).ToListAsync();
+        var cacheVersionKey = "productsCacheVersion";
+        var cacheKey = $"products_{pageNumber}_{pageSize}_v{await GetCacheVersionAsync(cacheVersionKey)}";
+        List<Product> products;
+
+        var cachedProducts = await _cache.GetStringAsync(cacheKey);
+        if (!string.IsNullOrEmpty(cachedProducts))
+        {
+            products = JsonConvert.DeserializeObject<List<Product>>(cachedProducts);
+        }
+        else
+        {
+            products = await _context.Products
+                .Include(p => p.Category)
+                .Include(p => p.Comments)
+                .OrderBy(p => p.Id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var cacheOptions = new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30)
+            };
+
+            var jsonSettings = new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            };
+
+            await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(products, jsonSettings), cacheOptions);
+        }
+
+        return products;
+    }
+
+
+    private async Task<string> GetCacheVersionAsync(string cacheVersionKey)
+    {
+        var cacheVersion = await _cache.GetStringAsync(cacheVersionKey);
+        return cacheVersion ?? "1";
     }
 
     public async Task<List<ShippingType>> GetAllShippingTypesAsync()
     {
-        return await _db.ShippingTypes.ToListAsync();
+        return await _context.ShippingTypes.ToListAsync();
     }
     public async Task<List<CartItem>> GetCartItemsWithProductsByUserIdAsync(string userId)
     {
-        return await _db.CartItems
+        return await _context.CartItems
             .Where(ci => ci.Cart.UserId == userId)
             .Include(ci => ci.Product)
             .ThenInclude(p => p.User)
@@ -56,7 +141,7 @@ public class ProductRepository(HubContextClass _db, IConfiguration _configuratio
 
     public async Task<List<CartItem>> GetCartItemsByUserIdAsync(string userId)
     {
-        return await _db.Carts
+        return await _context.Carts
                         .Include(c => c.Items)
                         .Where(c => c.UserId == userId)
                         .SelectMany(c => c.Items)
@@ -65,7 +150,7 @@ public class ProductRepository(HubContextClass _db, IConfiguration _configuratio
 
     public async Task<Product> GetProductByIdAsync(int id)
     {
-        return await _db.Products
+        return await _context.Products
             .Include(p => p.Category)
             .Include(p => p.User)
             .Include(p => p.Comments.OrderByDescending(c => c.Id))
@@ -80,24 +165,24 @@ public class ProductRepository(HubContextClass _db, IConfiguration _configuratio
 
     public async Task<bool> SaveChangesAsync()
     {
-        var saved = await _db.SaveChangesAsync();
+        var saved = await _context.SaveChangesAsync();
         return saved > 0 ? true : false;
     }
 
     public async Task<Cart> GetCartByUserIdAsync(string userId)
     {
-        return await _db.Carts.Include(c => c.Items).Where(u => u.UserId == userId).FirstOrDefaultAsync();
+        return await _context.Carts.Include(c => c.Items).Where(u => u.UserId == userId).FirstOrDefaultAsync();
     }
 
     public async Task<bool> RemoveCartItem(CartItem cartItem)
     {
-        _db.Entry(cartItem).State = EntityState.Deleted;
+        _context.Entry(cartItem).State = EntityState.Deleted;
         return true;
     }
 
     public async Task<int> GetNumberOfProductsInCart(string userId)
     {
-        var cart = await _db.Carts
+        var cart = await _context.Carts
                          .Include(c => c.Items)
                          .FirstOrDefaultAsync(c => c.UserId == userId);
 
@@ -106,7 +191,7 @@ public class ProductRepository(HubContextClass _db, IConfiguration _configuratio
             return 0;
         }
 
-        return cart.Items.Sum(item => item.Quantity);
+        return cart.Items.Count();
     }
 
     public async Task<Order> CreateOrderAsync(Order order, string userId)
@@ -115,14 +200,14 @@ public class ProductRepository(HubContextClass _db, IConfiguration _configuratio
         order.Status = Status.Pending;
         order.TotalPrice = 0;
 
-        _db.Orders.Add(order);
+        _context.Orders.Add(order);
         await SaveChangesAsync();
         return order;
     }
 
-    public async Task<bool> AddProductToOrderAsync(int orderId, int productId, int quantity = 1)
+    public async Task<bool> AddProductToOrderAsync(int orderId, int productId, int quantity)
     {
-        var product = await _db.Products.FindAsync(productId);
+        var product = await _context.Products.FindAsync(productId);
         if (product == null)
         {
             return false;
@@ -134,38 +219,37 @@ public class ProductRepository(HubContextClass _db, IConfiguration _configuratio
             ProductId = productId,
             Quantity = quantity
         };
-
-        var order = await _db.Orders.FindAsync(orderId);
+        var order = await _context.Orders.FindAsync(orderId);
         if (order == null)
         {
             return false;
         }
         order.TotalPrice += product.Price * quantity;
 
-        _db.OrderProducts.Add(orderProduct);
+        _context.OrderProducts.Add(orderProduct);
         return await SaveChangesAsync();
     }
 
     public async Task<bool> AddDeliveryAddressAsync(DeliveryAddress address)
     {
-        _db.DeliveryAddresses.Add(address);
+        _context.DeliveryAddresses.Add(address);
         return await SaveChangesAsync();
     }
 
     public async Task<bool> AddCartAsync(Cart cart)
     {
-        await _db.Carts.AddAsync(cart);
+        await _context.Carts.AddAsync(cart);
         return await SaveChangesAsync();
     }
 
     public async Task AddItemToCartAsync(CartItem cartItem)
     {
-        await _db.CartItems.AddAsync(cartItem);
+        await _context.CartItems.AddAsync(cartItem);
     }
 
     public async Task<Order> GetOrderSummaryAsync(int orderId)
     {
-        return await _db.Orders
+        return await _context.Orders
             .Include(o => o.OrderProducts)
                 .ThenInclude(op => op.Product)
                 .ThenInclude(p => p.Category)
@@ -176,15 +260,15 @@ public class ProductRepository(HubContextClass _db, IConfiguration _configuratio
 
     public async Task<List<Product>> GetAllUserProductsAsync(string userId)
     {
-        return await _db.Products.Include(p => p.Category).Where(o => o.UserId == userId).ToListAsync();
+        return await _context.Products.Include(p => p.Category).Where(o => o.UserId == userId).ToListAsync();
     }
 
     public async Task<bool> DeleteProductAsync(int productId)
     {
-        using var transaction = _db.Database.BeginTransaction();
+        using var transaction = _context.Database.BeginTransaction();
         try
         {
-            var orderProducts = await _db.OrderProducts
+            var orderProducts = await _context.OrderProducts
                                      .Where(op => op.ProductId == productId)
                                      .Include(op => op.Order)
                                      .ToListAsync();
@@ -195,25 +279,25 @@ public class ProductRepository(HubContextClass _db, IConfiguration _configuratio
                 if (order != null)
                 {
                     order.Status = Status.ProductDeleted;
-                    _db.Orders.Update(order);
+                    _context.Orders.Update(order);
                 }
             }
 
-            _db.OrderProducts.RemoveRange(orderProducts);
-            await _db.SaveChangesAsync();
+            _context.OrderProducts.RemoveRange(orderProducts);
+            await _context.SaveChangesAsync();
 
-            var cartProducts = await _db.CartItems
+            var cartProducts = await _context.CartItems
                                      .Where(c => c.ProductId == productId)
                                      .ToListAsync();
 
-            _db.CartItems.RemoveRange(cartProducts);
-            var comments = await _db.Comments.Where(c => c.ProductId == productId).ToListAsync();
+            _context.CartItems.RemoveRange(cartProducts);
+            var comments = await _context.Comments.Where(c => c.ProductId == productId).ToListAsync();
             if (comments != null)
             {
-                _db.Comments.RemoveRange(comments);
-                await _db.SaveChangesAsync();
+                _context.Comments.RemoveRange(comments);
+                await _context.SaveChangesAsync();
             }
-            var product = await _db.Products.FindAsync(productId);
+            var product = await _context.Products.FindAsync(productId);
             if (product != null)
             {
                 if (!string.IsNullOrEmpty(product.PictureUrl))
@@ -221,8 +305,9 @@ public class ProductRepository(HubContextClass _db, IConfiguration _configuratio
                     await _service.DeleteImageAsync(product.PictureUrl, _containerName);
                 }
 
-                _db.Products.Remove(product);
-                await _db.SaveChangesAsync();
+                _context.Products.Remove(product);
+                await InvalidateProductCache();
+                await _context.SaveChangesAsync();
             }
             await transaction.CommitAsync();
             return true;
@@ -233,6 +318,16 @@ public class ProductRepository(HubContextClass _db, IConfiguration _configuratio
             return false;
         }
     }
+
+    private async Task InvalidateProductCache()
+    {
+        var cacheVersionKey = "productsCacheVersion";
+        var currentVersion = await _cache.GetStringAsync(cacheVersionKey);
+        var newVersion = (int.Parse(currentVersion ?? "1") + 1).ToString();
+
+        await _cache.SetStringAsync(cacheVersionKey, newVersion);
+    }
+
 
     public async Task<bool> UpdateProductAsync(Product newProduct, IFormFile profilePicture)
     {
@@ -249,25 +344,57 @@ public class ProductRepository(HubContextClass _db, IConfiguration _configuratio
                 newProduct.PictureUrl = imageUrl;
             }
         }
-        _db.Products.Update(newProduct);
+        _context.Products.Update(newProduct);
         return await SaveChangesAsync();
     }
 
-    public async Task<List<Product>> GetAllCategoryProductsAsync(int categoryId)
+    public async Task<List<Product>> GetCategoryProductsAsync(int categoryId, int pageNumber, int pageSize)
     {
-        return await _db.Products.Where(p => p.CategoryId == categoryId).ToListAsync();
+        var cacheKey = $"categoryProducts_{categoryId}_{pageNumber}_{pageSize}";
+        List<Product> products;
+
+        var cachedProducts = await _cache.GetStringAsync(cacheKey);
+        if (!string.IsNullOrEmpty(cachedProducts))
+        {
+            products = JsonConvert.DeserializeObject<List<Product>>(cachedProducts);
+        }
+        else
+        {
+            products = await _context.Products
+                .Where(p=>p.CategoryId == categoryId)
+                .Include(p => p.Category)
+                .Include(p => p.Comments)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var cacheOptions = new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30)
+            };
+
+            var jsonSettings = new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            };
+
+            await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(products, jsonSettings), cacheOptions);
+        }
+
+        return products;
     }
+
 
     public async Task<List<Product>> GetAllSearchedProductsAsync(string term)
     {
-        return await _db.Products
+        return await _context.Products
              .Where(p => p.Name.StartsWith(term))
              .ToListAsync();
     }
 
     public async Task<List<Order>> GetAllUserOrdersAsync(string userId)
     {
-        return await _db.Orders
+        return await _context.Orders
             .Where(o => o.UserId == userId)
             .Include(o => o.OrderProducts)
                 .ThenInclude(op => op.Product)
@@ -280,7 +407,7 @@ public class ProductRepository(HubContextClass _db, IConfiguration _configuratio
 
     public async Task<List<Order>> GetOrdersFromMyShopAsync(string userId)
     {
-        return await _db.Orders
+        return await _context.Orders
             .Where(o => o.Products.Any(p => p.UserId == userId))
             .Include(o => o.OrderProducts)
                 .ThenInclude(op => op.Product)

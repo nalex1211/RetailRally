@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit https://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project>
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAdfS4cPxOZ0OuVGIMKyw36gAAAAACAAAAAAAQZgAAAAEAACAAAADH2O9emjpIyyRtWTCq4KzR53GyxfbL3mbBk5bt2aMk1AAAAAAOgAAAAAIAACAAAABLOcOJ8WpCc6CUWSpysTLnuTBw0i5tzIGXb/OGZ9+Do6AAAADQ7QwXJBIRwpO4D9bVMLFj/XSgZtWZpxFyy8UrRuleHj2/MK0ldeiOniGKhoKAvuCdp4AHoDZHu7IwSa63PzhOC8CLYMPGfZGGoNhpzLFV6mXKf74x3huXbyV2W/Zr6IrmNcdr/pEhRb+w2yZH+yjCk/E+riLCbYWLenGnlYPAGOj/8vuWlHJR/FKPh3z4Z1+WFdJUhYtWqWJT+8Et3fZnQAAAAO2F2V5VA1jNYfuA7hl4J56Mn3Uc8gKA29wtamjKU9MeX2Pr/Q25gUyCCqjZvYvCSzdqJLFOpZAIMYBh/sOnGJQ=</EncryptedPassword>
+    <History>True|2024-03-04T15:07:01.4167787Z;True|2024-03-04T17:02:04.3786664+02:00;True|2024-03-04T16:17:36.4181533+02:00;True|2024-03-04T15:44:45.3753339+02:00;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+  <ItemGroup>
+    <DestinationConnectionStrings Include="MarketplaceDbConnection">
+      <Value>Server=tcp:retailrally.database.windows.net,1433%3bInitial Catalog=retailrally%3bPersist Security Info=False%3bUser ID=nalex1211%3bPassword=Bendchat1%3bMultipleActiveResultSets=False%3bEncrypt=True%3bTrustServerCertificate=False%3bConnection Timeout=30%3b</Value>
+    </DestinationConnectionStrings>
+  </ItemGroup>
+  <ItemGroup>
+    <EFMigrations Include="RetailRally.Contexts.HubContextClass">
+      <Value>Server=tcp:retailrally.database.windows.net,1433%3bInitial Catalog=retailrally%3bPersist Security Info=False%3bUser ID=nalex1211%3bPassword=Bendchat1%3bMultipleActiveResultSets=False%3bEncrypt=True%3bTrustServerCertificate=False%3bConnection Timeout=30%3b</Value>
+    </EFMigrations>
+  </ItemGroup>
+</Project>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Request Email Change</title>
+    <title>Подати запит на зміну адреси електронної пошти</title>
 </head>
 <body>
     @{
@@ -14,24 +14,24 @@
             <div class="col-md-6 offset-md-3">
                 <div class="card">
                     <div class="card-header">
-                        <h3  class="text-center">Request Email Change</h3>
+                        <h3 class="text-center">Подати запит на зміну адреси електронної пошти/h3>
                     </div>
                     <div class="card-body">
                         @if (messageSent == true)
                         {
-                            <p class="alert alert-success">Please check your email to confirm the email change.</p>
+                            <p class="alert alert-success">Будь ласка, перевірте свою електронну пошту, щоб підтвердити зміну адреси.</p>
                         }
                         else
                         {
-                            <p class="card-text">Please enter your current email address to receive a link to change your email address.</p>
+                            <p class="card-text">Будь ласка, введіть вашу поточну електронну адресу, щоб отримати посилання для зміни адреси електронної пошти.</p>
                             <form asp-action="SendEmailChangeLink" method="post">
                                 <div class="form-group">
-                                    <label for="emailInput">Email address</label>
-                                    <input type="email" class="form-control" id="emailInput" aria-describedby="emailHelp" placeholder="Enter your email" name="email" required>
-                                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                                    <label for="emailInput">Адреса електронної пошти</label>
+                                    <input type="email" class="form-control" id="emailInput" aria-describedby="emailHelp" placeholder="Введіть свою електронну адресу" name="email">
+                                    <small id="emailHelp" class="form-text text-muted">Ми ніколи не передамо вашу електронну пошту нікому іншому.</small>
                                     <span class="text-danger">@TempData["WrongEmail"]</span>
                                 </div>
-                                <button  class="btn btn-primary">Send Request</button>
+                                <button class="btn btn-primary">Надіслати запит</button>
                             </form>
                         }
                     </div>

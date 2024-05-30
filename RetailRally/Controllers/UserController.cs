@@ -24,7 +24,7 @@ public class UserController(HubContextClass _db, IHttpContextAccessor _httpConte
             FirstName = user.FirstName,
             LastName = user.LastName,
             PhoneNumber = user.PhoneNumber,
-            BirthDate = user.BirthDate,
+            BirthDate = user?.BirthDate,
             PictureUrl = user.PictureUrl,
             UserName = user.UserName,
             Email = user.Email,
@@ -35,32 +35,26 @@ public class UserController(HubContextClass _db, IHttpContextAccessor _httpConte
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> EditProfile(UserVm model)
+    public async Task<IActionResult> EditProfile([FromForm] UserVm model)
     {
         var userId = _httpContextAccessor.HttpContext.User.GetUserId();
         var user = await _userManager.FindByIdAsync(userId);
         if (user == null)
         {
-            return NotFound($"Unable to load user with ID '{userId}'.");
+            return Json(new { success = false, errors = new[] { new { description = $"Не вдається завантажити користувача з ідентифікатором '{userId}'." } } });
         }
+
         if (!ModelState.IsValid)
         {
-            model = MapUserToViewModel(user);
-            model.IsEditFormOpen = true;
-            return View("ProfilePage", model);
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => new { description = e.ErrorMessage }).ToArray();
+            return Json(new { success = false, errors });
         }
 
         if (user.UserName != model.UserName && await _userManager.FindByNameAsync(model.UserName) != null)
         {
-            ModelState.AddModelError("UserName", "This username is already taken.");
-            model.IsEditFormOpen = true;
-        }
-
-        if (model.IsEditFormOpen)
-        {
-            model = MapUserToViewModel(user);
-            model.IsEditFormOpen = true;
-            return View("ProfilePage", model);
+            ModelState.AddModelError("UserName", "Це ім'я користувача вже зайнято.");
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => new { description = e.ErrorMessage }).ToArray();
+            return Json(new { success = false, errors });
         }
 
         user.FirstName = model.FirstName;
@@ -73,13 +67,12 @@ public class UserController(HubContextClass _db, IHttpContextAccessor _httpConte
         }
         catch (DbUpdateException)
         {
-            model = MapUserToViewModel(user);
-            ModelState.AddModelError("", "Unable to save changes.");
-            model.IsEditFormOpen = true;
-            return View("ProfilePage", model);
+            ModelState.AddModelError("", "Неможливо зберегти зміни.");
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => new { description = e.ErrorMessage }).ToArray();
+            return Json(new { success = false, errors });
         }
 
-        return RedirectToAction(nameof(MyProfile));
+        return Json(new { success = true });
     }
 
     private UserVm MapUserToViewModel(User user)
@@ -123,6 +116,7 @@ public class UserController(HubContextClass _db, IHttpContextAccessor _httpConte
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> BecomeVendor()
     {
         var userId = _httpContextAccessor.HttpContext.User.GetUserId();
@@ -130,8 +124,7 @@ public class UserController(HubContextClass _db, IHttpContextAccessor _httpConte
 
         if (!AreRequiredPropertiesFilled(user))
         {
-            TempData["ErrorMessage"] = "Please fill in all required fields before becoming a vendor.";
-            return RedirectToAction("MyProfile");
+            return Json(new { success = false, error = "Будь ласка, заповніть всі обов'язкові поля, перш ніж стати продавцем." });
         }
 
         await _userManager.AddToRoleAsync(user, "Vendor");
@@ -139,8 +132,9 @@ public class UserController(HubContextClass _db, IHttpContextAccessor _httpConte
         await _db.SaveChangesAsync();
         await _signInManager.RefreshSignInAsync(user);
         TempData["VendorChange"] = true;
-        return RedirectToAction("MyProfile");
+        return Json(new { success = true });
     }
+
 
 
     public bool AreRequiredPropertiesFilled(User user)
@@ -148,7 +142,6 @@ public class UserController(HubContextClass _db, IHttpContextAccessor _httpConte
         if (string.IsNullOrWhiteSpace(user.FirstName) ||
          string.IsNullOrWhiteSpace(user.LastName) ||
          string.IsNullOrWhiteSpace(user.PhoneNumber) ||
-         user.BirthDate == null ||
          string.IsNullOrWhiteSpace(user.Email) ||
          string.IsNullOrWhiteSpace(user.UserName))
         {
@@ -156,6 +149,4 @@ public class UserController(HubContextClass _db, IHttpContextAccessor _httpConte
         }
         return true;
     }
-
-   
 }

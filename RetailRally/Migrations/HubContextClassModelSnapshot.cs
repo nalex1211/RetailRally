@@ -189,9 +189,6 @@ namespace RetailRally.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
                     b.HasKey("CartItemId");
 
                     b.HasIndex("CartId");
@@ -337,9 +334,7 @@ namespace RetailRally.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
+                        .HasColumnType("int");
 
                     b.HasKey("OrderId", "ProductId");
 
@@ -378,11 +373,13 @@ namespace RetailRally.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PictureUrl")
                         .HasColumnType("nvarchar(max)");
@@ -390,8 +387,8 @@ namespace RetailRally.Migrations
                     b.Property<float>("Price")
                         .HasColumnType("real");
 
-                    b.Property<long>("Quantity")
-                        .HasColumnType("bigint");
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -590,7 +587,7 @@ namespace RetailRally.Migrations
                         .IsRequired();
 
                     b.HasOne("RetailRally.Models.User", "User")
-                        .WithMany()
+                        .WithMany("Comments")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -663,7 +660,7 @@ namespace RetailRally.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("RetailRally.Models.User", "User")
-                        .WithMany()
+                        .WithMany("Products")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -700,6 +697,10 @@ namespace RetailRally.Migrations
             modelBuilder.Entity("RetailRally.Models.User", b =>
                 {
                     b.Navigation("Cart");
+
+                    b.Navigation("Comments");
+
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@picocss/pico@1/css/pico.min.css">
-    <title>Product Post Page</title>
+    <title>Сторінка публікації товару</title>
     <style>
         .container {
             display: flex;
@@ -67,47 +67,53 @@
 <body>
     <nav class="container-fluid">
         <ul>
-            <li><strong>Product Dashboard</strong></li>
+            <li><strong>Панель інструментів Товару</strong></li>
         </ul>
         <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Products</a></li>
-            <li><a href="#" role="button">Logout</a></li>
+            <li><a href="#">Головна</a></li>
+            <li><a href="#">Товари</a></li>
+            <li><a href="#" role="button">Вийти з системи</a></li>
         </ul>
     </nav>
     <main class="container">
         <div class="grid">
             <section>
-                <h2>Post Your Product</h2>
+                <h2>Опублікуйте свій товар</h2>
                 <form asp-action="PostProduct" method="post" id="productForm" enctype="multipart/form-data">
-                    <label for="productName">Product Name:</label>
+                    <label for="productName">Назва товару:</label>
                     <input asp-for="Name" type="text" id="productName" oninput="updatePreview()">
                     <span asp-validation-for="Name" class="text-danger"></span>
-                    <label for="description">Description:</label>
+
+                    <label for="description">Опис:</label>
                     <textarea asp-for="Description" id="description" oninput="updatePreview()"></textarea>
                     <span asp-validation-for="Description" class="text-danger"></span>
 
-                    <label for="price">Price:</label>
+                    <label for="price">Ціна:</label>
                     <input asp-for="Price" class="no-spin-buttons" type="number" step="0.01" id="price" oninput="updatePreview()">
                     <span asp-validation-for="Price" class="text-danger"></span>
 
-                    <label for="category">Category:</label>
-                    <select id="category" onchange="updatePreview()" asp-for="CategoryId" asp-items="ViewBag.Categories" required>
-                        <option value="" disabled selected>Select a category</option>
-                    </select>
-                    <label for="imageInput">Product Image:</label>
-                    <input type="file" id="imageInput" name="imageFile" oninput="updatePreview()" accept="image/jpeg, image/png" required>
+                    <label for="price">Кількість:</label>
+                    <input asp-for="Quantity" class="no-spin-buttons" type="number" id="quantity" oninput="updatePreview()">
+                    <span asp-validation-for="Quantity" class="text-danger"></span>
 
-                    <button>Post a Product</button>
+                    <label for="category">Категорія:</label>
+                    <select id="category" onchange="updatePreview()" asp-for="CategoryId" asp-items="ViewBag.Categories" >
+                        <option value="" disabled selected>Виберіть категорію</option>
+                    </select>
+                    <label for="imageInput">Фото товару:</label>
+                    <input type="file" id="imageInput" name="imageFile" oninput="updatePreview()" accept="image/jpeg, image/png" >
+
+                    <button>Розмістити товар</button>
                 </form>
             </section>
             <section class="preview" id="preview">
-                <h2>Product Preview</h2>
+                <h2>Попередній перегляд товару</h2>
                 <img class="product-image" id="previewImage" src="" alt="Product Image" style="display: none;">
-                <p><strong>Name:</strong> <span id="previewName">Product Name</span></p>
-                <p><strong>Description:</strong> <span id="previewDescription">Description</span></p>
-                <p><strong>Price:</strong> $<span id="previewPrice">0</span></p>
-                <p><strong>Category:</strong> <span id="previewCategory">Category</span></p>
+                <p><strong>Назва:</strong> <span id="previewName">Назва товару</span></p>
+                <p><strong>Опис:</strong> <span id="previewDescription">Опис</span></p>
+                <p><strong>Ціна:</strong> $<span id="previewPrice">0</span></p>
+                <p><strong>Кількість:</strong> <span id="previewQuantity">0</span></p>
+                <p><strong>Категорія:</strong> <span id="previewCategory">Категорія</span></p>
             </section>
         </div>
     </main>
@@ -116,6 +122,7 @@
             document.getElementById('previewName').textContent = document.getElementById('productName').value;
             document.getElementById('previewDescription').textContent = document.getElementById('description').value;
             document.getElementById('previewPrice').textContent = document.getElementById('price').value;
+            document.getElementById('previewQuantity').textContent = document.getElementById('quantity').value;
             var categorySelect = document.getElementById('category');
             var selectedCategoryText = categorySelect.options[categorySelect.selectedIndex].text;
             document.getElementById('previewCategory').textContent = selectedCategoryText;
@@ -136,7 +143,7 @@
             if (this.files.length > 0) {
                 var fileType = this.files[0].type;
                 if (!validTypes.includes(fileType)) {
-                    alert('Only image files are allowed!');
+                    alert('Допускаються лише файли зображень!');
                     this.value = '';
                 }
             }

@@ -31,14 +31,14 @@ public class AccountController(IAccountRepository _repository, SignInManager<Use
         var emailExists = await _repository.CheckIfEmailExistsAsync(model.Email);
         if (!emailExists)
         {
-            return Json(new { success = false, errors = new { Email = new string[] { "User with this email doesn't exist!" } } });
+            return Json(new { success = false, errors = new { Email = new string[] { "Користувач з такою адресою не існує!" } } });
         }
 
         var user = await _repository.FindUserbyEmailAsync(model.Email);
         var passwordCheck = await _repository.CheckIfCorrectPasswordAsync(model.Password, user);
         if (!passwordCheck)
         {
-            return Json(new { success = false, errors = new { Password = new string[] { "Wrong password!" } } });
+            return Json(new { success = false, errors = new { Password = new string[] { "Неправильний пароль!" } } });
         }
 
         var result = await _repository.LogIn(user, model.Password, model.RememberMe);
@@ -48,7 +48,7 @@ public class AccountController(IAccountRepository _repository, SignInManager<Use
         }
         else
         {
-            return Json(new { success = false, message = "Invalid login attempt." });
+            return Json(new { success = false, message = "Неправильна спроба входу." });
         }
     }
 
@@ -77,13 +77,13 @@ public class AccountController(IAccountRepository _repository, SignInManager<Use
         var emailExists = await _repository.CheckIfEmailExistsAsync(model.Email);
         if (emailExists)
         {
-            return Json(new { success = false, errors = new { Email = new[] { "This email already exists!" } } });
+            return Json(new { success = false, errors = new { Email = new[] { "Ця електронна адреса вже існує!" } } });
         }
 
         var usernameExists = await _repository.CheckIfUsernameExistsAsync(model.Username);
         if (usernameExists)
         {
-            return Json(new { success = false, errors = new { Username = new[] { "This username already exists!" } } });
+            return Json(new { success = false, errors = new { Username = new[] { "Це ім'я користувача вже існує!" } } });
         }
         var user = new User
         {
@@ -102,7 +102,7 @@ public class AccountController(IAccountRepository _repository, SignInManager<Use
         }
         else
         {
-            return Json(new { success = false, message = "An error occurred while creating your account." });
+            return Json(new { success = false, message = "Виникла помилка при створенні облікового запису." });
         }
     }
 
@@ -158,6 +158,7 @@ public class AccountController(IAccountRepository _repository, SignInManager<Use
 
                 if (createResult.Succeeded)
                 {
+                    await _repository.ConfirmEmailAsync(user.Id);
                     var addLoginResult = await _userManager.AddLoginAsync(user, info);
                     if (addLoginResult.Succeeded)
                     {
@@ -179,8 +180,6 @@ public class AccountController(IAccountRepository _repository, SignInManager<Use
         ViewData["ReturnUrl"] = returnUrl;
         return View("ExternalLoginFailure");
     }
-
-
 
     [HttpPost]
     public async Task<IActionResult> Logout()
@@ -238,13 +237,13 @@ public class AccountController(IAccountRepository _repository, SignInManager<Use
 
         if (!await _repository.CheckIfUserExistsAsync(model.UserId))
         {
-            TempData["UserNotFound"] = "User not found!";
+            TempData["UserNotFound"] = "Користувача не знайдено!";
             return View("NewEmailPage", model);
         }
 
         if (await _repository.CheckIfEmailExistsAsync(model.NewEmail))
         {
-            TempData["EmailExists"] = "This email already exists!";
+            TempData["EmailExists"] = "Ця електронна адреса вже існує!";
             return View("NewEmailPage", model);
         }
 
@@ -271,7 +270,7 @@ public class AccountController(IAccountRepository _repository, SignInManager<Use
 
         if (!await _repository.CheckIfEmailExistsAsync(email))
         {
-            TempData["NoUser"] = "User with this email doesn't exist!";
+            TempData["NoUser"] = "Користувач з такою адресою не існує!";
             return View("PasswordUpdatePage");
         }
 
@@ -310,7 +309,7 @@ public class AccountController(IAccountRepository _repository, SignInManager<Use
 
         if (!await _repository.CheckIfUserExistsAsync(model.UserId))
         {
-            TempData["UserNotFound"] = "User not found!";
+            TempData["UserNotFound"] = "Користувача не знайдено!";
             return View("NewPasswordPage", model);
         }
 
@@ -322,12 +321,11 @@ public class AccountController(IAccountRepository _repository, SignInManager<Use
         return View("NewPasswordPage", model);
     }
     [HttpPost]
-    public async Task<IActionResult> SendEmailConfirmationLink(string email)
+    public async Task<IActionResult> SendEmailConfirmationLink([FromBody] string email)
     {
         await _repository.SendEmailConfirmationLinkAsync(email);
         TempData["MessageSent"] = true;
-        return RedirectToAction("MyProfile", "User");
+        return Json(new { success = true });
     }
 
-   
 }

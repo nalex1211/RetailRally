@@ -27,10 +27,17 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IUserProfileService, UserProfileService>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 builder.Services.AddSingleton<EmailService>();
-builder.Services.AddSingleton<AzureStorageService>();
+builder.Services.AddScoped<AzureStorageService>();
 builder.Services.AddSignalR().AddAzureSignalR(builder.Configuration["SignalRConnString"]);
+
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+    options.InstanceName = "SampleInstance";
+});
 
 builder.Services.AddControllersWithViews().AddJsonOptions(options =>
 {

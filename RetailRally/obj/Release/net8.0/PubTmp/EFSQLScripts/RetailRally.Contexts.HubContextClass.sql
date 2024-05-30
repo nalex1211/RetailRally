@@ -13,7 +13,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE TABLE [AspNetRoles] (
@@ -28,7 +28,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE TABLE [AspNetUsers] (
@@ -58,7 +58,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE TABLE [Categories] (
@@ -71,7 +71,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE TABLE [PaymentTypes] (
@@ -84,7 +84,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE TABLE [ShippingTypes] (
@@ -97,7 +97,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE TABLE [AspNetRoleClaims] (
@@ -113,7 +113,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE TABLE [AspNetUserClaims] (
@@ -129,7 +129,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE TABLE [AspNetUserLogins] (
@@ -145,7 +145,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE TABLE [AspNetUserRoles] (
@@ -160,7 +160,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE TABLE [AspNetUserTokens] (
@@ -176,7 +176,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE TABLE [Carts] (
@@ -190,7 +190,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE TABLE [Products] (
@@ -200,7 +200,6 @@ BEGIN
         [Price] real NOT NULL,
         [UserId] nvarchar(450) NOT NULL,
         [PictureUrl] nvarchar(max) NULL,
-        [Quantity] bigint NOT NULL,
         [CategoryId] int NULL,
         CONSTRAINT [PK_Products] PRIMARY KEY ([Id]),
         CONSTRAINT [FK_Products_AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE,
@@ -211,7 +210,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE TABLE [Orders] (
@@ -234,14 +233,13 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE TABLE [CartItems] (
         [CartItemId] int NOT NULL IDENTITY,
         [CartId] int NOT NULL,
         [ProductId] int NOT NULL,
-        [Quantity] int NOT NULL,
         CONSTRAINT [PK_CartItems] PRIMARY KEY ([CartItemId]),
         CONSTRAINT [FK_CartItems_Carts_CartId] FOREIGN KEY ([CartId]) REFERENCES [Carts] ([CartId]) ON DELETE CASCADE,
         CONSTRAINT [FK_CartItems_Products_ProductId] FOREIGN KEY ([ProductId]) REFERENCES [Products] ([Id]) ON DELETE NO ACTION
@@ -251,7 +249,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE TABLE [Comments] (
@@ -269,7 +267,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE TABLE [DeliveryAddresses] (
@@ -287,13 +285,12 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE TABLE [OrderProducts] (
         [ProductId] int NOT NULL,
         [OrderId] int NOT NULL,
-        [Quantity] int NOT NULL DEFAULT 0,
         CONSTRAINT [PK_OrderProducts] PRIMARY KEY ([OrderId], [ProductId]),
         CONSTRAINT [FK_OrderProducts_Orders_OrderId] FOREIGN KEY ([OrderId]) REFERENCES [Orders] ([Id]) ON DELETE CASCADE,
         CONSTRAINT [FK_OrderProducts_Products_ProductId] FOREIGN KEY ([ProductId]) REFERENCES [Products] ([Id]) ON DELETE NO ACTION
@@ -303,7 +300,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE INDEX [IX_AspNetRoleClaims_RoleId] ON [AspNetRoleClaims] ([RoleId]);
@@ -312,7 +309,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     EXEC(N'CREATE UNIQUE INDEX [RoleNameIndex] ON [AspNetRoles] ([NormalizedName]) WHERE [NormalizedName] IS NOT NULL');
@@ -321,7 +318,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE INDEX [IX_AspNetUserClaims_UserId] ON [AspNetUserClaims] ([UserId]);
@@ -330,7 +327,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE INDEX [IX_AspNetUserLogins_UserId] ON [AspNetUserLogins] ([UserId]);
@@ -339,7 +336,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE INDEX [IX_AspNetUserRoles_RoleId] ON [AspNetUserRoles] ([RoleId]);
@@ -348,7 +345,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE INDEX [EmailIndex] ON [AspNetUsers] ([NormalizedEmail]);
@@ -357,7 +354,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     EXEC(N'CREATE UNIQUE INDEX [UserNameIndex] ON [AspNetUsers] ([NormalizedUserName]) WHERE [NormalizedUserName] IS NOT NULL');
@@ -366,7 +363,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE INDEX [IX_CartItems_CartId] ON [CartItems] ([CartId]);
@@ -375,7 +372,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE INDEX [IX_CartItems_ProductId] ON [CartItems] ([ProductId]);
@@ -384,7 +381,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE UNIQUE INDEX [IX_Carts_UserId] ON [Carts] ([UserId]);
@@ -393,7 +390,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE INDEX [IX_Comments_ProductId] ON [Comments] ([ProductId]);
@@ -402,7 +399,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE INDEX [IX_Comments_UserId] ON [Comments] ([UserId]);
@@ -411,7 +408,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     EXEC(N'CREATE UNIQUE INDEX [IX_DeliveryAddresses_OrderId] ON [DeliveryAddresses] ([OrderId]) WHERE [OrderId] IS NOT NULL');
@@ -420,7 +417,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE INDEX [IX_OrderProducts_ProductId] ON [OrderProducts] ([ProductId]);
@@ -429,7 +426,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE INDEX [IX_Orders_PaymentTypeId] ON [Orders] ([PaymentTypeId]);
@@ -438,7 +435,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE INDEX [IX_Orders_ShippingTypeId] ON [Orders] ([ShippingTypeId]);
@@ -447,7 +444,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE INDEX [IX_Orders_UserId] ON [Orders] ([UserId]);
@@ -456,7 +453,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE INDEX [IX_Products_CategoryId] ON [Products] ([CategoryId]);
@@ -465,7 +462,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     CREATE INDEX [IX_Products_UserId] ON [Products] ([UserId]);
@@ -474,115 +471,11 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221110046_initial'
+    WHERE [MigrationId] = N'20240304133913_Initial'
 )
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20240221110046_initial', N'8.0.2');
-END;
-GO
-
-COMMIT;
-GO
-
-BEGIN TRANSACTION;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221144041_Fixed'
-)
-BEGIN
-    ALTER TABLE [Comments] ADD [DislikesCount] int NOT NULL DEFAULT 0;
-END;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221144041_Fixed'
-)
-BEGIN
-    ALTER TABLE [Comments] ADD [LikeDislikeState] nvarchar(max) NOT NULL DEFAULT N'';
-END;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221144041_Fixed'
-)
-BEGIN
-    ALTER TABLE [Comments] ADD [LikesCount] int NOT NULL DEFAULT 0;
-END;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221144041_Fixed'
-)
-BEGIN
-    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20240221144041_Fixed', N'8.0.2');
-END;
-GO
-
-COMMIT;
-GO
-
-BEGIN TRANSACTION;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221153734_Fixed2'
-)
-BEGIN
-    DECLARE @var0 sysname;
-    SELECT @var0 = [d].[name]
-    FROM [sys].[default_constraints] [d]
-    INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
-    WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Comments]') AND [c].[name] = N'DislikesCount');
-    IF @var0 IS NOT NULL EXEC(N'ALTER TABLE [Comments] DROP CONSTRAINT [' + @var0 + '];');
-    ALTER TABLE [Comments] DROP COLUMN [DislikesCount];
-END;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221153734_Fixed2'
-)
-BEGIN
-    DECLARE @var1 sysname;
-    SELECT @var1 = [d].[name]
-    FROM [sys].[default_constraints] [d]
-    INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
-    WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Comments]') AND [c].[name] = N'LikeDislikeState');
-    IF @var1 IS NOT NULL EXEC(N'ALTER TABLE [Comments] DROP CONSTRAINT [' + @var1 + '];');
-    ALTER TABLE [Comments] DROP COLUMN [LikeDislikeState];
-END;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221153734_Fixed2'
-)
-BEGIN
-    DECLARE @var2 sysname;
-    SELECT @var2 = [d].[name]
-    FROM [sys].[default_constraints] [d]
-    INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
-    WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Comments]') AND [c].[name] = N'LikesCount');
-    IF @var2 IS NOT NULL EXEC(N'ALTER TABLE [Comments] DROP CONSTRAINT [' + @var2 + '];');
-    ALTER TABLE [Comments] DROP COLUMN [LikesCount];
-END;
-GO
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20240221153734_Fixed2'
-)
-BEGIN
-    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20240221153734_Fixed2', N'8.0.2');
+    VALUES (N'20240304133913_Initial', N'8.0.2');
 END;
 GO
 

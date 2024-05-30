@@ -11,25 +11,41 @@ public class EmailService(IConfiguration _configuration)
         string fromEmail = _configuration["EmailConfig:EmailFrom"];
         string hostPassword = _configuration["EmailConfig:HostPasswrod"];
 
-        emailMessage.From.Add(new MailboxAddress("RetailRally", fromEmail)); 
+        emailMessage.From.Add(new MailboxAddress("RetailRally", fromEmail));
         emailMessage.To.Add(new MailboxAddress("", toEmail));
         emailMessage.Subject = subject;
-        emailMessage.Body = new TextPart("html")
+        if (subject == "Email confirmation")
         {
-            Text = @$"<html>
+            emailMessage.Body = new TextPart("html")
+            {
+                Text = @$"<html>
                 <body>
                     <p>{bodyText}</p>
-                    <a href='{url}' style='padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;'>Change {btnText}</a>
+                    <a href='{url}' style='padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;'>Підтвердити {btnText}</a>
                 </body>
              </html>"
-        };
+            };
+        }
+        else
+        {
+            emailMessage.Body = new TextPart("html")
+            {
+                Text = @$"<html>
+                <body>
+                    <p>{bodyText}</p>
+                    <a href='{url}' style='padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;'>Змінити {btnText}</a>
+                </body>
+             </html>"
+            };
+        }
+
 
 
         using (var client = new SmtpClient())
         {
             client.ServerCertificateValidationCallback = (s, c, h, e) => true;
 
-            await client.ConnectAsync("smtp.gmail.com", 465, true); 
+            await client.ConnectAsync("smtp.gmail.com", 465, true);
             await client.AuthenticateAsync(fromEmail, hostPassword);
             await client.SendAsync(emailMessage);
             await client.DisconnectAsync(true);

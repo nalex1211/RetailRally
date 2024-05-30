@@ -7,8 +7,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@picocss/pico@1/css/pico.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <title>Edit Product</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <title>Редагувати товар</title>
     <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1f1f1f;
+            color: #e0e0e0;
+        }
+
         .container {
             display: flex;
             flex-direction: column;
@@ -43,8 +50,14 @@
             flex: 2;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 10px;
         }
+
+            .product-details .label {
+                margin-bottom: 5px;
+                font-size: 1.25em;
+                margin-top: 0;
+            }
 
         input, textarea, select {
             padding: 10px;
@@ -73,6 +86,19 @@
             .edit-button:hover, .change-picture-button:hover {
                 background-color: #0056b3;
             }
+
+        .validation-summary-errors, .validation-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 0.5rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            display: none; /* Initially hidden */
+        }
+
+            .validation-summary-errors::before, .validation-error::before {
+                content: '⚠ ';
+            }
     </style>
     <script>
         $(document).ready(function () {
@@ -81,7 +107,12 @@
                 if (this.files && this.files[0]) {
                     var fileType = this.files[0].type;
                     if (!validTypes.includes(fileType)) {
-                        alert('Only image files are allowed!');
+                        Swal.fire({
+                            title: 'Неправильний тип файлу',
+                            text: 'Допускаються лише файли зображень!',
+                            icon: 'error',
+                            showConfirmButton: true
+                        });
                         this.value = '';
                         return;
                     }
@@ -95,6 +126,51 @@
                     reader.readAsDataURL(this.files[0]);
                 }
             });
+
+            $('form').on('submit', function (e) {
+                e.preventDefault();
+                var formData = new FormData(this);
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: $(this).attr('method'),
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                title: 'Товар успішно оновлено!',
+                                icon: 'success',
+                                showConfirmButton: false,
+                                timer: 1000
+                            }).then(() => {
+                                window.location.href = '@Url.Action("GoToMyProductsPage")';
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Не вдалося оновити товар.',
+                                text: response.error,
+                                icon: 'error',
+                                showConfirmButton: true
+                            });
+
+                            var errors = response.errors;
+                            var validationSummary = $('.validation-summary-errors');
+                            validationSummary.html('').show();
+                            $.each(errors, function (index, error) {
+                                validationSummary.append('<li>' + error + '</li>');
+                            });
+                        }
+                    },
+                    error: function (response) {
+                        Swal.fire({
+                            title: 'Під час оновлення товару сталася помилка.',
+                            icon: 'error',
+                            showConfirmButton: true
+                        });
+                    }
+                });
+            });
         });
     </script>
 
@@ -102,16 +178,16 @@
 <body>
     <nav class="container-fluid">
         <ul>
-            <li><strong>Marketplace</strong></li>
+            <li><strong>RetailRally</strong></li>
         </ul>
         <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Products</a></li>
-            <li><a href="#" role="button">Contact</a></li>
+            <li><a href="#">Головна</a></li>
+            <li><a href="#">Товари</a></li>
+            <li><a href="#" role="button">Контакти</a></li>
         </ul>
     </nav>
     <form asp-action="EditProduct" enctype="multipart/form-data" method="post">
-        <input type="hidden" asp-for="UserId" value=@User.GetUserId() />
+        <input type="hidden" asp-for="UserId" value="@User.GetUserId()" />
         <input type="hidden" asp-for="Id" />
         <input type="hidden" asp-for="PictureUrl" />
         <main class="container">
@@ -121,19 +197,32 @@
                     <input type="file" id="profilePicture" name="profilePicture" accept="image/jpeg, image/png" />
                 </div>
                 <div class="product-details">
-                    <input asp-for=Name type="text" placeholder="Name of product" aria-label="Name of product" value="@Model.Name" required>
-                    <textarea asp-for=Description placeholder="Description" aria-label="Description" value="@Model.Description"></textarea>
-                    <input class="no-spin-buttons" asp-for=Price type="number" placeholder="Price" aria-label="Price" value="@Model.Price" required>
+                    <div class="validation-summary-errors"></div>
+
+                    <h1 class="label">Назва товару:</h1>
+                    <input asp-for="Name" type="text" placeholder="Назва товару" aria-label="Name of product" />
+
+                    <h1 class="label">Опис товару:</h1>
+                    <textarea asp-for="Description" placeholder="Опис товару" aria-label="Description"></textarea>
+
+                    <h1 class="label">Ціна товару:</h1>
+                    <input class="no-spin-buttons" asp-for="Price" type="number" placeholder="Ціна товару" aria-label="Price" />
+
+                    <h1 class="label">Кількість товару:</h1>
+                    <input class="no-spin-buttons" asp-for="Quantity" type="number" placeholder="Кількість товару" aria-label="Quantity" />
+
+                    <h1 class="label">Категорія товару:</h1>
                     <select asp-for="CategoryId" asp-items="ViewBag.Categories">
-                        <option value="" disabled selected>Select a category</option>
-                    </select><br>
-                    <button class="edit-button">Edit Product</button>
+                        <option value="" disabled selected>Виберіть категорію</option>
+                    </select>
+
+                    <button class="edit-button" type="submit">Редагувати товар</button>
                 </div>
             </div>
         </main>
     </form>
     <footer class="container">
-        <small><a href="#">Privacy Policy</a> • <a href="#">Terms of Service</a></small>
+        <small><a href="#">Політика конфіденційності</a> • <a href="#">Умови надання послуг</a></small>
     </footer>
 </body>
 </html>

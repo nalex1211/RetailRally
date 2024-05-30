@@ -11,8 +11,10 @@
         "dependencies": {
           "Azure.Storage.Blobs": "12.19.1",
           "MailKit": "4.3.0",
+          "Microsoft.AspNetCore.Authentication.Facebook": "8.0.2",
           "Microsoft.AspNetCore.Authentication.Google": "8.0.2",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "8.0.2",
+          "Microsoft.AspNetCore.OData": "8.0.0",
           "Microsoft.Azure.SignalR": "1.25.0",
           "Microsoft.EntityFrameworkCore": "8.0.2",
           "Microsoft.EntityFrameworkCore.SqlServer": "8.0.2",
@@ -1398,6 +1400,14 @@
           "Microsoft.Extensions.Options": "8.0.2"
         }
       },
+      "Microsoft.AspNetCore.Authentication.Facebook/8.0.2": {
+        "runtime": {
+          "lib/net8.0/Microsoft.AspNetCore.Authentication.Facebook.dll": {
+            "assemblyVersion": "8.0.2.0",
+            "fileVersion": "8.0.224.6804"
+          }
+        }
+      },
       "Microsoft.AspNetCore.Authentication.Google/8.0.2": {
         "runtime": {
           "lib/net8.0/Microsoft.AspNetCore.Authentication.Google.dll": {
@@ -1499,6 +1509,20 @@
           "lib/net8.0/Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll": {
             "assemblyVersion": "8.0.2.0",
             "fileVersion": "8.0.224.6804"
+          }
+        }
+      },
+      "Microsoft.AspNetCore.OData/8.0.0": {
+        "dependencies": {
+          "Microsoft.OData.Core": "7.9.0",
+          "Microsoft.OData.Edm": "7.9.0",
+          "Microsoft.OData.ModelBuilder": "1.0.6",
+          "Microsoft.Spatial": "7.9.0"
+        },
+        "runtime": {
+          "lib/net5.0/Microsoft.AspNetCore.OData.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.0.20703"
           }
         }
       },
@@ -1892,6 +1916,52 @@
       },
       "Microsoft.NETCore.Platforms/1.1.0": {},
       "Microsoft.NETCore.Targets/1.1.0": {},
+      "Microsoft.OData.Core/7.9.0": {
+        "dependencies": {
+          "Microsoft.OData.Edm": "7.9.0",
+          "Microsoft.Spatial": "7.9.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.OData.Core.dll": {
+            "assemblyVersion": "7.9.0.0",
+            "fileVersion": "7.9.0.20512"
+          }
+        }
+      },
+      "Microsoft.OData.Edm/7.9.0": {
+        "dependencies": {
+          "System.Runtime.CompilerServices.Unsafe": "6.0.0",
+          "System.Text.Encodings.Web": "8.0.0",
+          "System.Text.Json": "8.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.OData.Edm.dll": {
+            "assemblyVersion": "7.9.0.0",
+            "fileVersion": "7.9.0.20512"
+          }
+        }
+      },
+      "Microsoft.OData.ModelBuilder/1.0.6": {
+        "dependencies": {
+          "Microsoft.OData.Edm": "7.9.0",
+          "Microsoft.Spatial": "7.9.0",
+          "System.ComponentModel.Annotations": "4.6.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.OData.ModelBuilder.dll": {
+            "assemblyVersion": "1.0.6.0",
+            "fileVersion": "1.0.6.20125"
+          }
+        }
+      },
+      "Microsoft.Spatial/7.9.0": {
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.Spatial.dll": {
+            "assemblyVersion": "7.9.0.0",
+            "fileVersion": "7.9.0.20512"
+          }
+        }
+      },
       "Microsoft.SqlServer.Server/1.0.0": {
         "runtime": {
           "lib/netstandard2.0/Microsoft.SqlServer.Server.dll": {
@@ -1948,6 +2018,7 @@
           "System.Runtime.CompilerServices.Unsafe": "6.0.0"
         }
       },
+      "System.ComponentModel.Annotations/4.6.0": {},
       "System.Composition/6.0.0": {
         "dependencies": {
           "System.Composition.AttributedModel": "6.0.0",
@@ -2218,6 +2289,13 @@
       "path": "microsoft.aspnetcore.authentication.abstractions/2.1.1",
       "hashPath": "microsoft.aspnetcore.authentication.abstractions.2.1.1.nupkg.sha512"
     },
+    "Microsoft.AspNetCore.Authentication.Facebook/8.0.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-rZAagB6hQ39iRBtUZA0/1k1+Fre9Xeb/Fz9/2LtASYW/opbZzqB9lQyd5vy+w5eYW8YJhmFTquzrB8EKuFwD4w==",
+      "path": "microsoft.aspnetcore.authentication.facebook/8.0.2",
+      "hashPath": "microsoft.aspnetcore.authentication.facebook.8.0.2.nupkg.sha512"
+    },
     "Microsoft.AspNetCore.Authentication.Google/8.0.2": {
       "type": "package",
       "serviceable": true,
@@ -2322,6 +2400,13 @@
       "sha512": "sha512-TmNREmXjfHB9ptbtVZT/j+6/0hg/bB7JN5h45FzckvTLo0+WgpMRdQMCwQgGK0QoH4XqbY3oRkWwizQryFNUPw==",
       "path": "microsoft.aspnetcore.identity.entityframeworkcore/8.0.2",
       "hashPath": "microsoft.aspnetcore.identity.entityframeworkcore.8.0.2.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.OData/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-h3Dlw1TPHn5OZVjlG526NFh3G3vYadIU1AfvYhi88uGRtSdZeVRb73/0ANvqOX0FbvUhEtMnUTHOmsWv5CS6sw==",
+      "path": "microsoft.aspnetcore.odata/8.0.0",
+      "hashPath": "microsoft.aspnetcore.odata.8.0.0.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Routing/2.1.1": {
       "type": "package",
@@ -2666,6 +2751,34 @@
       "path": "microsoft.netcore.targets/1.1.0",
       "hashPath": "microsoft.netcore.targets.1.1.0.nupkg.sha512"
     },
+    "Microsoft.OData.Core/7.9.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-pnD2w0osGjvcSsj3HenpNJie2kFyhe9KzkPdIINgxk9TxG57GMcr01TEWSDxPtJUsWBwUnYIdgp9PIztYobo7Q==",
+      "path": "microsoft.odata.core/7.9.0",
+      "hashPath": "microsoft.odata.core.7.9.0.nupkg.sha512"
+    },
+    "Microsoft.OData.Edm/7.9.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-gEa7j3bVwJQH8QaB2pmCsrIn8XYivXUpqCp0ipHMq6+LO0oGmx1zs6a/KFyAnU97enQDDAwe5kofehq+1sHlow==",
+      "path": "microsoft.odata.edm/7.9.0",
+      "hashPath": "microsoft.odata.edm.7.9.0.nupkg.sha512"
+    },
+    "Microsoft.OData.ModelBuilder/1.0.6": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-MBzmq0iqcuGuMBbfw9vkRrBAWi2doOhBI7RgaHMj/LlcWRzSzTVxqsQMoYyZo6b3uzdEbB1/VcEI8KhRrSzqkA==",
+      "path": "microsoft.odata.modelbuilder/1.0.6",
+      "hashPath": "microsoft.odata.modelbuilder.1.0.6.nupkg.sha512"
+    },
+    "Microsoft.Spatial/7.9.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-AuiReHSXy5iwtwQr4ZyLCAV+Bh9mvPXyilHICVE84Pbmlu/sDy7CtK5M3EDHeaA6ki0bpHk3pNUqFCN0QCwgJA==",
+      "path": "microsoft.spatial/7.9.0",
+      "hashPath": "microsoft.spatial.7.9.0.nupkg.sha512"
+    },
     "Microsoft.SqlServer.Server/1.0.0": {
       "type": "package",
       "serviceable": true,
@@ -2735,6 +2848,13 @@
       "sha512": "sha512-l4zZJ1WU2hqpQQHXz1rvC3etVZN+2DLmQMO79FhOTZHMn8tDRr+WU287sbomD0BETlmKDn0ygUgVy9k5xkkJdA==",
       "path": "system.collections.immutable/6.0.0",
       "hashPath": "system.collections.immutable.6.0.0.nupkg.sha512"
+    },
+    "System.ComponentModel.Annotations/4.6.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-pOd+UhZ3X8xfwKDlgAzowUJNjp8VYVmOHZm++vCd0kq1HZ0zK3mNo2yRXjYgv7Ik/Xi43fmJfND2PLEsQSALCg==",
+      "path": "system.componentmodel.annotations/4.6.0",
+      "hashPath": "system.componentmodel.annotations.4.6.0.nupkg.sha512"
     },
     "System.Composition/6.0.0": {
       "type": "package",

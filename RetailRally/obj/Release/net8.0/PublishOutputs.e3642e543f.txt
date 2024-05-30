@@ -11,10 +11,12 @@ C:\C# Projects\RetailRally\RetailRally\obj\Release\net8.0\PubTmp\Out\Azure.Stora
 C:\C# Projects\RetailRally\RetailRally\obj\Release\net8.0\PubTmp\Out\Azure.Storage.Common.dll
 C:\C# Projects\RetailRally\RetailRally\obj\Release\net8.0\PubTmp\Out\BouncyCastle.Cryptography.dll
 C:\C# Projects\RetailRally\RetailRally\obj\Release\net8.0\PubTmp\Out\MailKit.dll
+C:\C# Projects\RetailRally\RetailRally\obj\Release\net8.0\PubTmp\Out\Microsoft.AspNetCore.Authentication.Facebook.dll
 C:\C# Projects\RetailRally\RetailRally\obj\Release\net8.0\PubTmp\Out\Microsoft.AspNetCore.Authentication.Google.dll
 C:\C# Projects\RetailRally\RetailRally\obj\Release\net8.0\PubTmp\Out\Microsoft.AspNetCore.Cryptography.Internal.dll
 C:\C# Projects\RetailRally\RetailRally\obj\Release\net8.0\PubTmp\Out\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
 C:\C# Projects\RetailRally\RetailRally\obj\Release\net8.0\PubTmp\Out\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+C:\C# Projects\RetailRally\RetailRally\obj\Release\net8.0\PubTmp\Out\Microsoft.AspNetCore.OData.dll
 C:\C# Projects\RetailRally\RetailRally\obj\Release\net8.0\PubTmp\Out\Microsoft.Azure.SignalR.Common.dll
 C:\C# Projects\RetailRally\RetailRally\obj\Release\net8.0\PubTmp\Out\Microsoft.Azure.SignalR.dll
 C:\C# Projects\RetailRally\RetailRally\obj\Release\net8.0\PubTmp\Out\Microsoft.Azure.SignalR.Protocols.dll
@@ -35,6 +37,10 @@ C:\C# Projects\RetailRally\RetailRally\obj\Release\net8.0\PubTmp\Out\Microsoft.I
 C:\C# Projects\RetailRally\RetailRally\obj\Release\net8.0\PubTmp\Out\Microsoft.IdentityModel.Protocols.dll
 C:\C# Projects\RetailRally\RetailRally\obj\Release\net8.0\PubTmp\Out\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\C# Projects\RetailRally\RetailRally\obj\Release\net8.0\PubTmp\Out\Microsoft.IdentityModel.Tokens.dll
+C:\C# Projects\RetailRally\RetailRally\obj\Release\net8.0\PubTmp\Out\Microsoft.OData.Core.dll
+C:\C# Projects\RetailRally\RetailRally\obj\Release\net8.0\PubTmp\Out\Microsoft.OData.Edm.dll
+C:\C# Projects\RetailRally\RetailRally\obj\Release\net8.0\PubTmp\Out\Microsoft.OData.ModelBuilder.dll
+C:\C# Projects\RetailRally\RetailRally\obj\Release\net8.0\PubTmp\Out\Microsoft.Spatial.dll
 C:\C# Projects\RetailRally\RetailRally\obj\Release\net8.0\PubTmp\Out\Microsoft.SqlServer.Server.dll
 C:\C# Projects\RetailRally\RetailRally\obj\Release\net8.0\PubTmp\Out\Microsoft.Win32.SystemEvents.dll
 C:\C# Projects\RetailRally\RetailRally\obj\Release\net8.0\PubTmp\Out\MimeKit.dll

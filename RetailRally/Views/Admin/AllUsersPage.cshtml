@@ -1,0 +1,198 @@
+﻿@using RetailRally.Helpers
+@using RetailRally.ViewModels
+@model List<AllUserVm>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Всі користувачі</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pico.css/dist/pico.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1c1e21;
+            color: #ecf0f1;
+        }
+
+        main.container {
+            max-width: 1000px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #ecf0f1;
+        }
+
+        .user-summary {
+            border: 1px solid #34495e;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 15px;
+            transition: all 0.3s ease;
+            background-color: #3a3f47;
+            font-size: 20px;
+            color: #ecf0f1;
+            position: relative;
+        }
+
+            .user-summary.no-outline {
+                box-shadow: none !important;
+            }
+
+            .user-summary:hover {
+                box-shadow: 0 0 10px #5a5f67;
+                cursor: pointer;
+            }
+
+        .details {
+            display: none;
+            padding-top: 10px;
+        }
+
+        nav.container-fluid {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: #222222;
+        }
+
+            nav.container-fluid ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                display: flex;
+                gap: 1rem;
+            }
+
+        .link-style {
+            color: lawngreen;
+            text-decoration: none;
+            border-bottom: 1px solid lawngreen;
+        }
+
+            .link-style:hover {
+                color: green;
+                border-color: green;
+            }
+
+        nav.container-fluid ul li a {
+            text-decoration: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+            nav.container-fluid ul li a:hover,
+            nav.container-fluid ul li a:focus {
+                background-color: #007bff;
+                color: white;
+                border-radius: 0.25rem;
+            }
+
+            nav.container-fluid ul li a[role="button"] {
+                background-color: #007bff;
+                border-radius: 0.25rem;
+            }
+
+        .user-details {
+            margin-bottom: 20px;
+        }
+
+            .user-details p {
+                margin: 5px 0;
+            }
+
+        .user-summary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+            .user-summary-header p {
+                margin: 0;
+            }
+
+        .user-summary .toggle-button {
+            background-color: transparent;
+            border: none;
+            color: #ecf0f1;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <nav class="container-fluid">
+        <ul>
+            <li><a asp-action="AllProducts">Продукти</a></li>
+            <li><a asp-action="MyOrders" role="button">Мої закази.</a></li>
+            <li><a asp-action="AllUsers">Всі користувачі</a></li>
+        </ul>
+    </nav>
+    <main class="container">
+        <h1>Всі користувачі</h1>
+        @if (Model.Count == 0)
+        {
+            <h1>Не знайдено жодного користувача.</h1>
+        }
+        else
+        {
+            @foreach (var user in Model)
+            {
+                <div class="user-summary" id="user-summary-@user.Id" onclick="toggleDetails('@user.Id')">
+                    <div class="user-summary-header">
+                        <p>Ідентифікатор користувача: @user.Id</p>
+                        <p>Повне ім'я: @user.FirstName @user.LastName</p>
+                        <button class="toggle-button">&#9662;</button>
+                    </div>
+                    <div id="details-@user.Id" class="details">
+                        <div class="user-details">
+                            <p>Електронна пошта: @user.Email</p>
+                            <p>Ім'я користувача: @user.UserName</p>
+                            <p>Роль: @string.Join(", ", user.Roles)</p>
+                            <form asp-action="DeleteUser" method="post">
+                                <input type="hidden" name="userId" value="@user.Id" />
+                                @if (User.GetUserId() != user.Id)
+                                {
+                                    <button type="submit" class="btn btn-danger">Видалити користувача</button>
+                                }
+                                @Html.AntiForgeryToken()
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </main>
+    <script>
+        function toggleDetails(userId) {
+            const details = document.getElementById(`details-${userId}`);
+            const toggleButton = document.querySelector(`#user-summary-${userId} .toggle-button`);
+            if (details.style.display === 'block') {
+                details.style.display = 'none';
+                toggleButton.innerHTML = '&#9662;';
+            } else {
+                details.style.display = 'block';
+                toggleButton.innerHTML = '&#9652;';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.user-summary a').forEach(function (link) {
+                link.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                });
+            });
+        });
+    </script>
+</body>
+</html>

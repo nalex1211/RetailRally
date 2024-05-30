@@ -29,6 +29,10 @@
       "PackagePath": "staticwebassets\\icons\\eye-icon-show.svg"
     },
     {
+      "Id": "C:\\C# Projects\\RetailRally\\RetailRally\\wwwroot\\icons\\loading.gif",
+      "PackagePath": "staticwebassets\\icons\\loading.gif"
+    },
+    {
       "Id": "C:\\C# Projects\\RetailRally\\RetailRally\\wwwroot\\icons\\logout-icon.png",
       "PackagePath": "staticwebassets\\icons\\logout-icon.png"
     },

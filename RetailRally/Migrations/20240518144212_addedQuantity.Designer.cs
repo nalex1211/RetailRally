@@ -12,8 +12,8 @@ using RetailRally.Contexts;
 namespace RetailRally.Migrations
 {
     [DbContext(typeof(HubContextClass))]
-    [Migration("20240303170314_initial")]
-    partial class initial
+    [Migration("20240518144212_addedQuantity")]
+    partial class addedQuantity
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -192,9 +192,6 @@ namespace RetailRally.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
                     b.HasKey("CartItemId");
 
                     b.HasIndex("CartId");
@@ -339,11 +336,6 @@ namespace RetailRally.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Quantity")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
                     b.HasKey("OrderId", "ProductId");
 
                     b.HasIndex("ProductId");
@@ -393,8 +385,8 @@ namespace RetailRally.Migrations
                     b.Property<float>("Price")
                         .HasColumnType("real");
 
-                    b.Property<long>("Quantity")
-                        .HasColumnType("bigint");
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserId")
                         .IsRequired()

@@ -5,14 +5,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Page</title>
+    <title>Головна сторінка</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             if (@Html.Raw(Json.Serialize(TempData["ShowRegisterSuccess"])) === true) {
                 Swal.fire({
-                    title: 'Registration successful!',
+                    title: 'Реєстрація пройшла успішно!',
                     icon: 'success',
                     showConfirmButton: false,
                     timer: 1000
@@ -21,7 +21,7 @@
 
             if (@Html.Raw(Json.Serialize(TempData["ShowLoginSuccess"])) === true) {
                 Swal.fire({
-                    title: 'Login successful!',
+                    title: 'Успішний вхід в систему!',
                     icon: 'success',
                     showConfirmButton: false,
                     timer: 1000
@@ -30,7 +30,7 @@
 
             if (@Html.Raw(Json.Serialize(TempData["ShowLogoutSuccess"])) === true) {
                 Swal.fire({
-                    title: 'You have logged out!',
+                    title: 'Ви вийшли з системи!',
                     icon: 'success',
                     showConfirmButton: false,
                     timer: 1000
@@ -44,7 +44,7 @@
         <p id="popup-message"></p>
     </div>
     <div class="text-center">
-        <h1 class="display-4">Welcome</h1>
+        <h1 class="display-4">Ласкаво просимо.</h1>
     </div>
 </body>
 </html>

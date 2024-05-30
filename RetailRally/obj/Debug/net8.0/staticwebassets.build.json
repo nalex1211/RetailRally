@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "19zr8AlYV5i0tvSNoWBtWUv9TCs0VOItcbiXdZxAkkA=",
+  "Hash": "tYhdYlMBqBWQ5VqSAOomlQ+/ILEPnrhBAgE1oA8aPKk=",
   "Source": "RetailRally",
   "BasePath": "_content/RetailRally",
   "Mode": "Default",
@@ -167,6 +167,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\icons\\eye-icon-show.svg"
+    },
+    {
+      "Identity": "C:\\C# Projects\\RetailRally\\RetailRally\\wwwroot\\icons\\loading.gif",
+      "SourceId": "RetailRally",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\C# Projects\\RetailRally\\RetailRally\\wwwroot\\",
+      "BasePath": "_content/RetailRally",
+      "RelativePath": "icons/loading.gif",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\icons\\loading.gif"
     },
     {
       "Identity": "C:\\C# Projects\\RetailRally\\RetailRally\\wwwroot\\icons\\logout-icon.png",

@@ -1,0 +1,78 @@
+﻿@using RetailRally.ViewModels
+@model List<ChatSummaryVm>
+
+@{
+    Layout = "_Layout";
+}
+
+<div class="container">
+    <h2>Ваші чати</h2>
+    <div class="chat-list">
+        @foreach (var chat in Model)
+        {
+            <div class="chat-summary">
+                <div class="chat-info">
+                    <h3>@chat.OtherUsername</h3>
+                </div>
+              
+                <div class="chat-actions">
+                    <a href="@Url.Action("Room", "Chat", new { userId = chat.OtherUserId })" class="btn btn-primary">Перейти до чату</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .container {
+        max-width: 800px;
+        margin: auto;
+    }
+
+    .chat-list {
+        margin-top: 20px;
+    }
+
+    .chat-summary {
+        border: 1px solid #ccc;
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .chat-info h3 {
+        margin: 0;
+        color: #333;
+        font-size: 1.25rem;
+    }
+
+    .chat-info p {
+        margin: 5px 0;
+        font-size: 0.9rem;
+    }
+
+    .chat-meta {
+        text-align: right;
+    }
+
+    .unread-messages {
+        color: red;
+        font-weight: bold;
+    }
+
+    .chat-actions .btn {
+        text-decoration: none;
+        padding: 5px 15px;
+        background-color: #007bff;
+        color: white;
+        border-radius: 3px;
+    }
+
+        .chat-actions .btn:hover {
+            background-color: #0056b3;
+        }
+</style>

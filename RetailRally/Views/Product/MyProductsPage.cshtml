@@ -5,30 +5,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <title>My Products</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <title>Мої товари</title>
     <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1f1f1f;
+            color: #e0e0e0;
+        }
+
+        .link-style {
+            color: lawngreen;
+            text-decoration: none;
+            border-bottom: 1px solid lawngreen;
+        }
+
+            .link-style:hover {
+                color: green;
+                border-color: green;
+            }
+
+        .new-link-style:hover {
+            color: gray;
+        }
+
         .my-image {
-            width: 300px;
-            height: 300px;
+            width: 100%;
+            height: 200px;
             object-fit: cover;
-            border-radius: 8px;
-            margin: auto;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
         }
 
         .clickable-card {
             cursor: pointer;
-            transition: transform 0.3s ease, border 0.3s ease;
-            border: 2px solid transparent;
-            border-radius: 5px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
             .clickable-card:hover {
-                border: 2px solid #007bff;
+                transform: translateY(-5px);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
             }
 
         .no-outline:hover {
-            border: 2px solid transparent;
             transform: none;
+            box-shadow: none;
         }
 
         .btn-add-to-cart {
@@ -36,14 +62,148 @@
         }
 
         .card-img-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            border-top-left-radius: 5px;
-            border-top-right-radius: 5px;
             width: 100%;
-            height: 300px;
+            height: 250px;
+            overflow: hidden;
+        }
+
+        .d-flex {
+            display: flex;
+        }
+
+        .flex-column {
+            flex-direction: column;
+        }
+
+        .flex-md-row {
+            flex-direction: row;
+        }
+
+        .categories {
+            background-color: #2E2E2E;
+            padding: 20px;
+            margin-right: 20px;
+            box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);
+            height: auto;
+            min-height: 100%;
+            border-radius: 8px;
+        }
+
+        .products-flex-grow-1 {
+            flex-grow: 1;
+        }
+
+        .categories ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow-y: auto;
+        }
+
+            .categories ul li a {
+                color: #e0e0e0;
+                text-decoration: none;
+            }
+
+                .categories ul li a:hover {
+                    color: #00ff00;
+                }
+
+        .card {
+            background-color: #333;
+            border: none;
+            color: #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.2em;
+            margin-bottom: 0.5em;
+        }
+
+        .card-text {
+            margin-bottom: 1em;
+        }
+
+        .card-description {
+            font-size: 0.9em;
+            color: #a0a0a0;
+            height: 40px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .price {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #21B10D;
+        }
+
+        .old-price {
+            font-size: 1.2em;
+            color: #ff0000;
+            text-decoration: line-through;
+            margin-right: 10px;
+        }
+
+        .quantity {
+            font-size: 1em;
+            color: #a0a0a0;
+        }
+
+        .comment-count {
+            font-size: 0.9em;
+            color: #8E8B8B;
+        }
+
+        .card-body {
+            padding: 10px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: white;
+        }
+
+            .btn-primary:hover {
+                background-color: #0056b3;
+                border-color: #0056b3;
+            }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            color: white;
+        }
+
+            .btn-danger:hover {
+                background-color: #c82333;
+                border-color: #bd2130;
+            }
+
+        .discount-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #ff0000;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .wishlist-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #ff9800;
+            font-size: 1.5em;
+            cursor: pointer;
         }
 
         nav.container-fluid {
@@ -51,7 +211,9 @@
             justify-content: space-between;
             align-items: center;
             padding: 1rem 2rem;
-            background-color: #222222;
+            background-color: #222;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
         }
 
             nav.container-fluid ul {
@@ -64,22 +226,23 @@
 
                 nav.container-fluid ul li a {
                     text-decoration: none;
-                    color: white;
+                    color: #e0e0e0;
                     padding: 0.5rem 1rem;
                     transition: background-color 0.3s, color 0.3s;
                 }
 
                     nav.container-fluid ul li a:hover,
                     nav.container-fluid ul li a:focus {
-                        background-color: #007bff; 
+                        background-color: #007bff;
                         color: white;
                         border-radius: 0.25rem;
                     }
 
-                    nav.container-fluid ul li a[role="button"] {
-                        background-color: #007bff; 
-                        border-radius: 0.25rem;
-                    }
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            color: #a0a0a0;
+        }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -116,12 +279,12 @@
 <body>
     <nav class="container-fluid">
         <ul>
-            <li><strong>My Products</strong></li>
+            <li><strong>Мої товари</strong></li>
         </ul>
         <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#" role="button">Contact</a></li>
+            <li><a class="link-style" href="#">Головна</a></li>
+            <li><a class="link-style" href="#">Про нас</a></li>
+            <li><a class="link-style" href="#" role="button">Контакти</a></li>
         </ul>
     </nav>
     <main>
@@ -131,20 +294,23 @@
                 {
                     <div class="col-md-4 mb-4">
                         <div class="card h-100 clickable-card" data-url="@Url.Action("GoToDetailsPage", new { productId = product.Id })">
-                            <div class="card-img-container d-flex justify-content-center">
+                            <div class="card-img-container">
                                 <img class="card-img-top my-image" src="@product.PictureUrl" alt="Product Image">
                             </div>
-
                             <div class="card-body d-flex flex-column">
-                                <h5 class="card-title">Name: @product.Name</h5>
-                                <h5 class="card-title">Category: @product.Category.Name</h5>
-                                <p class="card-text">Price: $@product.Price.ToString("0.00")</p>
+                                <h5 class="card-title">@product.Name</h5>
+                                <p class="card-description">@product.Description</p>
+                                <h5 class="card-title">@product.Category.Name</h5>
+                                <p class="card-text quantity">В наявності: @product.Quantity</p>
+                                <p class="card-text">
+                                    <span class="price">$@product.Price.ToString("0.00")</span>
+                                </p>
                                 <div class="mt-auto d-flex justify-content-between">
-                                    <a asp-route-productId="@product.Id" asp-action="GoToProductEditPage" class="btn btn-primary btn-sm">Edit</a>
+                                    <a asp-route-productId="@product.Id" asp-action="GoToProductEditPage" class="btn btn-primary btn-sm">Редагувати</a>
                                     <form asp-action="DeleteProduct" method="post">
                                         <input type="hidden" name="productId" value="@product.Id" />
                                         <button class="btn btn-danger btn-sm btn-add-to-cart">
-                                             Delete
+                                            Видалити
                                         </button>
                                     </form>
                                 </div>
@@ -155,8 +321,8 @@
             </div>
         </div>
     </main>
+    <footer class="container">
+        <small><a class="new-link-style" asp-controller="Home" asp-action="TermsAndConditions">Умови та положення</a> • <a class="new-link-style" asp-controller="Home" asp-action="Privacy">Політика конфіденційності</a></small>
+    </footer>
 </body>
 </html>
-
-
-

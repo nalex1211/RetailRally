@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 using RetailRally.Contexts;
 using RetailRally.Helpers;
 using RetailRally.Interfaces;
@@ -11,40 +13,125 @@ using RetailRally.ViewModels;
 
 namespace RetailRally.Controllers;
 public class ProductController(IProductRepository _repository, IHttpContextAccessor _httpContextAccessor,
-    HubContextClass _context) : Controller
+    HubContextClass _context, IDistributedCache _cache) : Controller
 {
-    public async Task<IActionResult> FilterBy(string filterName)
+    public async Task<IActionResult> FilterBy(string filterName, int pageNumber = 1, int pageSize = 10)
     {
-        var products = new List<Product>();
+        var cacheKey = $"filteredProducts_{filterName}_{pageNumber}_{pageSize}";
+        List<Product> products;
 
-        switch (filterName)
+        var cachedProducts = await _cache.GetStringAsync(cacheKey);
+        if (!string.IsNullOrEmpty(cachedProducts))
         {
-            case "Name":
-            products = await _context.Products.OrderBy(p => p.Name).ToListAsync();
-            break;
-            case "Price":
-            products = await _context.Products.OrderBy(p => p.Price).ToListAsync();
-            break;
-            default:
-            break;
+            products = JsonConvert.DeserializeObject<List<Product>>(cachedProducts);
         }
+        else
+        {
+            products = filterName switch
+            {
+                "Name" => await _context.Products.OrderBy(p => p.Name)
+                                                 .Skip((pageNumber - 1) * pageSize)
+                                                 .Take(pageSize)
+                                                 .Include(p => p.Category)
+                                                 .Include(p => p.Comments)
+                                                 .ToListAsync(),
+                "Price" => await _context.Products.OrderBy(p => p.Price)
+                                                  .Skip((pageNumber - 1) * pageSize)
+                                                  .Take(pageSize)
+                                                  .Include(p => p.Category)
+                                                  .Include(p => p.Comments)
+                                                  .ToListAsync(),
+                _ => new List<Product>(),
+            };
+
+            var cacheOptions = new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30)
+            };
+
+            var jsonSettings = new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            };
+
+            await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(products, jsonSettings), cacheOptions);
+        }
+
         var categories = await _repository.GetAllCategoriesAsync();
         var model = new MainPageVm()
         {
             Products = products,
             Categories = categories
         };
+        ViewBag.PageNumber = pageNumber;
+        ViewBag.PageSize = pageSize;
+        ViewBag.FilterName = filterName;
+
+        return View("MainPage", model);
+    }
+
+    public async Task<IActionResult> FilterByPrice(double priceFrom, double priceTo, int pageNumber = 1, int pageSize = 10)
+    {
+        var cacheKey = $"filteredProductsByPrice_{priceFrom}_{priceTo}_{pageNumber}_{pageSize}";
+        List<Product> products;
+
+        var cachedProducts = await _cache.GetStringAsync(cacheKey);
+        if (!string.IsNullOrEmpty(cachedProducts))
+        {
+            products = JsonConvert.DeserializeObject<List<Product>>(cachedProducts);
+        }
+        else
+        {
+            products = await _context.Products
+                .Where(p => p.Price >= priceFrom && p.Price <= priceTo)
+                .OrderBy(p => p.Price)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Include(p => p.Category)
+                .Include(p => p.Comments)
+                .ToListAsync();
+
+            var cacheOptions = new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30)
+            };
+
+            var jsonSettings = new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            };
+
+            await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(products, jsonSettings), cacheOptions);
+        }
+
+        var categories = await _repository.GetAllCategoriesAsync();
+        var model = new MainPageVm()
+        {
+            Products = products,
+            Categories = categories
+        };
+        ViewBag.PageNumber = pageNumber;
+        ViewBag.PageSize = pageSize;
+        ViewBag.PriceFrom = priceFrom;
+        ViewBag.PriceTo = priceTo;
+
         return View("MainPage", model);
     }
 
 
-    public async Task<IActionResult> AllProducts()
+    public async Task<IActionResult> AllProducts(int pageNumber = 1, int pageSize = 10)
     {
         var userId = User.GetUserId();
-        var products = await _repository.GetAllProductsAsync();
+        var products = await _repository.GetAllProductsAsync(pageNumber, pageSize);
         var cartItems = await _repository.GetCartItemsByUserIdAsync(userId);
         var categories = await _repository.GetAllCategoriesAsync();
         ViewBag.CartItems = cartItems;
+        ViewBag.PageNumber = pageNumber;
+        ViewBag.PageSize = pageSize;
+        ViewBag.CategoryId = 0;
+        ViewBag.PriceFrom = 0;
+        ViewBag.PriceTo = 0;
+        ViewBag.FilteringName = null;
         var model = new MainPageVm()
         {
             Products = products,
@@ -65,17 +152,22 @@ public class ProductController(IProductRepository _repository, IHttpContextAcces
 
         return Json(matchingProducts);
     }
-    public async Task<IActionResult> DisplayCategoryProducts(int categoryId)
+
+    public async Task<IActionResult> DisplayCategoryProducts(int categoryId, int pageNumber = 1, int pageSize = 10)
     {
-        var products = await _repository.GetAllCategoryProductsAsync(categoryId);
+        var products = await _repository.GetCategoryProductsAsync(categoryId, pageNumber, pageSize);
         var categories = await _repository.GetAllCategoriesAsync();
         var model = new MainPageVm()
         {
             Products = products,
             Categories = categories
         };
+        ViewBag.PageNumber = pageNumber;
+        ViewBag.PageSize = pageSize;
+        ViewBag.CategoryId = categoryId;
         return View("MainPage", model);
     }
+
 
     [HttpPost]
     public async Task<IActionResult> EditProduct(Product product, IFormFile profilePicture)
@@ -83,15 +175,19 @@ public class ProductController(IProductRepository _repository, IHttpContextAcces
         ModelState.Remove("profilePicture");
         if (!ModelState.IsValid)
         {
-            return View("ProductEditPage", product);
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+            return Json(new { success = false, errors });
         }
+
         var exisitngProduct = await _repository.GetProductByIdAsync(product.Id);
         exisitngProduct.Name = product.Name;
         exisitngProduct.Description = product.Description;
         exisitngProduct.Price = product.Price;
+        exisitngProduct.Quantity = product.Quantity;
         exisitngProduct.CategoryId = product.CategoryId;
         await _repository.UpdateProductAsync(exisitngProduct, profilePicture);
-        return RedirectToAction(nameof(GoToMyProductsPage));
+
+        return Json(new { success = true });
     }
 
     [HttpPost]
@@ -147,7 +243,7 @@ public class ProductController(IProductRepository _repository, IHttpContextAcces
         return View("DetailsPage", productVm);
     }
 
-    public async Task<IActionResult> GoToBuyPage(List<int> selectedItems)
+    public async Task<IActionResult> GoToBuyPage(List<int> selectedItems, List<int> quantities)
     {
         var userId = _httpContextAccessor.HttpContext.User.GetUserId();
         if (userId == null)
@@ -156,12 +252,18 @@ public class ProductController(IProductRepository _repository, IHttpContextAcces
         }
 
         var products = new List<Product>();
-        foreach (var productId in selectedItems)
+        var productQuantities = new Dictionary<int, int>();
+
+        for (int i = 0; i < selectedItems.Count; i++)
         {
+            var productId = selectedItems[i];
+            var quantity = quantities[i];
+
             var product = await _repository.GetProductByIdAsync(productId);
             if (product != null)
             {
                 products.Add(product);
+                productQuantities.Add(productId, quantity);
             }
         }
 
@@ -175,11 +277,13 @@ public class ProductController(IProductRepository _repository, IHttpContextAcces
         var buyProductVm = new BuyProductVm()
         {
             Products = products,
-            User = user
+            User = user,
+            ProductQuantities = productQuantities
         };
 
         return View("BuyPage", buyProductVm);
     }
+
 
     [HttpPost]
     public async Task<IActionResult> AddToCart(int productId, int quantity = 1)
@@ -204,20 +308,13 @@ public class ProductController(IProductRepository _repository, IHttpContextAcces
         }
 
         var cartItem = cart.Items.FirstOrDefault(ci => ci.ProductId == productId);
-        if (cartItem != null)
+
+        cartItem = new CartItem
         {
-            cartItem.Quantity += quantity;
-        }
-        else
-        {
-            cartItem = new CartItem
-            {
-                CartId = cart.CartId,
-                ProductId = productId,
-                Quantity = quantity
-            };
-            await _repository.AddItemToCartAsync(cartItem);
-        }
+            CartId = cart.CartId,
+            ProductId = productId,
+        };
+        await _repository.AddItemToCartAsync(cartItem);
 
         await _repository.SaveChangesAsync();
 
@@ -285,7 +382,7 @@ public class ProductController(IProductRepository _repository, IHttpContextAcces
     }
 
     [HttpPost]
-    public async Task<IActionResult> PlaceOrder(BuyProductVm model, int[] productIds)
+    public async Task<IActionResult> PlaceOrder(BuyProductVm model, int[] productIds, int[] quantities)
     {
         ModelState.Remove("Order.UserId");
         if (!ModelState.IsValid)
@@ -299,14 +396,16 @@ public class ProductController(IProductRepository _repository, IHttpContextAcces
 
         if (createdOrder == null)
         {
-            ModelState.AddModelError("", "Unable to create order. Please try again.");
+            ModelState.AddModelError("", "Hе вдалося створити замовлення. Будь ласка, спробуйте ще раз.");
             return View(model);
         }
 
         var cart = await _repository.GetCartByUserIdAsync(userId);
-        foreach (var productId in productIds)
+        for (int i = 0; i < productIds.Length; i++)
         {
-            await _repository.AddProductToOrderAsync(createdOrder.Id, productId);
+            var productId = productIds[i];
+            var quantity = quantities[i];
+            await _repository.AddProductToOrderAsync(createdOrder.Id, productId, quantity);
             if (cart != null)
             {
                 var itemToRemove = cart.Items.FirstOrDefault(item => item.ProductId == productId);
@@ -323,7 +422,7 @@ public class ProductController(IProductRepository _repository, IHttpContextAcces
             var addressSaved = await _repository.AddDeliveryAddressAsync(model.DeliveryAddress);
             if (!addressSaved)
             {
-                ModelState.AddModelError("", "There was a problem saving the delivery address.");
+                ModelState.AddModelError("", "Виникла проблема зі збереженням адреси доставки.");
                 return View(model);
             }
             return RedirectToAction("OrderSummary", new { orderId = createdOrder.Id });
@@ -377,13 +476,13 @@ public class ProductController(IProductRepository _repository, IHttpContextAcces
     {
         if (!Enum.TryParse(newStatus, out Status status))
         {
-            return BadRequest("Invalid status.");
+            return BadRequest("Недійсний статус.");
         }
 
         var order = await _context.Orders.FindAsync(orderId);
         if (order == null)
         {
-            return NotFound($"Order with ID {orderId} not found.");
+            return NotFound($"Замовлення з ідентифікатором {orderId} не знайдено.");
         }
 
         order.Status = status;

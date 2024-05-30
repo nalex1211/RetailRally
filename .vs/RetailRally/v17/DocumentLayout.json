@@ -1,12 +1,85 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\C# Projects\\RetailRally\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{AF76E998-BD11-41BE-BD05-5A52B7C9EAD7}|RetailRally\\RetailRally.csproj|c:\\c# projects\\retailrally\\retailrally\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{AF76E998-BD11-41BE-BD05-5A52B7C9EAD7}|RetailRally\\RetailRally.csproj|solutionrelative:retailrally\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AF76E998-BD11-41BE-BD05-5A52B7C9EAD7}|RetailRally\\RetailRally.csproj|c:\\c# projects\\retailrally\\retailrally\\views\\product\\mainpage.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{AF76E998-BD11-41BE-BD05-5A52B7C9EAD7}|RetailRally\\RetailRally.csproj|solutionrelative:retailrally\\views\\product\\mainpage.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AF76E998-BD11-41BE-BD05-5A52B7C9EAD7}|RetailRally\\RetailRally.csproj|c:\\c# projects\\retailrally\\retailrally\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AF76E998-BD11-41BE-BD05-5A52B7C9EAD7}|RetailRally\\RetailRally.csproj|solutionrelative:retailrally\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AF76E998-BD11-41BE-BD05-5A52B7C9EAD7}|RetailRally\\RetailRally.csproj|c:\\c# projects\\retailrally\\retailrally\\views\\product\\mycart.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{AF76E998-BD11-41BE-BD05-5A52B7C9EAD7}|RetailRally\\RetailRally.csproj|solutionrelative:retailrally\\views\\product\\mycart.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ProductController.cs",
+              "DocumentMoniker": "C:\\C# Projects\\RetailRally\\RetailRally\\Controllers\\ProductController.cs",
+              "RelativeDocumentMoniker": "RetailRally\\Controllers\\ProductController.cs",
+              "ToolTip": "C:\\C# Projects\\RetailRally\\RetailRally\\Controllers\\ProductController.cs",
+              "RelativeToolTip": "RetailRally\\Controllers\\ProductController.cs",
+              "ViewState": "AQIAAEkAAAAAAAAAAAAQwF0AAAAiAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-28T16:22:57.225Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "C:\\C# Projects\\RetailRally\\RetailRally\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "RetailRally\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\C# Projects\\RetailRally\\RetailRally\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "RetailRally\\Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABMAAAALAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-05-28T12:08:14.32Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MainPage.cshtml",
+              "DocumentMoniker": "C:\\C# Projects\\RetailRally\\RetailRally\\Views\\Product\\MainPage.cshtml",
+              "RelativeDocumentMoniker": "RetailRally\\Views\\Product\\MainPage.cshtml",
+              "ToolTip": "C:\\C# Projects\\RetailRally\\RetailRally\\Views\\Product\\MainPage.cshtml",
+              "RelativeToolTip": "RetailRally\\Views\\Product\\MainPage.cshtml",
+              "ViewState": "AQIAAHABAAAAAAAAAAAswIEBAAArAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-05-28T12:07:49.193Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "MyCart.cshtml",
+              "DocumentMoniker": "C:\\C# Projects\\RetailRally\\RetailRally\\Views\\Product\\MyCart.cshtml",
+              "RelativeDocumentMoniker": "RetailRally\\Views\\Product\\MyCart.cshtml",
+              "ToolTip": "C:\\C# Projects\\RetailRally\\RetailRally\\Views\\Product\\MyCart.cshtml",
+              "RelativeToolTip": "RetailRally\\Views\\Product\\MyCart.cshtml",
+              "ViewState": "AQIAAJYAAAAAAAAAAAAAAKwAAAAYAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-05-27T19:11:42.828Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

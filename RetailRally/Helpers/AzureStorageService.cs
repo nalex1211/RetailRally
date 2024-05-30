@@ -1,13 +1,14 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs.Specialized;
+using Microsoft.AspNetCore.Identity;
 using RetailRally.Models;
 using RetailRally.ViewModels;
 using System.Text;
 
 namespace RetailRally.Helpers;
 
-public class AzureStorageService(IConfiguration _configuration)
+public class AzureStorageService(IConfiguration _configuration, UserManager<User> _userManager)
 {
     private readonly BlobServiceClient _blobServiceClient = new BlobServiceClient(_configuration["AzureStorageConfig:ConnectionString"]);
 
@@ -97,4 +98,70 @@ public class AzureStorageService(IConfiguration _configuration)
 
         return messages;
     }
+
+    //public async Task<List<ChatSummaryVm>> GetChatListAsync(string currentUsername, string containerName)
+    //{
+    //    var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
+    //    var chatSummaries = new List<ChatSummaryVm>();
+
+    //    await foreach (var blobItem in containerClient.GetBlobsAsync())
+    //    {
+    //        var blobNameParts = blobItem.Name.Replace(".txt", "").Split("_to_");
+    //        if (blobNameParts.Length == 2)
+    //        {
+    //            var sender = blobNameParts[0];
+    //            var receiver = blobNameParts[1];
+
+    //            if (sender == currentUsername || receiver == currentUsername)
+    //            {
+    //                var otherUser = sender == currentUsername ? receiver : sender;
+    //                var otherUser1 = await _userManager.FindByNameAsync(otherUser);
+
+    //                chatSummaries.Add(new ChatSummaryVm
+    //                {
+    //                    OtherUsername = otherUser,
+    //                    OtherUserId = otherUser1.Id
+    //                });
+    //            }
+    //        }
+    //    }
+
+    //    return chatSummaries;
+    //}
+
+    public async Task<List<ChatSummaryVm>> GetChatListAsync(string currentUsername, string containerName)
+    {
+        var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
+        var chatSummaries = new List<ChatSummaryVm>();
+        var addedUsers = new HashSet<string>();
+
+        await foreach (var blobItem in containerClient.GetBlobsAsync())
+        {
+            var blobNameParts = blobItem.Name.Replace(".txt", "").Split("_to_");
+            if (blobNameParts.Length == 2)
+            {
+                var sender = blobNameParts[0];
+                var receiver = blobNameParts[1];
+
+                if (sender == currentUsername || receiver == currentUsername)
+                {
+                    var otherUser = sender == currentUsername ? receiver : sender;
+                    if (!addedUsers.Contains(otherUser))
+                    {
+                        var otherUser1 = await _userManager.FindByNameAsync(otherUser);
+
+                        chatSummaries.Add(new ChatSummaryVm
+                        {
+                            OtherUsername = otherUser,
+                            OtherUserId = otherUser1.Id
+                        });
+
+                        addedUsers.Add(otherUser);
+                    }
+                }
+            }
+        }
+        return chatSummaries;
+    }
+
 }

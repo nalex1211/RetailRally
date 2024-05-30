@@ -1,7 +1,7 @@
 ﻿@using RetailRally.ViewModels
 @model BuyProductVm
 @{
-    var totalPrice = Model.Products.Sum(product => product.Price);
+    var totalPrice = Model.Products.Sum(product => product.Price * Model.ProductQuantities[product.Id]);
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -9,13 +9,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@picocss/pico@1/css/pico.min.css">
-    <title>Product Purchase Page</title>
+    <title>Сторінка купівлі товару</title>
     <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1f1f1f;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+        }
+
         .product-purchase-container {
-            display: grid;
-            grid-template-columns: 3fr 2fr;
-            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
             gap: 2rem;
+            padding: 2rem;
+        }
+
+        .label {
+            margin-bottom: 5px;
+            font-size: 1em;
+            margin-top: 0;
         }
 
         .products-container {
@@ -25,29 +39,70 @@
         }
 
         .product-info {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            background-color: #2a2a2a;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             text-align: center;
         }
 
             .product-info img {
-                width: 300px;
-                height: 300px;
+                width: 100%;
+                height: 200px;
                 object-fit: cover;
-                margin-bottom: 1rem;
                 border-radius: 8px;
+                margin-bottom: 1rem;
             }
 
         .purchase-form {
-            display: flex;
-            flex-direction: column;
+            background-color: #2a2a2a;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 450px;
         }
+
+            .purchase-form h2 {
+                color: #ffffff;
+                margin-bottom: 1rem;
+            }
 
             .purchase-form input,
             .purchase-form select,
             .purchase-form button {
+                width: 100%;
+                padding: 0.5rem;
                 margin-bottom: 1rem;
+                border-radius: 4px;
+                border: 1px solid #444;
+                background-color: #333;
+                color: #ffffff;
+            }
+
+            .purchase-form button {
+                background-color: #007bff;
+                border-color: #007bff;
+                cursor: pointer;
+            }
+
+                .purchase-form button:hover {
+                    background-color: #0056b3;
+                }
+
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            color: #a0a0a0;
+        }
+
+        .container small a {
+            color: #a0a0a0;
+            text-decoration: none;
+        }
+
+            .container small a:hover {
+                color: #ffffff;
             }
     </style>
 </head>
@@ -57,9 +112,9 @@
             <li><strong>RetailRally</strong></li>
         </ul>
         <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Back to Product</a></li>
-            <li><a href="#" role="button">Contact</a></li>
+            <li><a href="#">Головна</a></li>
+            <li><a href="#">Повернутися до продукту</a></li>
+            <li><a href="#" role="button">Контакти</a></li>
         </ul>
     </nav>
     <main class="container">
@@ -67,55 +122,67 @@
             <div class="products-container">
                 @foreach (var product in Model.Products)
                 {
-                    <div class="product-info card">
+                    <div class="product-info">
                         <img src="@product.PictureUrl" alt="Product Image">
                         <h3>@product.Name</h3>
-                        <p>Price: $@product.Price</p>
+                        <p>Ціна: $@product.Price</p>
+                        <p>Кількість: @Model.ProductQuantities[product.Id]</p>
+                        <p>Проміжний підсумок: $@(product.Price * Model.ProductQuantities[product.Id])</p>
                     </div>
                 }
             </div>
             <form asp-action="PlaceOrder" method="post" class="purchase-form">
-                <h2>Complete your purchase</h2>
+                <h2>Завершіть покупку</h2>
                 @foreach (var product in Model.Products)
                 {
                     <input type="hidden" name="productIds[]" value="@product.Id" />
+                    <input type="hidden" name="quantities[]" value="@Model.ProductQuantities[product.Id]" />
                 }
-                <input asp-for="Order.FirstName" value="@Model.User.FirstName" type="text" id="firstname" placeholder="First Name" aria-label="First Name" required>
-                <input asp-for="Order.LastName" value="@Model.User.LastName" type="text" id="surname" placeholder="Surname" aria-label="Surname" required>
-                <input asp-for="Order.Email" value="@Model.User.Email" type="email" id="email" placeholder="Email" aria-label="Email" required>
+                <h1 class="label">Ім'я:</h1>
+                <input asp-for="Order.FirstName" value="@Model.User.FirstName" type="text" id="firstname" placeholder="Ім'я" aria-label="First Name">
+                <h1 class="label">Прізвище:</h1>
+                <input asp-for="Order.LastName" value="@Model.User.LastName" type="text" id="surname" placeholder="Прізвище" aria-label="Surname">
+                <h1 class="label">Електронна пошта:</h1>
+                <input asp-for="Order.Email" value="@Model.User.Email" type="email" id="email" placeholder="Електронна пошта" aria-label="Email">
+                <h1 class="label">Тип доставки:</h1>
                 <select asp-for="Order.ShippingTypeId" id="shippingTypeSelect">
-                    <option value="" disabled selected>Select a Shipping Type</option>
+                    <option value="" disabled selected>Виберіть тип доставки</option>
                     @foreach (var shippingType in ViewBag.ShippingTypes)
                     {
                         <option value="@shippingType.Value">@shippingType.Text</option>
                     }
                 </select>
-                <span asp-validation-for="Order.ShippingType    " class="text-danger"></span>
+                <span asp-validation-for="Order.ShippingType" class="text-danger"></span>
 
                 <div id="addressFields" style="display: none;">
-                    <input asp-for=DeliveryAddress.Country type="text" placeholder="Country" aria-label="Country" required>
-                    <input asp-for=DeliveryAddress.City type="text" placeholder="City" aria-label="City" required>
-                    <input asp-for=DeliveryAddress.Street type="text" placeholder="Street" aria-label="Street" required>
-                    <input asp-for=DeliveryAddress.PostalCode type="text" placeholder="Postal Code" aria-label="Postal Code" required>
+                    <h1 class="label">Країна:</h1>
+                    <input asp-for="DeliveryAddress.Country" type="text" placeholder="Країна" aria-label="Country">
+                    <h1 class="label">Місто:</h1>
+                    <input asp-for="DeliveryAddress.City" type="text" placeholder="Місто" aria-label="City">
+                    <h1 class="label">Вулиця:</h1>
+                    <input asp-for="DeliveryAddress.Street" type="text" placeholder="Вулиця" aria-label="Street">
+                    <h1 class="label">Поштовий індекс:</h1>
+                    <input asp-for="DeliveryAddress.PostalCode" type="text" placeholder="Поштовий індекс" aria-label="Postal Code">
                 </div>
-                <select asp-for="Order.PaymentTypeId" asp-items="ViewBag.PaymentTypes">
-                    <option value="" disabled selected>Select a Payment Type</option>
+                <h1 class="label">Тип оплати:</h1>
+                <select asp-for="Order.PaymentTypeId" asp-items="ViewBag.PaymentTypes" >
+                    <option value="" disabled selected>Виберіть тип оплати</option>
                 </select>
                 <span asp-validation-for="Order.PaymentType" class="text-danger"></span>
-                <h2>Total Price: $@totalPrice</h2>
-                <button asp-action="PlaceOrder" class="btn btn-primary">Submit Purchase</button>
+                <h2>Загальна ціна: $@totalPrice</h2>
+                <button asp-action="PlaceOrder" class="btn btn-primary">Підтвердити покупку</button>
             </form>
         </div>
     </main>
     <footer class="container">
         <small>
-            <a href="#">Privacy Policy</a> • <a href="#">Terms of Service</a>
+            <a href="#">Політика конфіденційності</a> • <a href="#">Умови надання послуг</a>
         </small>
     </footer>
 </body>
 </html>
-<script>
 
+<script>
     document.addEventListener('DOMContentLoaded', function () {
         var shippingTypeSelect = document.getElementById('shippingTypeSelect');
         var addressFields = document.getElementById('addressFields');
@@ -134,5 +201,4 @@
             });
         });
     });
-
 </script>

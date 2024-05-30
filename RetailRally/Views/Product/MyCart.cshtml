@@ -1,73 +1,259 @@
 ﻿@model List<CartItem>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Cart</title>
+    <title>Кошик товарів</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-</head>
+    <style>
+        body {
+            background-color: #1f1f1f;
+            color: #e0e0e0;
+        }
 
-<body class="bg-gray-900 text-white">
+        .container {
+            max-width: 1400px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .cart-header, .cart-footer {
+            background-color: #2a2a2a;
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
+
+            .cart-header p, .cart-footer a {
+                color: #ffffff;
+            }
+
+        .cart-item {
+            background-color: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+            .cart-item img {
+                width: 100px;
+                height: 100px;
+                object-fit: cover;
+                border-radius: 8px;
+            }
+
+        .cart-item-details {
+            flex-grow: 1;
+            margin-left: 20px;
+        }
+
+            .cart-item-details span {
+                display: block;
+            }
+
+            .cart-item-details .text-sm {
+                color: #999999;
+            }
+
+        .order-summary {
+            background-color: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+            .order-summary h2, .order-summary span {
+                color: #ffffff;
+            }
+
+            .order-summary .order-summary-items img {
+                width: 40px;
+                height: 40px;
+                object-fit: cover;
+                border-radius: 8px;
+            }
+
+        .order-summary-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .btn-blue {
+            background-color: #007bff;
+            color: #ffffff;
+        }
+
+            .btn-blue:hover {
+                background-color: #0056b3;
+            }
+
+        .btn-red {
+            background-color: #dc3545;
+            color: #ffffff;
+        }
+
+            .btn-red:hover {
+                background-color: #c82333;
+            }
+
+        .disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .custom-checkbox {
+            position: relative;
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+        }
+
+            .custom-checkbox input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 20px;
+            width: 20px;
+            background-color: #ccc;
+            border-radius: 4px;
+        }
+
+        .custom-checkbox input:checked ~ .checkmark {
+            background-color: #007bff;
+        }
+
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+        .custom-checkbox input:checked ~ .checkmark:after {
+            display: block;
+        }
+
+        .custom-checkbox .checkmark:after {
+            left: 7px;
+            top: 3px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 3px 3px 0;
+            transform: rotate(45deg);
+        }
+
+        .quantity-input {
+            background-color: #1f1f1f;
+            border: 1px solid #555;
+            color: #e0e0e0;
+            border-radius: 4px;
+            text-align: center;
+            width: 60px;
+        }
+
+            .quantity-input:focus {
+                border-color: #007bff;
+                outline: none;
+            }
+
+        .error-message {
+            color: #ff0000;
+            font-size: 0.8em;
+            display: none;
+        }
+    </style>
+</head>
+<body>
     <form asp-action="RemoveSelectedFromCart" method="post">
         <div class="container mx-auto mt-10">
             <div class="flex flex-col md:flex-row md:items-start shadow-md my-10">
-                <div class="w-full md:w-3/4 bg-gray-800 md:mr-2">
-                    <div class="flex justify-between items-center border-b border-gray-600 p-4">
-                        <p class="text-xl font-semibold">Shopping Cart</p>
-                        <p class="text-xl">3 Items</p>
+                <div class="w-full md:w-3/4 md:mr-2">
+                    <div class="cart-header flex justify-between items-center border-b border-gray-600 p-4">
+                        <p class="text-xl font-semibold">Кошик товарів</p>
+                        <p class="text-xl">@Model.Count Items</p>
                     </div>
-                    <div class="flex mt-6 pb-5 border-b border-gray-600">
-                        <p class="text-xs font-semibold uppercase w-2/5 pl-4">Product Details</p>
-                        <p class="text-xs font-semibold uppercase w-1/5 text-center">Price</p>
+                    <div class="cart-header flex mt-6 pb-5 border-b border-gray-600">
+                        <p class="text-xs font-semibold uppercase w-2/5 pl-4">Деталі продукту</p>
+                        <p class="text-xs font-semibold uppercase w-1/5 text-center">Ціна</p>
+                        <p class="text-xs font-semibold uppercase w-1/5 text-center">Доступна кількість</p>
+                        <p class="text-xs font-semibold uppercase w-1/5 text-center">Кількість</p>
+                        <p class="text-xs font-semibold uppercase w-1/5 text-center">Вибрані товари</p>
                     </div>
                     @foreach (var product in Model)
                     {
-                        <article onclick="location.href='@Url.Action("GoToDetailsPage", new { productId = product.ProductId })';" style="cursor:pointer;">
-                            <div class="flex items-center hover:bg-gray-700 px-4 py-4">
-                                <div class="w-2/5 flex items-center">
-                                    <img class="h-24" src="@product.Product.PictureUrl" alt="@product.Product.Name">
-                                    <div class="flex flex-col ml-4">
-                                        <span class="text-sm font-bold">@product.Product.Name</span>
-                                        <span class="text-xs text-gray-400">@product.Product.User.UserName</span>
-                                        <button asp-route-productId="@product.Product.Id" asp-action="RemoveProductFromCart" class="text-xs text-blue-500 mt-2">Remove</button>
-                                    </div>
+                        <div class="cart-item flex items-center hover:bg-gray-700 px-4 py-4">
+                            <div class="w-2/5 flex items-center">
+                                <img class="h-24" src="@product.Product.PictureUrl" alt="@product.Product.Name">
+                                <div class="cart-item-details flex flex-col ml-4">
+                                    <span class="text-sm font-bold">@product.Product.Name</span>
+                                    <span class="text-xs text-gray-400">@product.Product.User.UserName</span>
+                                    <button asp-route-productId="@product.Product.Id" asp-action="RemoveProductFromCart" class="text-xs text-blue-500 mt-2 link">Вилучити</button>
                                 </div>
-                                <div class="w-1/5 text-center">
-                                    <span>€@product.Product.Price</span>
-                                </div>
-                                <div class="w-1/5 text-center">
+                            </div>
+                            <div class="w-1/5 text-center">
+                                <span>$@String.Format("{0:F2}", product.Product.Price)</span>
+                            </div>
+                            <div class="w-1/5 text-center">
+                                <span>@product.Product.Quantity</span>
+                            </div>
+                            <div class="w-1/5 text-center">
+                                <input type="number" name="quantities" value="1" min="1" max="@product.Product.Quantity" class="quantity-input no-spin-buttons">
+                                <span class="error-message"></span>
+                            </div>
+                            <div class="w-1/5 text-center">
+                                <label class="custom-checkbox">
                                     <input type="checkbox" name="selectedItems" value="@product.ProductId" class="product-checkbox"
                                            data-product-name="@product.Product.Name"
                                            data-product-price="@product.Product.Price"
-                                           data-product-image="@product.Product.PictureUrl">
-                                </div>
+                                           data-product-image="@product.Product.PictureUrl"
+                                           data-product-quantity="@product.Product.Quantity">
+                                    <span class="checkmark"></span>
+                                </label>
                             </div>
-                        </article>
+                        </div>
                     }
-                    <div class="flex justify-between items-center border-t border-gray-600 p-4">
-                        <a asp-action="AllProduct" class="text-blue-500 text-sm">Continue Shopping</a>
+
+                    <div class="cart-footer flex justify-between items-center border-t border-gray-600 p-4">
+                        <a asp-action="AllProducts" class="text-blue-500 text-sm link">Продовжити покупки</a>
                     </div>
                 </div>
-                <div class="w-full md:w-1/4 bg-gray-800 mt-6 md:mt-0 p-4">
-                    <h2 class="text-xl font-semibold mb-2">Order Summary</h2>
+                <div class="order-summary w-full md:w-1/3 mt-6 md:mt-0 p-4">
+                    <h2 class="text-xl font-semibold mb-2">Підсумок замовлення</h2>
                     <div id="orderSummaryItems" class="order-summary-items">
                     </div>
                     <div class="flex justify-between mb-4">
-                        <span class="text-sm font-semibold uppercase">Total</span>
-                        <span class="text-sm font-semibold" id="orderSummaryTotal">€0</span>
+                        <span class="text-sm font-semibold uppercase">Всього</span>
+                        <span class="text-sm font-semibold" id="orderSummaryTotal">$0</span>
                     </div>
-                    <button asp-action="GoToBuyPage" id="buySelectedButton" class="bg-blue-500 text-white py-2 px-4 rounded disabled:opacity-50" disabled>Checkout</button>
-                    <button id="removeSelectedButton" class="bg-red-500 text-white py-2 px-4 rounded disabled:opacity-50" disabled>Remove selected</button>
+                    <button asp-action="GoToBuyPage" id="buySelectedButton" class="btn btn-blue disabled" disabled>Каса</button>
+                    <button id="removeSelectedButton" class="btn btn-red disabled" disabled>Вилучити обране</button>
                 </div>
             </div>
         </div>
     </form>
 </body>
-
-
 </html>
 
 <script>
@@ -85,40 +271,57 @@
             checkboxes.forEach(function (checkbox) {
                 if (checkbox.checked) {
                     var productName = checkbox.dataset.productName;
-                    var productPrice = parseFloat(checkbox.dataset.productPrice);
+                    var s = checkbox.dataset.productPrice;
+                    var correctedString = s.replace(',', '.');
+                    var productPrice = parseFloat(correctedString);
+                    var productQuantity = parseInt(checkbox.closest('.cart-item').querySelector('.quantity-input').value);
                     var productImage = checkbox.dataset.productImage;
-                    totalCost += productPrice;
 
-                    var itemElement = document.createElement('div');
-                    itemElement.className = 'order-summary-item flex items-center mb-2';
+                    if (productQuantity > 0) {
+                        totalCost += productPrice * productQuantity;
 
-                    var imageElement = document.createElement('img');
-                    imageElement.src = productImage;
-                    imageElement.alt = productName;
-                    imageElement.className = 'h-8 w-8 mr-2';
+                        var itemElement = document.createElement('div');
+                        itemElement.className = 'order-summary-item flex items-center mb-2';
 
-                    var nameElement = document.createElement('span');
-                    nameElement.textContent = productName;
-                    nameElement.className = 'text-sm font-bold';
+                        var imageElement = document.createElement('img');
+                        imageElement.src = productImage;
+                        imageElement.alt = productName;
+                        imageElement.className = 'h-8 w-8 mr-2';
 
-                    var priceElement = document.createElement('span');
-                    priceElement.textContent = '€' + productPrice.toFixed(2);
-                    priceElement.className = 'text-sm ml-2';
+                        var nameElement = document.createElement('span');
+                        nameElement.textContent = productName + " x " + productQuantity;
+                        nameElement.className = 'text-sm font-bold';
 
-                    itemElement.appendChild(imageElement);
-                    itemElement.appendChild(nameElement);
-                    itemElement.appendChild(priceElement);
+                        var priceElement = document.createElement('span');
+                        priceElement.textContent = '$' + (productPrice * productQuantity).toFixed(2);
+                        priceElement.className = 'text-sm ml-2';
 
-                    orderSummaryItems.appendChild(itemElement);
+                        itemElement.appendChild(imageElement);
+                        itemElement.appendChild(nameElement);
+                        itemElement.appendChild(priceElement);
+
+                        orderSummaryItems.appendChild(itemElement);
+                    }
                 }
             });
 
-            orderSummaryTotal.textContent = '€' + totalCost.toFixed(2);
+            orderSummaryTotal.textContent = '$' + totalCost.toFixed(2);
         }
+
         function updateButtonStates() {
             var isAnyCheckboxChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
-            buyButton.disabled = !isAnyCheckboxChecked;
-            removeButton.disabled = !isAnyCheckboxChecked;
+            var hasErrors = Array.from(document.querySelectorAll('.error-message')).some(error => error.style.display === 'block');
+
+            buyButton.disabled = !isAnyCheckboxChecked || hasErrors;
+            removeButton.disabled = !isAnyCheckboxChecked || hasErrors;
+
+            if (isAnyCheckboxChecked && !hasErrors) {
+                buyButton.classList.remove('disabled');
+                removeButton.classList.remove('disabled');
+            } else {
+                buyButton.classList.add('disabled');
+                removeButton.classList.add('disabled');
+            }
         }
 
         checkboxes.forEach(function (checkbox) {
@@ -130,9 +333,34 @@
             checkbox.addEventListener('click', function (e) {
                 e.stopPropagation();
             });
+
+            var quantityInput = checkbox.closest('.cart-item').querySelector('.quantity-input');
+            var errorMessage = checkbox.closest('.cart-item').querySelector('.error-message');
+
+            quantityInput.addEventListener('input', function () {
+                var availableQuantity = parseInt(checkbox.dataset.productQuantity);
+                var enteredQuantity = quantityInput.value.trim();
+
+                if (enteredQuantity === '') {
+                    errorMessage.textContent = 'Quantity cannot be empty!';
+                    errorMessage.style.display = 'block';
+                } else if (parseInt(enteredQuantity) > availableQuantity) {
+                    errorMessage.textContent = 'Quantity exceeds available stock!';
+                    errorMessage.style.display = 'block';
+                } else if (parseInt(enteredQuantity) <= 0) {
+                    errorMessage.textContent = 'Quantity must be greater than zero!';
+                    errorMessage.style.display = 'block';
+                } else {
+                    errorMessage.style.display = 'none';
+                }
+
+                updateButtonStates();
+                updateOrderSummary();
+            });
         });
 
         updateButtonStates();
         updateOrderSummary();
     });
+
 </script>

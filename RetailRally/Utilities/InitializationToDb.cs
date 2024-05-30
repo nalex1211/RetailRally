@@ -35,11 +35,11 @@ public static class InitializationToDb
         {
             var categories = new List<Category>()
             {
-                new Category{Name="Electronics"},
-                new Category{Name="Home and Garden"},
-                new Category{Name="Family"},
-                new Category{Name="Games"},
-                new Category{Name="Beauty"}
+                new Category{Name="Електроніка"},
+                new Category{Name="Дім і сад"},
+                new Category{Name="Сім'я"},
+                new Category{Name="Ігри"},
+                new Category{Name="Краса"}
             };
             await _db.Categories.AddRangeAsync(categories);
             await _db.SaveChangesAsync();
@@ -56,9 +56,9 @@ public static class InitializationToDb
         {
             var shippingTypes = new List<ShippingType>()
             {
-                new ShippingType{Name="Nova Poshta"},
-                new ShippingType{Name="Ukr Poshta"},
-                new ShippingType{Name="Pick Up"}
+                new ShippingType{Name="Нова Пошта"},
+                new ShippingType{Name="Укрпошта"},
+                new ShippingType{Name="Заберу сам"}
             };
             await _db.ShippingTypes.AddRangeAsync(shippingTypes);
             await _db.SaveChangesAsync();
@@ -67,9 +67,9 @@ public static class InitializationToDb
         {
             var paymentTypes = new List<PaymentType>()
             {
-                new PaymentType{Name="Privat24"},
+                new PaymentType{Name="Приват24"},
                 new PaymentType{Name="Monobank"},
-                new PaymentType{Name="Cash"},
+                new PaymentType{Name="Готівка"},
                 new PaymentType{Name="PayPal"}
             };
             await _db.PaymentTypes.AddRangeAsync(paymentTypes);
@@ -103,16 +103,9 @@ public static class InitializationToDb
         if (!await _userManager.IsEmailConfirmedAsync(adminUser))
         {
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(adminUser);
-            var result = await _userManager.ConfirmEmailAsync(adminUser, token);
+            await _userManager.ConfirmEmailAsync(adminUser, token);
 
-            if (!result.Succeeded)
-            {
-                app.Logger.LogInformation($"{configuration["Username"]} wasn't confirmed!");
-            }
-            else
-            {
-                await _userManager.AddToRoleAsync(adminUser, Role.Admin);
-            }
+            await _userManager.AddToRoleAsync(adminUser, Role.Admin);
         }
     }
 }
