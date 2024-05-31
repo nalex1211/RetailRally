@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RetailRally")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6faa5d3422dda76f73b8a9f70cf5c78f37605d95")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cc9aed287a580aa6e3421c26f6c57fe32da5f417")]
 [assembly: System.Reflection.AssemblyProductAttribute("RetailRally")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RetailRally")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

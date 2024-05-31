@@ -39,7 +39,7 @@ public class ProductRepository(HubContextClass _context, IConfiguration _configu
         return await _context.PaymentTypes.ToListAsync();
     }
 
-     public async Task<List<Product>> GetAllProductsAsync(int pageNumber, int pageSize)
+    public async Task<List<Product>> GetAllProductsAsync(int pageNumber, int pageSize)
     {
         var cacheVersionKey = "productsCacheVersion";
         var cacheKey = $"products_{pageNumber}_{pageSize}_v{await GetCacheVersionAsync(cacheVersionKey)}";
@@ -181,8 +181,16 @@ public class ProductRepository(HubContextClass _context, IConfiguration _configu
         {
             return false;
         }
-        order.TotalPrice += product.Price * quantity;
-
+        if (product.Discount > 0)
+        {
+            order.TotalPrice += product.DiscountedPrice * quantity;
+        }
+        else
+        {
+            order.TotalPrice += product.Price * quantity;
+        }
+        product.Quantity -= quantity;
+        await UpdateProductAsync(product, null);
         _context.OrderProducts.Add(orderProduct);
         return await SaveChangesAsync();
     }
